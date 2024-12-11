@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet author="cdutz" id="202407291230-1">
+        <createTable tableName="sec_roles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="fk_sec_roles_name" tableName="sec_roles" unique="true">
+            <column name="name"/>
+        </createIndex>
+
+        <createTable tableName="sec_users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(250)"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+        <createIndex indexName="fk_sec_users_username" tableName="sec_users" unique="true">
+            <column name="username"/>
+        </createIndex>
+
+        <createTable tableName="sec_user_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey columnNames="user_id, role_id" tableName="sec_user_roles"/>
+        <createIndex indexName="fk_sec_user_roles_user_id" tableName="sec_user_roles">
+            <column name="user_id"/>
+        </createIndex>
+        <createIndex indexName="fk_sec_user_roles_role_id" tableName="sec_user_roles">
+            <column name="role_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="sec_user_roles" constraintName="fk_sec_users_username" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sec_users"/>
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="sec_user_roles" constraintName="fk_sec_roles_name" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sec_roles"/>
+
+        <insert tableName="sec_roles">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Administrator"/>
+        </insert>
+        <insert tableName="sec_roles">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="User"/>
+        </insert>
+
+        <insert tableName="sec_users">
+            <column name="id" valueNumeric="1"/>
+            <column name="username" value="admin"/>
+            <!-- This is "toddysoft" encoded -->
+            <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
+            <column name="full_name" value="Default Admin"/>
+        </insert>
+        <insert tableName="sec_users">
+            <column name="id" valueNumeric="2"/>
+            <column name="username" value="user"/>
+            <!-- This is "toddysoft" encoded -->
+            <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
+            <column name="full_name" value="Default User"/>
+        </insert>
+
+        <insert tableName="sec_user_roles">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="role_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="sec_user_roles">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="role_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="sec_user_roles">
+            <column name="user_id" valueNumeric="2"/>
+            <column name="role_id" valueNumeric="2"/>
+        </insert>
+
+        <!-- Permissions Stuff -->
+
+        <createTable tableName="sec_action_permission">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="module_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rule" type="VARCHAR(512)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="fk_sec_action_permission_module_name" tableName="sec_action_permission" unique="false">
+            <column name="module_name"/>
+        </createIndex>
+        <createIndex indexName="fk_sec_action_permission_action_name" tableName="sec_action_permission" unique="false">
+            <column name="action_name"/>
+        </createIndex>
+
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="1"/>
+            <column name="module_name" value="user"/>
+            <column name="action_name" value="list"/>
+            <column name="rule" value="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

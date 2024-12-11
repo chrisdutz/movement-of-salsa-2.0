@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    /* TODO: Change the settings to only ignore these in the "generated" directory. */
+    "noUnusedLocals": false,
+    /* TODO: Change the settings to only ignore these in the "generated" directory. */
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "exclude": [
+    /* Prevent the compiler from complaining about some unneeded imports and variables */
+    "src/generated/permissions/parser/*.ts"
+  ],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

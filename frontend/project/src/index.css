@@ -1,0 +1,107 @@
+
+#root {
+    height:100%;
+    width:100%!important;
+    background-color: gray;
+}
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    font-weight: 500;
+    color: #646cff;
+    text-decoration: inherit;
+}
+
+a:hover {
+    color: #535bf2;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    place-items: center;
+    height:100%
+}
+
+h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+}
+
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+
+button:hover {
+    border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* Make the tree items a bit more compact */
+.p-tree .p-tree-container .p-treenode .p-treenode-content {
+    padding:0;
+}
+.p-tree {
+    padding: 0.25rem;
+}
+
+/* Make the treetable items a bit more compact */
+.p-treetable .p-treetable-thead > tr > th {
+    padding: 0.6rem;
+}
+
+.p-treetable .p-treetable-tbody > tr > td {
+    padding:0;
+}
+.p-treetable .p-treetable-tbody > tr.p-highlight-list {
+    background: #FFEEF2;
+    color: #CA4338;
+}
+.p-treetable .p-treetable-tbody > tr.p-highlight-struct {
+    background: #EEF2FF;
+    color: #4338CA;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        color: #213547;
+        background-color: #ffffff;
+    }
+
+    a:hover {
+        color: #747bff;
+    }
+
+    button {
+        background-color: #f9f9f9;
+    }
+}
+
