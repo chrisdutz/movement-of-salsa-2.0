@@ -45,10 +45,10 @@ export interface ArrayInfo {
 }
 
 export interface PlcDriverMetadata {
-    discoverySupported: boolean;
+    protocolConfigurationOptionMetadata?: OptionMetadata;
     defaultTransportCode?: string;
     supportedTransportCodes: string[];
-    protocolConfigurationOptionMetadata?: OptionMetadata;
+    discoverySupported: boolean;
 }
 
 export interface ApplicationEvent extends EventObject {
@@ -56,8 +56,8 @@ export interface ApplicationEvent extends EventObject {
 }
 
 export interface OptionMetadata {
-    requiredOptions: Option[];
     options: Option[];
+    requiredOptions: Option[];
 }
 
 export interface EventObject extends Serializable {

@@ -69,11 +69,11 @@ export interface GrantedAuthority extends Serializable {
 export interface UserDetails extends Serializable {
     password: string;
     enabled: boolean;
+    credentialsNonExpired: boolean;
+    username: string;
+    authorities: GrantedAuthority[];
     accountNonExpired: boolean;
     accountNonLocked: boolean;
-    authorities: GrantedAuthority[];
-    username: string;
-    credentialsNonExpired: boolean;
 }
 
 export interface EventObject extends Serializable {
