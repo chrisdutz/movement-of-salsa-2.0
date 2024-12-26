@@ -14,7 +14,27 @@ import {Toast} from "primereact/toast";
 import React, {useRef} from "react";
 import {useServerEvents} from "./utils/ServerEvents.tsx";
 
+const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+
 axios.defaults.baseURL = 'http://localhost:8080';
+
+// Make sure date-strings are correctly parsed as Date objects.
+axios.interceptors.response.use((response) => {
+    function transformDates(obj: any): any {
+        if (obj && typeof obj === 'object') {
+            for (const key in obj) {
+                if (typeof obj[key] === 'string' && isoDateRegex.test(obj[key])) {
+                    obj[key] = new Date(obj[key]);
+                } else if (typeof obj[key] === 'object') {
+                    transformDates(obj[key]);
+                }
+            }
+        }
+        return obj;
+    }
+    response.data = transformDates(response.data);
+    return response;
+});
 
 function App() {
     const toast = useRef<Toast>(null)

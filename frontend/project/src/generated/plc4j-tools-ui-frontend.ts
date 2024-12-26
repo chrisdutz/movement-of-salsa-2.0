@@ -1,88 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface UiApplicationEvent<T> extends ApplicationEvent {
-    source: T;
-    moduleName: string;
-    actionName: string;
-}
-
-export interface LogoutEvent extends UiApplicationEvent<string> {
-    source: string;
-}
-
-export interface User extends UserDetails {
-    id: number;
-    fullName: string;
-    email: string;
-    createdAt: Date;
-    updatedAt: Date;
-    roles: Role[];
-}
-
-export interface LoginUserDto {
-    username: string;
-    password: string;
-}
-
-export interface LoginResponse {
-    token: string;
-    expiresIn: number;
-}
-
-export interface RegisterUserDto {
-    username: string;
-    password: string;
-    fullName: string;
-    email: string;
-}
-
-export interface Permission {
-    id: number;
-    moduleName: string;
-    actionName: string;
-    rule: string;
-}
-
-export interface Role {
-    id: number;
-    name: string;
-}
-
-export interface ApplicationEvent extends EventObject {
-    timestamp: number;
-}
-
-export interface FrontendModule {
-    type: string;
-    name: string;
-    icon: string;
-    routerUrl: string;
-    moduleUrl: string;
-    moduleComponentName: string;
-}
-
-export interface GrantedAuthority extends Serializable {
-    authority: string;
-}
-
-export interface UserDetails extends Serializable {
-    password: string;
-    enabled: boolean;
-    credentialsNonExpired: boolean;
-    username: string;
-    authorities: GrantedAuthority[];
-    accountNonExpired: boolean;
-    accountNonLocked: boolean;
-}
-
-export interface EventObject extends Serializable {
-    source: any;
-}
-
-export interface Serializable {
-}
-
 export interface HttpClient<O> {
 
     request<R>(requestConfig: { method: string; url: string; queryParams?: any; data?: any; copyFn?: (data: R) => R; options?: O; }): RestResponse<R>;
@@ -188,6 +106,88 @@ export class RestApplicationClient<O> {
     listUsers(options?: O): RestResponse<User[]> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/users`, options: options });
     }
+}
+
+export interface ApplicationEvent extends EventObject {
+    timestamp: number;
+}
+
+export interface EventObject extends Serializable {
+    source: any;
+}
+
+export interface FrontendModule {
+    icon: string;
+    moduleComponentName: string;
+    moduleUrl: string;
+    name: string;
+    routerUrl: string;
+    type: string;
+}
+
+export interface GrantedAuthority extends Serializable {
+    authority: string;
+}
+
+export interface LoginResponse {
+    expiresIn: number;
+    token: string;
+}
+
+export interface LoginUserDto {
+    password: string;
+    username: string;
+}
+
+export interface LogoutEvent extends UiApplicationEvent<string> {
+    source: string;
+}
+
+export interface Permission {
+    actionName: string;
+    id: number;
+    moduleName: string;
+    rule: string;
+}
+
+export interface RegisterUserDto {
+    email: string;
+    fullName: string;
+    password: string;
+    username: string;
+}
+
+export interface Role {
+    id: number;
+    name: string;
+}
+
+export interface Serializable {
+}
+
+export interface UiApplicationEvent<T> extends ApplicationEvent {
+    actionName: string;
+    moduleName: string;
+    source: T;
+}
+
+export interface User extends UserDetails {
+    createdAt: Date;
+    email: string;
+    fullName: string;
+    id: number;
+    roles: Role[];
+    updatedAt: Date;
+}
+
+export interface UserDetails extends Serializable {
+    accountNonExpired: boolean;
+    accountNonLocked: boolean;
+    authorities: GrantedAuthority[];
+    credentialsNonExpired: boolean;
+    enabled: boolean;
+    password: string;
+    username: string;
 }
 
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;

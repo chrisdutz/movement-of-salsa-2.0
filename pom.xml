@@ -20,7 +20,7 @@
     -->
     <derby.version>10.17.1.0</derby.version>
 
-    <junit.jupiter.version>5.11.3</junit.jupiter.version>
+    <junit.jupiter.version>5.11.4</junit.jupiter.version>
   </properties>
 
   <modules>
@@ -28,6 +28,7 @@
     <module>backend</module>
     <module>frontend</module>
     <module>modules</module>
+    <module>utils</module>
   </modules>
 
   <build>
@@ -36,32 +37,11 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>default-compile</id>
-              <phase>compile</phase>
-              <goals>
-                <goal>compile</goal>
-              </goals>
-              <configuration>
-                <!-- Would have loved to suppress the warnings of generated code only -->
-                <showWarnings>false</showWarnings>
-                <release>21</release>
-              </configuration>
-            </execution>
-            <execution>
-              <id>default-testCompile</id>
-              <phase>test-compile</phase>
-              <goals>
-                <goal>testCompile</goal>
-              </goals>
-              <configuration>
-                <!-- Would have loved to suppress the warnings of generated code only -->
-                <showWarnings>false</showWarnings>
-                <release>21</release>
-              </configuration>
-            </execution>
-          </executions>
+          <configuration>
+            <!-- Would have loved to suppress the warnings of generated code only -->
+            <showWarnings>false</showWarnings>
+            <release>21</release>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -153,7 +133,7 @@
       <dependency>
         <groupId>org.junit.platform</groupId>
         <artifactId>junit-platform-commons</artifactId>
-        <version>1.11.3</version>
+        <version>1.11.4</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

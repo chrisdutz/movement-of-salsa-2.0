@@ -53,10 +53,10 @@
                 <class>com.toddysoft.ui.modules.news.entity.NewsEntry</class>
               </classes>
               <excludeClasses>
-                <excludeClass>java.lang.Comparable</excludeClass>
+                <class>java.lang.Comparable</class>
               </excludeClasses>
               <extensions>
-                <extension>cz.habarta.typescript.generator.ext.AxiosClientExtension</extension>
+                <extension>com.toddysoft.ui.utils.codegen.GenericInterfaceWorkaroundExtension</extension>
               </extensions>
               <outputKind>module</outputKind>
               <outputFileType>implementationFile</outputFileType>
@@ -68,6 +68,7 @@
               <restResponseType>AxiosPromise</restResponseType>
               <outputFile>project/src/generated/tools-ui-frontend.ts</outputFile>
               <noFileComment>true</noFileComment>
+              <sortDeclarations>true</sortDeclarations>
             </configuration>
           </execution>
         </executions>
@@ -76,6 +77,11 @@
             <groupId>cz.habarta.typescript-generator</groupId>
             <artifactId>typescript-generator-spring</artifactId>
             <version>3.2.1263</version>
+          </dependency>
+          <dependency>
+            <groupId>de.movement-of-salsa</groupId>
+            <artifactId>website-utils-code-gen-post-processor</artifactId>
+            <version>2.0.0-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -144,6 +150,12 @@
     <dependency>
       <groupId>de.movement-of-salsa</groupId>
       <artifactId>website-modules-news-backend</artifactId>
+      <version>2.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.movement-of-salsa</groupId>
+      <artifactId>website-utils-code-gen-post-processor</artifactId>
       <version>2.0.0-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>

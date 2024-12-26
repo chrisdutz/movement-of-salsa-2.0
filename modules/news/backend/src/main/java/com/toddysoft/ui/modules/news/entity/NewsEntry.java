@@ -1,40 +1,28 @@
 package com.toddysoft.ui.modules.news.entity;
 
-//import de.cware.cweb.services.image.model.Image;
-//import de.cware.cweb.services.zones.model.Zone;
 
 import jakarta.persistence.*;
 
 import java.util.Calendar;
 
-/**
- * Created by IntelliJ IDEA.
- * User: cdutz
- * Date: 09.04.2010
- * Time: 18:23:41
- */
 @Entity
 @Table(name="NEWS_NEWS_ENTRY")
-public
-class NewsEntry
-{
+public class NewsEntry {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     protected long id;
 
+    protected long listPosition;
+
     protected String title;
 
     @Temporal(TemporalType.TIMESTAMP)
-    protected Calendar newsDate;
+    protected Calendar newsStartDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Calendar newsEndDate;
 
     @Lob
     protected String description;
-
-/*    @ManyToOne
-    protected Zone zone;*/
-
-    //@Embedded
-    //protected Image image;
 
     public NewsEntry() {
     }
@@ -47,6 +35,14 @@ class NewsEntry
         this.id = id;
     }
 
+    public long getListPosition() {
+        return listPosition;
+    }
+
+    public void setListPosition(long listPosition) {
+        this.listPosition = listPosition;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -55,12 +51,20 @@ class NewsEntry
         this.title = title;
     }
 
-    public Calendar getNewsDate() {
-        return newsDate;
+    public Calendar getNewsStartDate() {
+        return newsStartDate;
     }
 
-    public void setNewsDate(Calendar newsDate) {
-        this.newsDate = newsDate;
+    public void setNewsStartDate(Calendar newsStartDate) {
+        this.newsStartDate = newsStartDate;
+    }
+
+    public Calendar getNewsEndDate() {
+        return newsEndDate;
+    }
+
+    public void setNewsEndDate(Calendar newsEndDate) {
+        this.newsEndDate = newsEndDate;
     }
 
     public String getDescription() {
@@ -71,19 +75,4 @@ class NewsEntry
         this.description = description;
     }
 
-    /*public Zone getZone() {
-        return zone;
-    }
-
-    public void setZone(Zone zone) {
-        this.zone = zone;
-    }*/
-
-    /*public Image getImage() {
-        return image;
-    }
-
-    public void setImage(Image image) {
-        this.image = image;
-    }*/
 }

@@ -233,7 +233,7 @@ export default function Users() {
 
     return (
         <>
-        <Toast ref={toast} />
+            <Toast ref={toast} />
 
             <Toolbar className="mb-4" start={leftToolbarTemplate}/>
 

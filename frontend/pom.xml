@@ -82,6 +82,7 @@
               <restResponseType>AxiosPromise</restResponseType>
               <outputFile>project/src/generated/plc4j-tools-ui-frontend.ts</outputFile>
               <noFileComment>true</noFileComment>
+              <sortDeclarations>true</sortDeclarations>
             </configuration>
           </execution>
         </executions>
@@ -185,12 +186,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.apache.plc4x</groupId>
-      <artifactId>plc4j-api</artifactId>
-      <version>0.13.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>de.movement-of-salsa</groupId>
       <artifactId>website-backend</artifactId>

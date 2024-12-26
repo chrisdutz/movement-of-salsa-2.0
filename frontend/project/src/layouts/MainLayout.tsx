@@ -26,24 +26,40 @@ export default function MainLayout() {
                          style={{height: '200px'}}>
                         <Image src={logo} width="200px"/>
                     </div>
+                    {/* Main module list */}
                     <div className="overflow-y-auto mt-3">
                         <ul className="list-none p-3 m-0">
                             {moduleList.moduleList
-                                .filter(module => module.type === "Main")
-                                .map(item => (
-                                <li key={item.name}>
+                                    .filter(module => module.type === "Admin")
+                                    .length > 0 &&
+                                <li key="admin">
                                     <a className="p-ripple flex align-items-center cursor-pointer p-3 hover:bg-bluegray-900 border-round text-bluegray-100 hover:text-bluegray-50
                 transition-duration-150 transition-colors w-full" onClick={function () {
-                                        navigate(item.routerUrl)
+                                        navigate('/admin')
                                     }}>
-                                        <i className={"fa-solid " + item.icon + " mr-2"}></i>
-                                        <span className="font-medium">{item.name}</span>
+                                        <i className="fa-solid fa-gear mr-2"></i>
+                                        <span className="font-medium">Admin</span>
                                         <Ripple/>
                                     </a>
                                 </li>
-                            ))}
+                            }
+                            {moduleList.moduleList
+                                .filter(module => module.type === "Main")
+                                .map(item => (
+                                    <li key={item.name}>
+                                        <a className="p-ripple flex align-items-center cursor-pointer p-3 hover:bg-bluegray-900 border-round text-bluegray-100 hover:text-bluegray-50
+                transition-duration-150 transition-colors w-full" onClick={function () {
+                                            navigate(item.routerUrl)
+                                        }}>
+                                            <i className={"fa-solid " + item.icon + " mr-2"}></i>
+                                            <span className="font-medium">{item.name}</span>
+                                            <Ripple/>
+                                        </a>
+                                    </li>
+                                ))}
                         </ul>
                     </div>
+                    {/* Fragment only available when logged in */}
                     {user &&
                         <div className="mt-auto mx-3">
                             <hr className="mb-3 border-top-1 border-bluegray-600"/>
@@ -56,7 +72,7 @@ export default function MainLayout() {
                                         <Ripple/>
                                     </a>
                                 </li>
-                                {moduleList.moduleList
+                                {/*moduleList.moduleList
                                         .filter(module => module.type === "Admin")
                                         .length > 0 &&
                                     <li>
@@ -69,7 +85,7 @@ export default function MainLayout() {
                                             <Ripple/>
                                         </a>
                                     </li>
-                                }
+                                */}
                                 <li>
                                     <a className="p-ripple flex align-items-center cursor-pointer p-3 hover:bg-bluegray-900 border-round text-bluegray-100 hover:text-bluegray-50
             transition-duration-150 transition-colors w-full" onClick={function () {

@@ -8,13 +8,13 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>website-modules</artifactId>
+  <artifactId>website-utils</artifactId>
   <packaging>pom</packaging>
 
-  <name>Movement-Of-Salsa: Modules</name>
+  <name>Movement-Of-Salsa: Utils</name>
 
   <modules>
-    <module>news</module>
+    <module>code-gen-post-processor</module>
   </modules>
 
 </project>

@@ -1,9 +1,9 @@
 
 package com.toddysoft.ui.modules.news.controller;
 
+import com.toddysoft.ui.components.admin.AdminController;
 import com.toddysoft.ui.modules.news.entity.NewsEntry;
 import com.toddysoft.ui.modules.news.service.NewsService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ import java.util.List;
 @CrossOrigin(origins = {"*"})
 @RestController
 @RequestMapping("/api/news")
-public class NewsController {
+public class NewsController implements AdminController<NewsEntry> {
 
     private final NewsService newsService;
 
@@ -27,38 +27,29 @@ public class NewsController {
         this.newsService = newsService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<NewsEntry> getNewsEntryById(@PathVariable(name = "id") Long id) {
-        NewsEntry newsEntry = newsService.readItem(id);
-        return ResponseEntity.ok(newsEntry);
+    @GetMapping
+    public List<NewsEntry> findAll() {
+        return newsService.listItems();
     }
 
-    @GetMapping
-    public ResponseEntity<List<NewsEntry>> getAllNewsEntries() {
-        List<NewsEntry> allDevices = newsService.listItems();
-        return ResponseEntity.ok(allDevices);
+    @GetMapping("/{id}")
+    public NewsEntry findById(@PathVariable long id) {
+        return newsService.readItem(id);
     }
 
     @PostMapping
-    public ResponseEntity<NewsEntry> saveNewsEntry(@RequestBody NewsEntry newsEntry) {
-        if (newsEntry.getId() == 0) {
-            newsEntry = newsService.createItem(newsEntry);
+    public NewsEntry save(@RequestBody NewsEntry item) {
+        if (item.getId() == 0) {
+            return newsService.createItem(item);
         } else {
-            newsEntry = newsService.updateItem(newsEntry);
+            return newsService.updateItem(item);
         }
-        return ResponseEntity.ok(newsEntry);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteNewsEntry(@RequestBody NewsEntry newsEntry) {
-        newsService.deleteItem(newsEntry);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/read/{id}")
-    public ResponseEntity<NewsEntry> readNewsEntry(@PathVariable(name = "id") Long id) {
+    @DeleteMapping("/{id}")
+    public void deleteById(@PathVariable long id) {
         NewsEntry newsEntry = newsService.readItem(id);
-        return ResponseEntity.ok(newsEntry);
+        newsService.deleteItem(newsEntry);
     }
 
 }

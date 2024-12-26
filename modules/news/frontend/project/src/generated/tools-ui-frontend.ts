@@ -1,13 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export interface NewsEntry {
-    id: number;
-    title: string;
-    newsDate: Date;
-    description: string;
-}
-
 export interface HttpClient<O> {
 
     request<R>(requestConfig: { method: string; url: string; queryParams?: any; data?: any; copyFn?: (data: R) => R; options?: O; }): RestResponse<R>;
@@ -19,44 +12,45 @@ export class RestApplicationClient<O> {
     }
 
     /**
-     * HTTP DELETE /api/news
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.deleteNewsEntry
-     */
-    deleteNewsEntry(arg0: NewsEntry, options?: O): RestResponse<void> {
-        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/news`, data: arg0, options: options });
-    }
-
-    /**
      * HTTP GET /api/news
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.getAllNewsEntries
+     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.findAll
      */
-    getAllNewsEntries(options?: O): RestResponse<NewsEntry[]> {
+    findAll(options?: O): RestResponse<NewsEntry[]> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/news`, options: options });
     }
 
     /**
      * HTTP POST /api/news
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.saveNewsEntry
+     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.save
      */
-    saveNewsEntry(arg0: NewsEntry, options?: O): RestResponse<NewsEntry> {
+    save(arg0: NewsEntry, options?: O): RestResponse<NewsEntry> {
         return this.httpClient.request({ method: "POST", url: uriEncoding`api/news`, data: arg0, options: options });
     }
 
     /**
-     * HTTP POST /api/news/read/{id}
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.readNewsEntry
+     * HTTP DELETE /api/news/{id}
+     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.deleteById
      */
-    readNewsEntry(id: number, options?: O): RestResponse<NewsEntry> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/news/read/${id}`, options: options });
+    deleteById(id: string, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/news/${id}`, options: options });
     }
 
     /**
      * HTTP GET /api/news/{id}
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.getNewsEntryById
+     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.findById
      */
-    getNewsEntryById(id: number, options?: O): RestResponse<NewsEntry> {
+    findById(id: string, options?: O): RestResponse<NewsEntry> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/news/${id}`, options: options });
     }
+}
+
+export interface NewsEntry {
+    description: string;
+    id: number;
+    listPosition: number;
+    newsEndDate: Date;
+    newsStartDate: Date;
+    title: string;
 }
 
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;
@@ -72,7 +66,7 @@ function uriEncoding(template: TemplateStringsArray, ...substitutions: any[]): s
 }
 
 
-// Added by 'AxiosClientExtension' extension
+// Added by 'GenericInterfaceWorkaroundExtension' extension
 
 import axios from "axios";
 import * as Axios from "axios";
