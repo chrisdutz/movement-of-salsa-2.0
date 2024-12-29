@@ -1,18 +1,38 @@
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {RestApplicationClient, Role} from "../../generated/plc4j-tools-ui-frontend.ts";
-import axios from "axios";
-import React, {useRef, useState} from "react";
-import {Toast} from "primereact/toast";
-import {Button} from "primereact/button";
-import {Toolbar} from "primereact/toolbar";
-import {Dialog} from "primereact/dialog";
-import {InputText} from "primereact/inputtext";
-import {classNames} from "primereact/utils";
+import {RestApplicationClient, RestResponse, Role} from "../../generated/plc4j-tools-ui-frontend.ts";
+import axios, {AxiosRequestConfig} from "axios";
+import AdminList from "../../components/AdminList.tsx";
 
 const restClient = new RestApplicationClient(axios);
 
 export default function Roles() {
+    return AdminList<Role>({
+        emptyItem: {
+            id: 0,
+            name: ""
+        },
+        listColumns: [
+            {sortable: true, header: "Name", field: "name"}
+        ],
+        listSortColumn: "name",
+        editorColumns: [
+            {label: "Name", required: true, fieldType: "InputText", field: "name"},
+        ],
+        controller: {
+            findAll(options: AxiosRequestConfig | undefined): RestResponse<Role[]> {
+                return restClient.listRoles();
+            },
+            save(entry: Role, options: AxiosRequestConfig | undefined): RestResponse<Role> {
+                return restClient.saveRole(entry);
+            },
+            delete(entry: Role, options?: AxiosRequestConfig): RestResponse<void> {
+                return restClient.deleteRole(entry);
+            }
+        }
+    })
+    /*
+
+
+
     let emptyRole:Role = {
         id: 0,
         name: ""
@@ -150,7 +170,7 @@ export default function Roles() {
     const actionBodyTemplate = (rowData:Role) => {
         return (
             <React.Fragment>
-                {/* Disable the Delete button for the "Administrator" Role */}
+                {/ * Disable the Delete button for the "Administrator" Role * /}
                 {(rowData.name !== "Administrator") && (
                     <>
                         <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => showEditRoleDialog(rowData)} />
@@ -216,5 +236,5 @@ export default function Roles() {
                 </div>
             </Dialog>
         </>
-    )
+    )*/
 }

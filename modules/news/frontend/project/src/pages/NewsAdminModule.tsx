@@ -19,12 +19,13 @@ axios.interceptors.response.use((response) => {
         }
         return obj;
     }
+
     response.data = transformDates(response.data);
     return response;
 });
 
-function dateFormat(date:Date):string {
-    if(!date) {
+function dateFormat(date: Date): string {
+    if (!date) {
         return "";
     }
     // NOTE: we need the interceptor above for Date types to be handled correctly.
@@ -43,12 +44,16 @@ export default function NewsAdminModule() {
         },
         listColumns: [
             {sortable: true, header: "Pos", field: "listPosition"},
-            {sortable: true, header: "Start", getter: (item:NewsEntry) => {
+            {
+                sortable: true, header: "Start", getter: (item: NewsEntry) => {
                     return dateFormat(item.newsStartDate);
-                }},
-            {sortable: true, header: "End", getter: (item:NewsEntry) => {
+                }
+            },
+            {
+                sortable: true, header: "End", getter: (item: NewsEntry) => {
                     return dateFormat(item.newsEndDate);
-                }},
+                }
+            },
             {sortable: true, header: "Title", field: "title"}
         ],
         listSortColumn: "listPosition",
@@ -62,12 +67,12 @@ export default function NewsAdminModule() {
         controller: {
             findAll(options: AxiosRequestConfig | undefined): RestResponse<NewsEntry[]> {
                 return restClient.findAll(options);
-            }, findById(id: string, options: AxiosRequestConfig | undefined): RestResponse<NewsEntry> {
-                return restClient.findById(id, options);
-            }, save(entry: NewsEntry, options: AxiosRequestConfig | undefined): RestResponse<NewsEntry> {
+            },
+            save(entry: NewsEntry, options: AxiosRequestConfig | undefined): RestResponse<NewsEntry> {
                 return restClient.save(entry, options);
-            }, deleteById(id: string, options?: AxiosRequestConfig): RestResponse<void> {
-                return restClient.deleteById(id, options);
+            },
+            delete: function (entry: NewsEntry, options?: AxiosRequestConfig): RestResponse<void> {
+                return restClient.deleteById(entry.id.toString(), options)
             }
         },
     })

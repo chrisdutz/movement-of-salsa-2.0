@@ -15,9 +15,8 @@ import {Editor, EditorTextChangeEvent} from "primereact/editor";
 
 export interface AdminController<E> {
     findAll(options?: Axios.AxiosRequestConfig): RestResponse<E[]>
-    findById(id: string, options?: Axios.AxiosRequestConfig): RestResponse<E>
     save(entry: E, options?: Axios.AxiosRequestConfig): RestResponse<E>
-    deleteById(id: string, options?: Axios.AxiosRequestConfig): RestResponse<void>
+    delete(entry: E, options?: Axios.AxiosRequestConfig): RestResponse<void>
 }
 
 export interface ListColumn<E> {
@@ -74,8 +73,7 @@ export default function AdminList<T extends DataTableValue>({controller, emptyIt
             icon: 'pi pi-exclamation-triangle',
             defaultFocus: 'accept',
             accept: () => {
-                controller.deleteById(item['id'] as string);
-                setInitialized(false);
+                controller.delete(item).then(() => setInitialized(false))
             }
         });
     }
