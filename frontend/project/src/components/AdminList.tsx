@@ -3,7 +3,7 @@ import {Toolbar} from "primereact/toolbar";
 import {DataTable, DataTableValue} from "primereact/datatable";
 import {Column} from "primereact/column";
 import React, {useRef, useState} from "react";
-import {RestResponse} from "../generated/tools-ui-frontend.ts";
+import {RestResponse} from "../generated/plc4j-tools-ui-frontend";
 import {Button} from "primereact/button";
 import * as Axios from "axios";
 import {confirmDialog, ConfirmDialog} from "primereact/confirmdialog";
@@ -75,6 +75,7 @@ export default function AdminList<T extends DataTableValue>({controller, emptyIt
             defaultFocus: 'accept',
             accept: () => {
                 controller.deleteById(item['id'] as string);
+                setInitialized(false);
             }
         });
     }
@@ -179,7 +180,7 @@ export default function AdminList<T extends DataTableValue>({controller, emptyIt
                                onTextChange={(event: EditorTextChangeEvent) => onChange(event.htmlValue)}
                                required={column.required}
                                className={classNames({'p-invalid': column.required && !value})}
-                               style={{height: '320px'}}/>
+                               style={{height: '320px', background: 'white', color: 'black'}}/>
         }
         return <></>
     }

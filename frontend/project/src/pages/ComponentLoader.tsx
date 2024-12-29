@@ -1,6 +1,5 @@
 import About from "./About.tsx"
 import Login from "./Login.tsx"
-import Settings from "./Settings.tsx"
 import React, {Suspense} from "react"
 import axios from "axios"
 import {
@@ -9,9 +8,9 @@ import {
     // @ts-ignore
 } from "__federation__"
 import Logout from "./Logout.tsx"
-import Users from "./Users.tsx";
-import Roles from "./Roles.tsx";
-import Permissions from "./Permissions.tsx";
+import Users from "./admin/Users.tsx";
+import Roles from "./admin/Roles.tsx";
+import Permissions from "./admin/Permissions.tsx";
 
 const componentMap: { [key: string]: React.FC } = {
     Login: Login,
@@ -19,7 +18,6 @@ const componentMap: { [key: string]: React.FC } = {
     About: About,
     Permissions: Permissions,
     Roles: Roles,
-    Settings: Settings,
     Users: Users,
 };
 

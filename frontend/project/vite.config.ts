@@ -26,6 +26,7 @@ export default defineConfig({
                 './BaseStore': './src/store/types',
                 './ApplicationModule': './src/utils/ApplicationModule',
                 './ServerEvents': './src/utils/ServerEvents',
+                './components/AdminList': './src/components/AdminList'
             },
             shared: ['react', 'react-dom', '@reduxjs/toolkit', 'react-redux'],
         })

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <changeSet author="cdutz" id="20241226-1">
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="2"/>
+            <column name="module_name" value="about"/>
+            <column name="action_name" value="use-main-module"/>
+            <column name="rule" value="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

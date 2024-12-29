@@ -1,4 +1,4 @@
-import AdminList from "../components/AdminList.tsx";
+import AdminList from "mainApp/components/AdminList";
 import {NewsEntry, RestApplicationClient, RestResponse} from "../generated/tools-ui-frontend.ts";
 import axios, {AxiosRequestConfig} from "axios";
 
@@ -42,14 +42,14 @@ export default function NewsAdminModule() {
             description: "",
         },
         listColumns: [
-            {sortable: false, header: "Pos", field: "listPosition"},
-            {sortable: false, header: "Start", getter: (item:NewsEntry) => {
+            {sortable: true, header: "Pos", field: "listPosition"},
+            {sortable: true, header: "Start", getter: (item:NewsEntry) => {
                     return dateFormat(item.newsStartDate);
                 }},
-            {sortable: false, header: "End", getter: (item:NewsEntry) => {
+            {sortable: true, header: "End", getter: (item:NewsEntry) => {
                     return dateFormat(item.newsEndDate);
                 }},
-            {sortable: false, header: "Title", field: "title"}
+            {sortable: true, header: "Title", field: "title"}
         ],
         listSortColumn: "listPosition",
         editorColumns: [

@@ -1,6 +1,6 @@
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
-import {RestApplicationClient, Role} from "../generated/plc4j-tools-ui-frontend.ts";
+import {RestApplicationClient, Role} from "../../generated/plc4j-tools-ui-frontend.ts";
 import axios from "axios";
 import React, {useRef, useState} from "react";
 import {Toast} from "primereact/toast";

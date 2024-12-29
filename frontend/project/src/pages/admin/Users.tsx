@@ -1,13 +1,13 @@
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
-import {RestApplicationClient, Role, User} from "../generated/plc4j-tools-ui-frontend.ts";
+import {RestApplicationClient, Role, User} from "../../generated/plc4j-tools-ui-frontend.ts";
 import axios from "axios";
 import React, {useRef, useState} from "react";
 import {Button} from "primereact/button";
 import {Dialog} from "primereact/dialog";
 import {Toast} from "primereact/toast";
 import {useSelector} from "react-redux";
-import {RootState} from "../store/store.ts";
+import {RootState} from "../../store/store.ts";
 import {InputText} from "primereact/inputtext";
 import {classNames} from "primereact/utils";
 import {Toolbar} from "primereact/toolbar";

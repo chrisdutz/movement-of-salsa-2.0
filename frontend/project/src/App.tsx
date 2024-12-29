@@ -7,7 +7,6 @@ import {loadExternalComponent, loadInternalComponent} from "./pages/ComponentLoa
 import store, {logout, RootState} from "./store/store.ts";
 import Login from "./pages/Login.tsx";
 import Logout from "./pages/Logout.tsx";
-import Settings from "./pages/Settings.tsx";
 import useWebSocket from "react-use-websocket";
 import {LogoutEvent} from "./generated/plc4j-tools-ui-frontend.ts";
 import {Toast} from "primereact/toast";
@@ -42,8 +41,7 @@ function App() {
     // Create a new browserRouter object based on the modules available to the current user.
     const router = useSelector((state: RootState) => {
         // Prepare the routes for all main modules
-        let mainModules = state.moduleList.moduleList
-            .filter(module => module.type === "Main")
+        let moduleRoutes = state.moduleList.moduleList
             .map(module => ({
                     path: module.routerUrl,
                     // Modules with empty moduleUrl are embedded modules, that are loaded via lookup in a static map.
@@ -51,30 +49,6 @@ function App() {
                     element: module.moduleUrl == "" ? loadInternalComponent(module.moduleComponentName) : loadExternalComponent(module.moduleUrl, module.moduleComponentName)
                 } as RouteObject)
             )
-
-        // Prepare the routes for all settings modules
-        const adminModules = state.moduleList.moduleList
-            .filter(module => module.type === "Admin")
-            .map(module => {
-                console.log("Loading: " + module.name);
-                return module;
-            })
-            .map(module => ({
-                    path: module.routerUrl,
-                    // Modules with empty moduleUrl are embedded modules, that are loaded via lookup in a static map.
-                    // Others need to be dynamically loaded.
-                    element: module.moduleUrl == "" ? loadInternalComponent(module.moduleComponentName) : loadExternalComponent(module.moduleUrl, module.moduleComponentName)
-                } as RouteObject)
-            )
-
-        // If there is at least one settings module, add the settings module to the main modules.
-        if(adminModules.length > 0) {
-            mainModules = [...mainModules, {
-                path: "/admin",
-                element: <Settings/>,
-                children: adminModules,
-            }]
-        }
 
         // Build the main routes
         const routerDefinition = [
@@ -82,7 +56,7 @@ function App() {
                 path: '/',
                 element: <MainLayout/>,
                 // Add a default route, that simply redirects to the main page.
-                children: [...mainModules,
+                children: [...moduleRoutes,
                     {
                         path: "/login",
                         element: <Login/>
