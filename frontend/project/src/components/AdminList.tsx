@@ -16,7 +16,7 @@ import {Editor, EditorTextChangeEvent} from "primereact/editor";
 export interface AdminController<E> {
     findAll(options?: Axios.AxiosRequestConfig): RestResponse<E[]>
     save(entry: E, options?: Axios.AxiosRequestConfig): RestResponse<E>
-    delete(entry: E, options?: Axios.AxiosRequestConfig): RestResponse<void>
+    delete?(entry: E, options?: Axios.AxiosRequestConfig): RestResponse<void>
 }
 
 export interface ListColumn<E> {
@@ -29,6 +29,7 @@ export interface ListColumn<E> {
 export interface EditorColumn<E> {
     label: string;
     required: boolean;
+    editable: boolean;
     fieldType: any;
     field?: string,
     getter?: (item:E) => any;
@@ -73,7 +74,9 @@ export default function AdminList<T extends DataTableValue>({controller, emptyIt
             icon: 'pi pi-exclamation-triangle',
             defaultFocus: 'accept',
             accept: () => {
-                controller.delete(item).then(() => setInitialized(false))
+                if(controller.delete) {
+                    controller.delete(item).then(() => setInitialized(false))
+                }
             }
         });
     }
@@ -101,7 +104,10 @@ export default function AdminList<T extends DataTableValue>({controller, emptyIt
     const listToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2">
-                <Button label="New" icon="pi pi-plus" severity="success" onClick={showCreateItemDialog} />
+                {/* If we can't delete, we usually also can't create */}
+                {controller.delete &&
+                    <Button label="New" icon="pi pi-plus" severity="success" onClick={showCreateItemDialog} />
+                }
             </div>
         )
     }
@@ -110,7 +116,9 @@ export default function AdminList<T extends DataTableValue>({controller, emptyIt
         return (
             <React.Fragment>
                 <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => showEditItemDialog(item)} />
-                <Button icon="pi pi-trash" rounded outlined className="mr-2" onClick={() => showConfirmDeleteItemDialog(item)} />
+                {controller.delete &&
+                    <Button icon="pi pi-trash" rounded outlined className="mr-2" onClick={() => showConfirmDeleteItemDialog(item)} />
+                }
             </React.Fragment>
         )
     }
@@ -152,30 +160,39 @@ export default function AdminList<T extends DataTableValue>({controller, emptyIt
             value = column.getter(editItem);
         }
 
+        // Just output the text, if the column is not editable
+        /*if(!column.editable) {
+            return value;
+        }*/
+
         switch (column.fieldType) {
             case "InputDate":
                 return <Calendar id={"field"+index}
                                  value={value}
                                  onChange={(event) => onChange(event.value)}
                                  dateFormat="dd/mm/yy"
+                                 disabled={!column.editable}
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "InputNumber":
                 return <InputNumber id={"field"+index}
                                     value={value}
                                     onChange={(event: InputNumberChangeEvent) => onChange(event.value)}
+                                    disabled={!column.editable}
                                     required={column.required}
                                     className={classNames({'p-invalid': column.required && !value})}/>
             case "InputText":
                 return <InputText id={"field"+index}
                                   value={value}
                                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
+                                  disabled={!column.editable}
                                   required={column.required}
                                   className={classNames({'p-invalid': column.required && !value})}/>
             case "Editor":
                 return <Editor id={"field" + index}
                                value={value}
                                onTextChange={(event: EditorTextChangeEvent) => onChange(event.htmlValue)}
+                               disabled={!column.editable}
                                required={column.required}
                                className={classNames({'p-invalid': column.required && !value})}
                                style={{height: '320px', background: 'white', color: 'black'}}/>

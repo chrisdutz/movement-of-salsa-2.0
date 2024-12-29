@@ -58,11 +58,11 @@ export default function NewsAdminModule() {
         ],
         listSortColumn: "listPosition",
         editorColumns: [
-            {label: "Position", required: true, fieldType: "InputNumber", field: "listPosition"},
-            {label: "Start Date", required: true, fieldType: "InputDate", field: "newsStartDate"},
-            {label: "End Date", required: true, fieldType: "InputDate", field: "newsEndDate"},
-            {label: "Title", required: true, fieldType: "InputText", field: "title"},
-            {label: "Description", required: true, fieldType: "Editor", field: "description"}
+            {label: "Position", required: true, editable: true, fieldType: "InputNumber", field: "listPosition"},
+            {label: "Start Date", required: true, editable: true, fieldType: "InputDate", field: "newsStartDate"},
+            {label: "End Date", required: true, editable: true, fieldType: "InputDate", field: "newsEndDate"},
+            {label: "Title", required: true, editable: true, fieldType: "InputText", field: "title"},
+            {label: "Description", required: true, editable: true, fieldType: "Editor", field: "description"}
         ],
         controller: {
             findAll(options: AxiosRequestConfig | undefined): RestResponse<NewsEntry[]> {
