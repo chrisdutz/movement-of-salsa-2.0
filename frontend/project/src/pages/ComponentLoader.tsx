@@ -1,5 +1,4 @@
-import About from "./About.tsx"
-import Login from "./Login.tsx"
+import TermsAndConditions from "./content/TermsAndConditions.tsx"
 import React, {Suspense} from "react"
 import axios from "axios"
 import {
@@ -7,6 +6,7 @@ import {
     __federation_method_setRemote,
     // @ts-ignore
 } from "__federation__"
+import Login from "./Login.tsx"
 import Logout from "./Logout.tsx"
 import Users from "./admin/Users.tsx";
 import Roles from "./admin/Roles.tsx";
@@ -15,7 +15,6 @@ import Permissions from "./admin/Permissions.tsx";
 const componentMap: { [key: string]: React.FC } = {
     Login: Login,
     Logout: Logout,
-    About: About,
     Permissions: Permissions,
     Roles: Roles,
     Users: Users,

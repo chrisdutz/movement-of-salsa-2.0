@@ -9,6 +9,10 @@ import Login from "./pages/Login.tsx";
 import Logout from "./pages/Logout.tsx";
 import {Toast} from "primereact/toast";
 import React, {useRef} from "react";
+import TermsAndConditions from "./pages/content/TermsAndConditions.tsx";
+import Contact from "./pages/content/Contact.tsx";
+import Imprint from "./pages/content/Imprint.tsx";
+import Privacy from "./pages/content/Privacy.tsx";
 
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
 
@@ -62,6 +66,24 @@ function App() {
                         path: "/logout",
                         element: <Logout/>
                     },
+                    /* Static content */
+                    {
+                        path: "/terms",
+                        element: <TermsAndConditions/>
+                    },
+                    {
+                        path: "/contact",
+                        element: <Contact/>
+                    },
+                    {
+                        path: "/imprint",
+                        element: <Imprint/>
+                    },
+                    {
+                        path: "/privacy",
+                        element: <Privacy/>
+                    },
+                    /* All others */
                     {
                         path: "*",
                         element: <Navigate to="/"/>

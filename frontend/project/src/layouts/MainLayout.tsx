@@ -1,6 +1,6 @@
 import logo from "../assets/logo.png";
 import {Image} from "primereact/image";
-import {Outlet, useNavigate} from "react-router-dom";
+import {Link, Outlet, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {RootState} from "../store/store.ts";
 import {Menubar} from "primereact/menubar";
@@ -8,6 +8,7 @@ import {MenuItem} from "primereact/menuitem";
 import {FrontendModule} from "../generated/plc4j-tools-ui-frontend.ts";
 import {NavigateFunction} from "react-router";
 import {Dispatch, SetStateAction, useState} from "react";
+import {Card} from "primereact/card";
 
 const mapFrontendModuleToMenuItem = (module: FrontendModule, title: string, navigate: NavigateFunction, titleSetter: Dispatch<SetStateAction<string>>): MenuItem => ({
     label: module.name,
@@ -96,5 +97,32 @@ export default function MainLayout() {
             <div className="p-3">
                 <Outlet/>
             </div>
-        </div>)
+
+            <Card className="m-3">
+                <div className="flex flex-column md:flex-row gap-4">
+                    <div className="flex flex-column">
+                        <p className="m-0"><b>MOVEMENT OF SALSA</b></p>
+                        <p className="m-0">Telefon: +49 163 7353172</p>
+                        <p className="m-0">E-Mail: <a href="mailto:olli@movement-of-salsa.de">olli@movement-of-salsa.de</a></p>
+                    </div>
+                    <div className="flex md:flex-row ml-auto">
+                        <ul className="list-none flex md:flex-row flex-column gap-4 m-0 p-0">
+                            <li className="flex">
+                                <Link to="/terms" className="text-decoration-none">Terms and Conditions</Link>
+                            </li>
+                            <li className="flex">
+                                <Link to="/contact" className="text-decoration-none">Contact</Link>
+                            </li>
+                            <li className="flex">
+                                <Link to="/imprint" className="text-decoration-none">Imprint</Link>
+                            </li>
+                            <li className="flex">
+                                <Link to="/privacy" className="text-decoration-none">Privacy</Link>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </Card>
+        </div>
+    )
 }
