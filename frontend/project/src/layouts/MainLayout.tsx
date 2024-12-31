@@ -108,16 +108,16 @@ export default function MainLayout() {
                     <div className="flex md:flex-row ml-auto">
                         <ul className="list-none flex md:flex-row flex-column gap-4 m-0 p-0">
                             <li className="flex">
-                                <Link to="/terms" className="text-decoration-none">Terms and Conditions</Link>
+                                <Link to="/terms" onClick={() => setSelectedModuleTitle("AGB")} className="text-decoration-none">AGB</Link>
                             </li>
                             <li className="flex">
-                                <Link to="/contact" className="text-decoration-none">Contact</Link>
+                                <Link to="/contact" onClick={() => setSelectedModuleTitle("Kontakt")} className="text-decoration-none">Kontakt</Link>
                             </li>
                             <li className="flex">
-                                <Link to="/imprint" className="text-decoration-none">Imprint</Link>
+                                <Link to="/imprint" onClick={() => setSelectedModuleTitle("Impressum")} className="text-decoration-none">Impressum</Link>
                             </li>
                             <li className="flex">
-                                <Link to="/privacy" className="text-decoration-none">Privacy</Link>
+                                <Link to="/privacy" onClick={() => setSelectedModuleTitle("Datenschutz")} className="text-decoration-none">Datenshutz</Link>
                             </li>
                         </ul>
                     </div>
