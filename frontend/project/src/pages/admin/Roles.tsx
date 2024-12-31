@@ -15,17 +15,17 @@ export default function Roles() {
         ],
         listSortColumn: "name",
         editorColumns: [
-            {label: "Name", required: true, editable: true, fieldType: "InputText", field: "name"},
+            {label: "Name", required: true, editable: true, fieldType: "Text", field: "name"},
         ],
         controller: {
-            findAll(options: AxiosRequestConfig | undefined): RestResponse<Role[]> {
-                return restClient.listRoles();
+            findAll(options?: AxiosRequestConfig | undefined): RestResponse<Role[]> {
+                return restClient.listRoles(options);
             },
-            save(entry: Role, options: AxiosRequestConfig | undefined): RestResponse<Role> {
-                return restClient.saveRole(entry);
+            save(entry: Role, options?: AxiosRequestConfig | undefined): RestResponse<Role> {
+                return restClient.saveRole(entry, options);
             },
             delete(entry: Role, options?: AxiosRequestConfig): RestResponse<void> {
-                return restClient.deleteRole(entry);
+                return restClient.deleteRole(entry, options);
             }
         }
     })

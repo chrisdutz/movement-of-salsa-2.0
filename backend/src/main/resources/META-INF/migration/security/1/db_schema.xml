@@ -28,10 +28,22 @@
             <column name="password" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
-            <column name="full_name" type="VARCHAR(50)">
+            <column name="first_name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="email" type="VARCHAR(250)"/>
+            <column name="street" type="VARCHAR(250)"/>
+            <column name="zip" type="VARCHAR(250)"/>
+            <column name="city" type="VARCHAR(250)"/>
+            <column name="country" type="VARCHAR(250)"/>
+            <column name="phone" type="VARCHAR(250)"/>
+
+            <column name="size" type="INT"/>
+            <column name="sex" type="VARCHAR(6)"/>
+
             <column name="created_at" type="TIMESTAMP"/>
             <column name="updated_at" type="TIMESTAMP"/>
         </createTable>
@@ -71,14 +83,16 @@
             <column name="username" value="admin"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
-            <column name="full_name" value="Default Admin"/>
+            <column name="first_name" value="Default"/>
+            <column name="last_name" value="Admin"/>
         </insert>
         <insert tableName="sec_users">
             <column name="id" valueNumeric="2"/>
             <column name="username" value="user"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
-            <column name="full_name" value="Default User"/>
+            <column name="first_name" value="Default"/>
+            <column name="last_name" value="User"/>
         </insert>
 
         <insert tableName="sec_user_roles">

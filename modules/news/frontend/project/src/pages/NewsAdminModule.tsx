@@ -58,17 +58,17 @@ export default function NewsAdminModule() {
         ],
         listSortColumn: "listPosition",
         editorColumns: [
-            {label: "Position", required: true, editable: true, fieldType: "InputNumber", field: "listPosition"},
-            {label: "Start Date", required: true, editable: true, fieldType: "InputDate", field: "newsStartDate"},
-            {label: "End Date", required: true, editable: true, fieldType: "InputDate", field: "newsEndDate"},
-            {label: "Title", required: true, editable: true, fieldType: "InputText", field: "title"},
+            {label: "Position", required: true, editable: true, fieldType: "Number", field: "listPosition"},
+            {label: "Start Date", required: true, editable: true, fieldType: "Date", field: "newsStartDate"},
+            {label: "End Date", required: true, editable: true, fieldType: "Date", field: "newsEndDate"},
+            {label: "Title", required: true, editable: true, fieldType: "Text", field: "title"},
             {label: "Description", required: true, editable: true, fieldType: "Editor", field: "description"}
         ],
         controller: {
-            findAll(options: AxiosRequestConfig | undefined): RestResponse<NewsEntry[]> {
+            findAll(options?: AxiosRequestConfig | undefined): RestResponse<NewsEntry[]> {
                 return restClient.findAll(options);
             },
-            save(entry: NewsEntry, options: AxiosRequestConfig | undefined): RestResponse<NewsEntry> {
+            save(entry: NewsEntry, options?: AxiosRequestConfig | undefined): RestResponse<NewsEntry> {
                 return restClient.save(entry, options);
             },
             delete: function (entry: NewsEntry, options?: AxiosRequestConfig): RestResponse<void> {

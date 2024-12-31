@@ -152,8 +152,10 @@ export interface Permission {
 
 export interface RegisterUserDto {
     email: string;
-    fullName: string;
+    firstName: string;
+    lastName: string;
     password: string;
+    sex: Sex;
     username: string;
 }
 
@@ -172,12 +174,20 @@ export interface UiApplicationEvent<T> extends ApplicationEvent {
 }
 
 export interface User extends UserDetails {
+    city: string;
+    country: string;
     createdAt: Date;
     email: string;
-    fullName: string;
+    firstName: string;
     id: number;
+    lastName: string;
+    phone: string;
     roles: Role[];
+    sex: Sex;
+    size: number;
+    street: string;
     updatedAt: Date;
+    zip: string;
 }
 
 export interface UserDetails extends Serializable {
@@ -191,6 +201,8 @@ export interface UserDetails extends Serializable {
 }
 
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;
+
+export type Sex = "MALE" | "FEMALE";
 
 function uriEncoding(template: TemplateStringsArray, ...substitutions: any[]): string {
     let result = "";

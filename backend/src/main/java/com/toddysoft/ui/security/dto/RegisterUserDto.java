@@ -1,13 +1,16 @@
 package com.toddysoft.ui.security.dto;
 
+import com.toddysoft.ui.security.entity.Sex;
+
 public class RegisterUserDto {
 
     private String username;
 
     private String password;
 
-    private String fullName;
-
+    private String firstName;
+    private String lastName;
+    private Sex sex;
     private String email;
 
     public RegisterUserDto() {
@@ -29,12 +32,28 @@ public class RegisterUserDto {
         this.password = password;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Sex sex) {
+        this.sex = sex;
     }
 
     public String getEmail() {

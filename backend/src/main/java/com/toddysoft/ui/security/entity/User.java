@@ -1,15 +1,6 @@
 package com.toddysoft.ui.security.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,7 +23,21 @@ public class User implements UserDetails {
     private String username;
 
     @Column(nullable = false)
-    private String fullName;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
+
+    private String street;
+    private String zip;
+    private String city;
+    private String country;
+
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+
+    private Integer size;
+    private String phone;
 
     @Column(unique = true, length = 100, nullable = false)
     private String email;
@@ -57,10 +62,18 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Integer id, String username, String fullName, String email, String password, Date createdAt, Date updatedAt, List<Role> roles) {
+    public User(Integer id, String username, String firstName, String lastName, String street, String zip, String city, String country, Sex sex, Integer size, String phone, String email, String password, Date createdAt, Date updatedAt, List<Role> roles) {
         this.id = id;
         this.username = username;
-        this.fullName = fullName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.street = street;
+        this.zip = zip;
+        this.city = city;
+        this.country = country;
+        this.sex = sex;
+        this.size = size;
+        this.phone = phone;
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
@@ -110,12 +123,76 @@ public class User implements UserDetails {
         this.username = username;
     }
 
-    public String getFullName() {
-        return fullName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Sex sex) {
+        this.sex = sex;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {

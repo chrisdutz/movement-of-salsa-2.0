@@ -19,15 +19,15 @@ export default function Permissions() {
         ],
         listSortColumn: "moduleName",
         editorColumns: [
-            {label: "Module", required: true, editable: false, fieldType: "InputText", field: "moduleName"},
-            {label: "Action", required: true, editable: false, fieldType: "InputText", field: "actionName"},
-            {label: "Rule", required: true, editable: true, fieldType: "InputText", field: "rule"}
+            {label: "Module", required: true, editable: false, fieldType: "Text", field: "moduleName"},
+            {label: "Action", required: true, editable: false, fieldType: "Text", field: "actionName"},
+            {label: "Rule", required: true, editable: true, fieldType: "Text", field: "rule"}
         ],
         controller: {
-            findAll(options: AxiosRequestConfig | undefined): RestResponse<Permission[]> {
+            findAll(options?: AxiosRequestConfig | undefined): RestResponse<Permission[]> {
                 return restClient.listPermissions(options);
             },
-            save(entry: Permission, options: AxiosRequestConfig | undefined): RestResponse<Permission> {
+            save(entry: Permission, options?: AxiosRequestConfig | undefined): RestResponse<Permission> {
                 return restClient.savePermission(entry, options);
             }
         }
