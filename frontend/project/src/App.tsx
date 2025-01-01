@@ -4,15 +4,16 @@ import {createBrowserRouter, Navigate, RouteObject, RouterProvider} from "react-
 import MainLayout from "./layouts/MainLayout.tsx";
 import {useSelector} from "react-redux";
 import {loadExternalComponent, loadInternalComponent} from "./pages/ComponentLoader.tsx";
-import {RootState} from "./store/store.ts";
+import store, {RootState, updateModuleList, UpdateModuleListAction} from "./store/store.ts";
 import Login from "./pages/Login.tsx";
 import Logout from "./pages/Logout.tsx";
 import {Toast} from "primereact/toast";
-import React, {useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import TermsAndConditions from "./pages/content/TermsAndConditions.tsx";
 import Contact from "./pages/content/Contact.tsx";
 import Imprint from "./pages/content/Imprint.tsx";
 import Privacy from "./pages/content/Privacy.tsx";
+import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
 
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
 
@@ -36,8 +37,20 @@ axios.interceptors.response.use((response) => {
     return response;
 });
 
+const restClient = new RestApplicationClient(axios);
+
 function App() {
     const toast = useRef<Toast>(null)
+
+    // Load the list of modules that the current user is allowed to use.
+    useEffect(() => {
+        restClient.applicationModules().then(readUserModulesResult => {
+            const data = readUserModulesResult.data;
+            data.sort((a, b) => a.sort - b.sort);
+            const action: UpdateModuleListAction = {moduleList: data}
+            store.dispatch(updateModuleList(action));
+        })
+    }, []);
 
     // Create a new browserRouter object based on the modules available to the current user.
     const router = useSelector((state: RootState) => {

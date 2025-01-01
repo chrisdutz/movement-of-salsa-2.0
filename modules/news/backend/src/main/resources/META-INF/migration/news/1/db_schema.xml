@@ -14,6 +14,20 @@
             <column name="NEWS_START_DATE" type="DATETIME"/>
             <column name="NEWS_END_DATE" type="DATETIME"/>
         </createTable>
+
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="30"/>
+            <column name="module_name" value="news"/>
+            <column name="action_name" value="use main module"/>
+            <column name="rule" value="true"/>
+        </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="31"/>
+            <column name="module_name" value="news"/>
+            <column name="action_name" value="use admin module"/>
+            <column name="rule" value='UserHasRole("Administrator")'/>
+        </insert>
     </changeSet>
+
 
 </databaseChangeLog>

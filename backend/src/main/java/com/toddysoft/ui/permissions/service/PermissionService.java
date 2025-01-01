@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class PermissionService implements FrontendModuleProvider {
 
@@ -27,7 +28,7 @@ public class PermissionService implements FrontendModuleProvider {
     public List<FrontendModule> getFrontendModules() {
         return List.of(
                 // Settings module, where an admin can manage users
-                new FrontendModule("Admin", "Permissions", "fa-shield-keyhole", "/admin/permissions", "", "Permissions"));
+                new FrontendModule("Admin", "Permissions", "fa-shield-keyhole", "/admin/permissions", "", "Permissions", 30));
     }
 
     @Transactional(readOnly = true)
@@ -43,6 +44,16 @@ public class PermissionService implements FrontendModuleProvider {
     public Term<Boolean> getBooleanTerm(Permission permission) {
         String ruleString = permission.getRule();
         return new PermissionTermParser(functions).parseBooleanExpression(ruleString);
+    }
+
+    public Term<Boolean> getBooleanTerm(String moduleName, String actionName) {
+        Optional<Permission> permissionOptional = permissionRepository.findByModuleNameAndActionName(moduleName, actionName);
+        if (permissionOptional.isPresent()) {
+            String ruleString = permissionOptional.get().getRule();
+            return new PermissionTermParser(functions).parseBooleanExpression(ruleString);
+        } else {
+            return context -> false;
+        }
     }
 
     public Term<Number> getNumericTerm(Permission permission) {

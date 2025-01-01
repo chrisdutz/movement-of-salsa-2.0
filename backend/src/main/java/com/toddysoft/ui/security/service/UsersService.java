@@ -24,7 +24,7 @@ public class UsersService implements FrontendModuleProvider {
     public List<FrontendModule> getFrontendModules() {
         return List.of(
                 // Settings module, where an admin can manage users
-                new FrontendModule("Admin", "Users", "fa-users", "/admin/users", "", "Users"));
+                new FrontendModule("Admin", "Users", "fa-users", "/admin/users", "", "Users", 10));
     }
 
     @Transactional(readOnly = true)
@@ -33,8 +33,8 @@ public class UsersService implements FrontendModuleProvider {
     }
 
     @Transactional(readOnly = true)
-    public Optional<User> readByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> readByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Transactional

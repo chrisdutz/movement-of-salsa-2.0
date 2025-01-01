@@ -69,8 +69,8 @@ public class WebSocketHandler implements org.springframework.web.socket.WebSocke
                 logger.warn("Missing 'token' query parameter");
                 throw new Exception("Missing 'token' query parameter");
             }
-            String username = jwtService.extractUsername(token);
-            Optional<User> userOptional = usersService.readByUsername(username);
+            String email = jwtService.extractUsername(token);
+            Optional<User> userOptional = usersService.readByEmail(email);
             if(userOptional.isPresent()) {
                 User user = userOptional.get();
                 Optional<SessionContainer> existingSessionContainer = openSessions.values().stream().filter(sessionContainer -> sessionContainer.getUser().getId().equals(user.getId())).findFirst();
@@ -92,8 +92,8 @@ public class WebSocketHandler implements org.springframework.web.socket.WebSocke
                 }
                 openSessions.put(session.getId(), new SessionContainer(session, user));
             } else {
-                logger.warn("Couldn't find user with name {}", username);
-                throw new Exception("Couldn't find user with name " + username);
+                logger.warn("Couldn't find user with email {}", email);
+                throw new Exception("Couldn't find user with email " + email);
             }
         }
     }

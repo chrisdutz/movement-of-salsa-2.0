@@ -13,7 +13,7 @@ public class AboutModule implements FrontendModuleProvider {
     public List<FrontendModule> getFrontendModules() {
         return List.of(
                 // General purpose module
-                new FrontendModule("Main", "About", "fa-newspaper", "/about", "/modules/about/assets/aboutModule.js", "AboutMainModule"));
+                new FrontendModule("Main", "About", "fa-newspaper", "/about", "/modules/about/assets/aboutModule.js", "AboutMainModule", 20));
     }
 
 }

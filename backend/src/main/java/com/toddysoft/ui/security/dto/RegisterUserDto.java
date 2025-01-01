@@ -4,24 +4,22 @@ import com.toddysoft.ui.security.entity.Sex;
 
 public class RegisterUserDto {
 
-    private String username;
-
+    private String email;
     private String password;
 
+    private Sex sex;
     private String firstName;
     private String lastName;
-    private Sex sex;
-    private String email;
 
     public RegisterUserDto() {
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -30,6 +28,14 @@ public class RegisterUserDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Sex sex) {
+        this.sex = sex;
     }
 
     public String getFirstName() {
@@ -48,19 +54,4 @@ public class RegisterUserDto {
         this.lastName = lastName;
     }
 
-    public Sex getSex() {
-        return sex;
-    }
-
-    public void setSex(Sex sex) {
-        this.sex = sex;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

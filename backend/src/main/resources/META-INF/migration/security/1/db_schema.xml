@@ -22,9 +22,6 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
 
-            <column name="username" type="VARCHAR(50)">
-                <constraints nullable="false"/>
-            </column>
             <column name="password" type="VARCHAR(250)">
                 <constraints nullable="false"/>
             </column>
@@ -47,8 +44,8 @@
             <column name="created_at" type="TIMESTAMP"/>
             <column name="updated_at" type="TIMESTAMP"/>
         </createTable>
-        <createIndex indexName="fk_sec_users_username" tableName="sec_users" unique="true">
-            <column name="username"/>
+        <createIndex indexName="fk_sec_users_email" tableName="sec_users" unique="true">
+            <column name="email"/>
         </createIndex>
 
         <createTable tableName="sec_user_roles">
@@ -80,7 +77,7 @@
 
         <insert tableName="sec_users">
             <column name="id" valueNumeric="1"/>
-            <column name="username" value="admin"/>
+            <column name="email" value="admin"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
             <column name="first_name" value="Default"/>
@@ -88,7 +85,7 @@
         </insert>
         <insert tableName="sec_users">
             <column name="id" valueNumeric="2"/>
-            <column name="username" value="user"/>
+            <column name="email" value="user"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
             <column name="first_name" value="Default"/>
@@ -134,6 +131,37 @@
 
         <insert tableName="sec_action_permission">
             <column name="id" valueNumeric="1"/>
+            <column name="module_name" value="roles"/>
+            <column name="action_name" value="use admin module"/>
+            <column name="rule" value='UserHasRole("Administrator")'/>
+        </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="2"/>
+            <column name="module_name" value="users"/>
+            <column name="action_name" value="use admin module"/>
+            <column name="rule" value='UserHasRole("Administrator")'/>
+        </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="3"/>
+            <column name="module_name" value="permissions"/>
+            <column name="action_name" value="use admin module"/>
+            <column name="rule" value='UserHasRole("Administrator")'/>
+        </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="4"/>
+            <column name="module_name" value="login"/>
+            <column name="action_name" value="use main module"/>
+            <column name="rule" value="!LoggedIn()"/>
+        </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="5"/>
+            <column name="module_name" value="logout"/>
+            <column name="action_name" value="use main module"/>
+            <column name="rule" value="LoggedIn()"/>
+        </insert>
+
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="6"/>
             <column name="module_name" value="user"/>
             <column name="action_name" value="list"/>
             <column name="rule" value="true"/>

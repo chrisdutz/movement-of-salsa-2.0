@@ -19,9 +19,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Integer id;
 
-    @Column(name = "", unique = true, length = 100, nullable = false)
-    private String username;
-
     @Column(nullable = false)
     private String firstName;
 
@@ -62,9 +59,8 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(Integer id, String username, String firstName, String lastName, String street, String zip, String city, String country, Sex sex, Integer size, String phone, String email, String password, Date createdAt, Date updatedAt, List<Role> roles) {
+    public User(Integer id, String firstName, String lastName, String street, String zip, String city, String country, Sex sex, Integer size, String phone, String email, String password, Date createdAt, Date updatedAt, List<Role> roles) {
         this.id = id;
-        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.street = street;
@@ -86,9 +82,10 @@ public class User implements UserDetails {
         return List.of();
     }
 
+    /* We're uing the email as username */
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -117,10 +114,6 @@ public class User implements UserDetails {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getFirstName() {

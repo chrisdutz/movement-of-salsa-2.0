@@ -8,14 +8,16 @@ public class FrontendModule {
     private final String routerUrl;
     private final String moduleUrl;
     private final String moduleComponentName;
+    private final int sort;
 
-    public FrontendModule(String type, String name, String icon, String routerUrl, String moduleUrl, String moduleComponentName) {
+    public FrontendModule(String type, String name, String icon, String routerUrl, String moduleUrl, String moduleComponentName, int sort) {
         this.type = type;
         this.name = name;
         this.icon = icon;
         this.routerUrl = routerUrl;
         this.moduleUrl = moduleUrl;
         this.moduleComponentName = moduleComponentName;
+        this.sort = sort;
     }
 
     public String getType() {
@@ -40,5 +42,9 @@ public class FrontendModule {
 
     public String getModuleComponentName() {
         return moduleComponentName;
+    }
+
+    public int getSort() {
+        return sort;
     }
 }

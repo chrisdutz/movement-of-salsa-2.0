@@ -23,14 +23,7 @@ export type ModuleListState = {
 }
 
 export const moduleListInitialState: ModuleListState = {
-    moduleList: [{
-        type: "Main",
-        name: "Login",
-        icon: "fa-user",
-        routerUrl: "/login",
-        moduleUrl: "",
-        moduleComponentName: "Login",
-    }]
+    moduleList: []
 }
 
 const moduleListSlice = createSlice({

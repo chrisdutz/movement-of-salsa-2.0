@@ -5,9 +5,9 @@
 
     <changeSet author="cdutz" id="20241226-1">
         <insert tableName="sec_action_permission">
-            <column name="id" valueNumeric="2"/>
+            <column name="id" valueNumeric="20"/>
             <column name="module_name" value="about"/>
-            <column name="action_name" value="use-main-module"/>
+            <column name="action_name" value="use main module"/>
             <column name="rule" value="true"/>
         </insert>
     </changeSet>

@@ -122,6 +122,7 @@ export interface FrontendModule {
     moduleUrl: string;
     name: string;
     routerUrl: string;
+    sort: number;
     type: string;
 }
 
@@ -135,8 +136,8 @@ export interface LoginResponse {
 }
 
 export interface LoginUserDto {
+    email: string;
     password: string;
-    username: string;
 }
 
 export interface LogoutEvent extends UiApplicationEvent<string> {
@@ -156,7 +157,6 @@ export interface RegisterUserDto {
     lastName: string;
     password: string;
     sex: Sex;
-    username: string;
 }
 
 export interface Role {

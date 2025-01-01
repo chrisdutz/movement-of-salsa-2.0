@@ -13,9 +13,9 @@ public class NewsModule implements FrontendModuleProvider {
     public List<FrontendModule> getFrontendModules() {
         return List.of(
                 // General purpose module
-                new FrontendModule("Main", "News", "fa-newspaper", "/news", "/modules/news/assets/newsModule.js", "NewsMainModule"),
+                new FrontendModule("Main", "News", "fa-newspaper", "/news", "/modules/news/assets/newsModule.js", "NewsMainModule", 10),
                 // Settings module, where an admin can configure which drivers and transports are available
-                new FrontendModule("Admin", "News", "fa-newspaper", "/admin/news", "/modules/news/assets/newsModule.js", "NewsAdminModule"));
+                new FrontendModule("Admin", "News", "fa-newspaper", "/admin/news", "/modules/news/assets/newsModule.js", "NewsAdminModule", 40));
     }
 
 }

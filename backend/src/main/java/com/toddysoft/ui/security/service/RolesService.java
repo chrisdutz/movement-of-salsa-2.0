@@ -23,7 +23,7 @@ public class RolesService implements FrontendModuleProvider {
     public List<FrontendModule> getFrontendModules() {
         return List.of(
                 // Settings module, where an admin can manage users
-                new FrontendModule("Admin", "Roles", "fa-users-gear", "/admin/roles", "", "Roles"));
+                new FrontendModule("Admin", "Roles", "fa-users-gear", "/admin/roles", "", "Roles", 20));
     }
 
     @Transactional(readOnly = true)

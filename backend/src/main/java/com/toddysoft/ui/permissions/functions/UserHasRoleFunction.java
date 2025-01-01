@@ -33,8 +33,7 @@ public class UserHasRoleFunction implements TermFunction<Boolean>
             }
 
             final Object userObj = context.get("user");
-            if((userObj instanceof User)) {
-                final User user = (User) userObj;
+            if((userObj instanceof User user)) {
                 final String roleName = (String) args[0].evaluate(context);
 
                 if((roleName != null) && (user.getRoles() != null) && (!user.getRoles().isEmpty())) {

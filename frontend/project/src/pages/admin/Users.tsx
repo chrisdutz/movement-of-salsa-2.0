@@ -47,7 +47,6 @@ export default function Users() {
         ],
         listSortColumn: "lastName",
         editorColumns: [
-            {label: "Username", field: "username", required: true, editable: true, fieldType: "Text"},
             {label: "Roles", field: "roles", required: false, editable: true, fieldType: "MultiSelect",
                 selectOptions: roles, optionLabel: "name"},
             {label: "First Name", field: "firstName", required: true, editable: true, fieldType: "Text"},
