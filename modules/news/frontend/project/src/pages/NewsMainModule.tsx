@@ -27,7 +27,7 @@ export default function NewsMainModule() {
 
     return (
         <div className="flex flex-column gap-4">
-            {news.map(value => {
+            {news && news.map(value => {
                 return (<Card title={value.title}><div dangerouslySetInnerHTML={{__html: value.description}}/></Card>)})}
         </div>
     )
