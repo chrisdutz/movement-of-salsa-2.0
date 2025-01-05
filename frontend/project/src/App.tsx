@@ -1,6 +1,6 @@
 import './App.css'
 import axios from 'axios';
-import {createBrowserRouter, Navigate, RouteObject, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouteObject, RouterProvider, useLocation} from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.tsx";
 import {useSelector} from "react-redux";
 import {loadExternalComponent, loadInternalComponent} from "./pages/ComponentLoader.tsx";

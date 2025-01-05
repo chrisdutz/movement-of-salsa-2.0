@@ -21,6 +21,7 @@ const restClient = new RestApplicationClient(axios);
 export default function Login() {
     const [loginEmail, setLoginEmail] = useState<string>("")
     const [loginPassword, setLoginPassword] = useState<string>("")
+    const [loggingIn, setLoggingIn] = useState<boolean>(false);
 
     const [registerSex, setRegisterSex] = useState<Sex>()
     const [registerFirstName, setRegisterFirstName] = useState<string>("")
@@ -28,14 +29,17 @@ export default function Login() {
     const [registerEmail, setRegisterEmail] = useState<string>("")
     const [registerPassword, setRegisterPassword] = useState<string>("")
     const [registerRepeatPassword, setRegisterRepeatPassword] = useState<string>("")
+    const [registering, setRegistering] = useState<boolean>(false);
 
     const toast = useRef<Toast>(null)
 
     function handleLogin() {
+        setLoggingIn(true);
         restClient.authenticate({
             email: loginEmail,
             password: loginPassword
         }).then(value => {
+
             // Update the redux-store
             const setAuthenticationTokenAction: SetAuthenticationTokenAction = {
                 authToken: value.data.token
@@ -51,6 +55,7 @@ export default function Login() {
 
             // Get the details of the currently logged-in user
             restClient.authenticatedUser().then(readUserResult => {
+
                 const action: SetAuthenticationUserAction = {user: readUserResult.data}
                 store.dispatch(setAuthenticationUser(action))
 
@@ -60,6 +65,8 @@ export default function Login() {
                     data.sort((a, b) => a.sort - b.sort);
                     const action: UpdateModuleListAction = {moduleList: data}
                     store.dispatch(updateModuleList(action));
+
+                    setLoggingIn(false);
                 })
             })
         })
@@ -74,6 +81,8 @@ export default function Login() {
             return;
         }
 
+        setRegistering(true);
+
         restClient.register({
             sex: registerSex,
             firstName: registerFirstName,
@@ -83,6 +92,7 @@ export default function Login() {
         }).then(value => {
             // TODO: Handle the result
             console.log("Register Response", value)
+            setRegistering(false);
         })
     }
 
@@ -105,6 +115,7 @@ export default function Login() {
                                   className="w-full mb-3"/>
                         <Button label="Login"
                                 onClick={() => handleLogin()}
+                                loading={loggingIn}
                                 className="w-full mb-3"/>
                         <Link to="/forgot-password">Passwort Vergessen</Link>
                     </Card>
@@ -139,6 +150,7 @@ export default function Login() {
                                   className="w-full mb-3"/>
                         <Button label="Registrieren"
                                 onClick={() => handleRegister()}
+                                loading={registering}
                                 className="w-full"/>
                     </Card>
                 </div>

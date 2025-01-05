@@ -1,13 +1,13 @@
 import logo from "../assets/logo.png";
 import {Image} from "primereact/image";
-import {Link, Outlet, useNavigate} from "react-router-dom";
+import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {RootState} from "../store/store.ts";
 import {Menubar} from "primereact/menubar";
 import {MenuItem} from "primereact/menuitem";
 import {FrontendModule} from "../generated/plc4j-tools-ui-frontend.ts";
 import {NavigateFunction} from "react-router";
-import {Dispatch, SetStateAction, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {Card} from "primereact/card";
 
 const mapFrontendModuleToMenuItem = (module: FrontendModule, title: string, navigate: NavigateFunction, titleSetter: Dispatch<SetStateAction<string>>): MenuItem => ({
@@ -84,10 +84,36 @@ const groupModulesByType = (modules: FrontendModule[], navigate: NavigateFunctio
 
 export default function MainLayout() {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [selectedModuleTitle, setSelectedModuleTitle] = useState<string>('Selected Module');
-    const moduleList:MenuItem[] = useSelector<RootState, MenuItem[]>((state: RootState) => {
+
+    // Check if the currently selected route is available, if not
+    // navigate to the first module in the list.
+    const moduleList = useSelector((state: RootState) =>
+        state.moduleList.moduleList
+    );
+    const menuItems:MenuItem[] = useSelector<RootState, MenuItem[]>((state: RootState) => {
         return groupModulesByType(state.moduleList.moduleList, navigate, setSelectedModuleTitle)
     })
+
+    // Double check, if the currently selected route is currently available to the user.
+    // If this is not the case, redirect to the first main module in the list.
+    useEffect(() => {
+        const isValidRoute = moduleList.map(module => module.routerUrl).includes(location.pathname);
+       if(!isValidRoute) {
+           const mainModules = moduleList.filter(module => module.type === "Main")
+           let fallbackRoute = "/";
+           let fallbackTitle = ""
+           if(mainModules.length > 0) {
+               fallbackRoute = mainModules[0].routerUrl
+               fallbackTitle = mainModules[0].name
+           }
+           navigate(fallbackRoute, {replace: true});
+           setSelectedModuleTitle(fallbackTitle)
+        }
+    }, [location.pathname, moduleList, navigate]);
+
     return (
         <div className="flex flex-column">
             {/* Header Section */}
@@ -106,7 +132,7 @@ export default function MainLayout() {
 
                     {/* Navigation Menu */}
                     <div className="align-self-stretch mt-3">
-                        <Menubar model={moduleList}/>
+                        <Menubar model={menuItems}/>
                     </div>
                 </div>
             </div>
