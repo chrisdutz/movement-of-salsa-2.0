@@ -87,21 +87,29 @@ export default function MainLayout() {
     const location = useLocation();
 
     const [selectedModuleTitle, setSelectedModuleTitle] = useState<string>('Selected Module');
+    const [menuItems, setMenuItems] = useState<MenuItem[]>()
 
     // Check if the currently selected route is available, if not
     // navigate to the first module in the list.
     const moduleList = useSelector((state: RootState) =>
         state.moduleList.moduleList
     );
-    const menuItems:MenuItem[] = useSelector<RootState, MenuItem[]>((state: RootState) => {
-        return groupModulesByType(state.moduleList.moduleList, navigate, setSelectedModuleTitle)
-    })
 
     // Double check, if the currently selected route is currently available to the user.
     // If this is not the case, redirect to the first main module in the list.
     useEffect(() => {
-        const isValidRoute = moduleList.map(module => module.routerUrl).includes(location.pathname);
-       if(!isValidRoute) {
+        // Doesn't yet make sense to do anything.
+        if(moduleList.length == 0) {
+            return
+        }
+
+        // Update the menu settings
+        setMenuItems(groupModulesByType(moduleList, navigate, setSelectedModuleTitle))
+
+        console.log("Current location", location, moduleList)
+        const isValidRoute = moduleList.length > 0 ? moduleList.map(module => module.routerUrl).includes(location.pathname) : true;
+        if(!isValidRoute) {
+           console.log("Invalid route")
            const mainModules = moduleList.filter(module => module.type === "Main")
            let fallbackRoute = "/";
            let fallbackTitle = ""
@@ -109,6 +117,7 @@ export default function MainLayout() {
                fallbackRoute = mainModules[0].routerUrl
                fallbackTitle = mainModules[0].name
            }
+           console.log("Redirecting", fallbackRoute, fallbackTitle, mainModules)
            navigate(fallbackRoute, {replace: true});
            setSelectedModuleTitle(fallbackTitle)
         }
