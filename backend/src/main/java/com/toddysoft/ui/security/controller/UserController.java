@@ -1,7 +1,7 @@
 package com.toddysoft.ui.security.controller;
 
 import com.toddysoft.ui.security.entity.User;
-import com.toddysoft.ui.security.service.UsersService;
+import com.toddysoft.ui.security.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,10 +22,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
 
-    private final UsersService usersService;
+    private final UserService userService;
 
-    public UserController(UsersService usersService) {
-        this.usersService = usersService;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/users")
@@ -34,18 +34,18 @@ public class UserController {
         if(authentication instanceof AnonymousAuthenticationToken) {
             return ResponseEntity.ok(Collections.emptyList());
         } else {
-            return ResponseEntity.ok(usersService.list());
+            return ResponseEntity.ok(userService.list());
         }
     }
 
     @PostMapping("/user")
     public ResponseEntity<User> saveUser(@RequestBody User user) {
-        return ResponseEntity.ok(usersService.save(user));
+        return ResponseEntity.ok(userService.save(user));
     }
 
     @DeleteMapping("/user")
     public void deleteUser(@RequestBody User user) {
-        usersService.delete(user);
+        userService.delete(user);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.toddysoft.ui.security.controller;
 
 import com.toddysoft.ui.security.entity.Role;
-import com.toddysoft.ui.security.service.RolesService;
+import com.toddysoft.ui.security.service.RoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,10 +22,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class RoleController {
 
-    private final RolesService rolesService;
+    private final RoleService roleService;
 
-    public RoleController(RolesService rolesService) {
-        this.rolesService = rolesService;
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     @GetMapping("/roles")
@@ -34,18 +34,18 @@ public class RoleController {
         if(authentication instanceof AnonymousAuthenticationToken) {
             return ResponseEntity.ok(Collections.emptyList());
         } else {
-            return ResponseEntity.ok(rolesService.list());
+            return ResponseEntity.ok(roleService.list());
         }
     }
 
     @PostMapping("/role")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        return ResponseEntity.ok(rolesService.save(role));
+        return ResponseEntity.ok(roleService.save(role));
     }
 
     @DeleteMapping("/role")
     public void deleteRole(@RequestBody Role role) {
-        rolesService.delete(role);
+        roleService.delete(role);
     }
 
 }

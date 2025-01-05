@@ -6,8 +6,9 @@ import jakarta.persistence.*;
 import java.util.Calendar;
 
 @Entity
-@Table(name="NEWS_NEWS_ENTRY")
+@Table(name="news_news_entry")
 public class NewsEntry {
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     protected long id;

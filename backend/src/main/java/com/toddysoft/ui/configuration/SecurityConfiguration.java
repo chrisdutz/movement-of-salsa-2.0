@@ -1,6 +1,6 @@
 package com.toddysoft.ui.configuration;
 
-import com.toddysoft.ui.web.JwtAuthenticationFilter;
+import com.toddysoft.ui.security.web.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -35,7 +35,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 // Allow unauthenticated access to the login and application endpoints
-                                .requestMatchers("/api/application/**", "/api/auth/**").permitAll()
+                                //.requestMatchers("/api/application/**", "/api/auth/**").permitAll()
                                 // Permit the loading of all modules
                                 // TODO: Change this to only allow loading of module the user has access to.
                                 .requestMatchers("/modules/**").permitAll()

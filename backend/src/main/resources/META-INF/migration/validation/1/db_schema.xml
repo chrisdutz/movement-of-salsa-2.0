@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet author="cdutz" id="202501031630-1">
+        <createTable tableName="val_validation_token">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="module_name" type="VARCHAR(100)"/>
+            <column name="token_code" type="VARCHAR(40)"/>
+            <column name="created" type="DATETIME"/>
+            <column name="payload" type="MEDIUMBLOB"/>
+        </createTable>
+        <createIndex indexName="val_validation_token_token_code" tableName="val_validation_token" unique="true">
+            <column name="token_code"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

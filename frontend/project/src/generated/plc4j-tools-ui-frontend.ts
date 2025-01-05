@@ -36,11 +36,19 @@ export class RestApplicationClient<O> {
     }
 
     /**
-     * HTTP POST /api/auth/signup
-     * Java method: com.toddysoft.ui.security.controller.AuthenticationController.register
+     * HTTP POST /api/auth/register
+     * Java method: com.toddysoft.ui.security.controller.RegistrationController.register
      */
-    register(arg0: RegisterUserDto, options?: O): RestResponse<User> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/auth/signup`, data: arg0, options: options });
+    register(arg0: RegisterUserDto, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/auth/register`, data: arg0, options: options });
+    }
+
+    /**
+     * HTTP POST /api/contact
+     * Java method: com.toddysoft.ui.contact.controller.ContactController.sendContactRequest
+     */
+    sendContactRequest(arg0: ContactForm, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/contact`, data: arg0, options: options });
     }
 
     /**
@@ -108,12 +116,11 @@ export class RestApplicationClient<O> {
     }
 }
 
-export interface ApplicationEvent extends EventObject {
-    timestamp: number;
-}
-
-export interface EventObject extends Serializable {
-    source: any;
+export interface ContactForm {
+    email: string;
+    message: string;
+    name: string;
+    subject: string;
 }
 
 export interface FrontendModule {
@@ -140,10 +147,6 @@ export interface LoginUserDto {
     password: string;
 }
 
-export interface LogoutEvent extends UiApplicationEvent<string> {
-    source: string;
-}
-
 export interface Permission {
     actionName: string;
     id: number;
@@ -165,12 +168,6 @@ export interface Role {
 }
 
 export interface Serializable {
-}
-
-export interface UiApplicationEvent<T> extends ApplicationEvent {
-    actionName: string;
-    moduleName: string;
-    source: T;
 }
 
 export interface User extends UserDetails {

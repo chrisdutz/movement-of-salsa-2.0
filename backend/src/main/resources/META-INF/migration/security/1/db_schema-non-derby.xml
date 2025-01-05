@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <changeSet id="cdutz" author="202501051056-1">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <dbms type="derby"/>
+            </not>
+        </preConditions>
+        <comment>Running the Non-Apache-Derby variant of the auto-increment</comment>
+        <addAutoIncrement tableName="sec_roles"
+                          columnName="id"
+                          columnDataType="BIGINT"
+                          startWith="1001"/>
+        <addAutoIncrement tableName="sec_users"
+                          columnName="id"
+                          columnDataType="BIGINT"
+                          startWith="1001"/>
+    </changeSet>
+
+</databaseChangeLog>

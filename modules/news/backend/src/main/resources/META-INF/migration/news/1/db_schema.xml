@@ -4,15 +4,15 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
     <changeSet author="cdutz" id="20241223-1">
-        <createTable tableName="NEWS_NEWS_ENTRY">
-            <column autoIncrement="true" name="ID" type="BIGINT">
+        <createTable tableName="news_news_entry">
+            <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="LIST_POSITION" type="BIGINT"/>
-            <column name="TITLE" type="VARCHAR(255)"/>
-            <column name="DESCRIPTION" type="LONGTEXT"/>
-            <column name="NEWS_START_DATE" type="DATETIME"/>
-            <column name="NEWS_END_DATE" type="DATETIME"/>
+            <column name="list_position" type="BIGINT"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="news_start_date" type="DATETIME"/>
+            <column name="news_end_date" type="DATETIME"/>
         </createTable>
 
         <insert tableName="sec_action_permission">
@@ -28,6 +28,5 @@
             <column name="rule" value='UserHasRole("Administrator")'/>
         </insert>
     </changeSet>
-
 
 </databaseChangeLog>

@@ -1,0 +1,10 @@
+# Security
+
+## General
+
+All security is handled via barer tokens.
+Every request to a rest service needs to pass this as `Authorization` request header.
+
+In order to make the login information available to the Spring Boot application, the `JwtAuthenticationFilter` reads this header, validates, decodes the token and makes the information available by setting it in the `SecurityContextHolder.getContext()` threadlocal.
+
+In `SecurityConfiguration` access to loading the client resources is allowed without, however all access to the `/api/**` urls require authentication.

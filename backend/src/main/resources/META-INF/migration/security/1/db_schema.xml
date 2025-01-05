@@ -67,16 +67,16 @@
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="sec_user_roles" constraintName="fk_sec_roles_name" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sec_roles"/>
 
         <insert tableName="sec_roles">
-            <column name="id" valueNumeric="1"/>
+            <column name="id" valueNumeric="10"/>
             <column name="name" value="Administrator"/>
         </insert>
         <insert tableName="sec_roles">
-            <column name="id" valueNumeric="2"/>
+            <column name="id" valueNumeric="11"/>
             <column name="name" value="User"/>
         </insert>
 
         <insert tableName="sec_users">
-            <column name="id" valueNumeric="1"/>
+            <column name="id" valueNumeric="10"/>
             <column name="email" value="admin"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
@@ -84,7 +84,7 @@
             <column name="last_name" value="Admin"/>
         </insert>
         <insert tableName="sec_users">
-            <column name="id" valueNumeric="2"/>
+            <column name="id" valueNumeric="11"/>
             <column name="email" value="user"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
@@ -93,16 +93,16 @@
         </insert>
 
         <insert tableName="sec_user_roles">
-            <column name="user_id" valueNumeric="1"/>
-            <column name="role_id" valueNumeric="1"/>
+            <column name="user_id" valueNumeric="10"/>
+            <column name="role_id" valueNumeric="10"/>
         </insert>
         <insert tableName="sec_user_roles">
-            <column name="user_id" valueNumeric="1"/>
-            <column name="role_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="10"/>
+            <column name="role_id" valueNumeric="11"/>
         </insert>
         <insert tableName="sec_user_roles">
-            <column name="user_id" valueNumeric="2"/>
-            <column name="role_id" valueNumeric="2"/>
+            <column name="user_id" valueNumeric="11"/>
+            <column name="role_id" valueNumeric="11"/>
         </insert>
 
         <!-- Permissions Stuff -->
@@ -166,6 +166,32 @@
             <column name="action_name" value="list"/>
             <column name="rule" value="true"/>
         </insert>
+    </changeSet>
+
+    <!--
+        This is a workaround for making the app work with Apache Derby for testing.
+        It generally consists of two parts:
+        - Setting the id of the pre-defined roles and users to higher values
+          (so when starting at 1 the test-installation will allow the creation of 10
+          users before running into problems)
+        - Conditionally setting the auto-increment to a higher value, so there are
+          no collisions on production systems.
+    -->
+    <changeSet author="cdutz" id="202501051056-1" onValidationFail="MARK_RAN">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <dbms type="derby"/>
+            </not>
+        </preConditions>
+        <comment>Running the Non-Apache-Derby variant of the auto-increment</comment>
+        <addAutoIncrement tableName="sec_roles"
+                          columnName="id"
+                          columnDataType="BIGINT"
+                          startWith="100"/>
+        <addAutoIncrement tableName="sec_users"
+                          columnName="id"
+                          columnDataType="BIGINT"
+                          startWith="100"/>
     </changeSet>
 
 </databaseChangeLog>

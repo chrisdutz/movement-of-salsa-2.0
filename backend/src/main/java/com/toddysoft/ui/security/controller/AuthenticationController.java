@@ -1,7 +1,6 @@
 package com.toddysoft.ui.security.controller;
 
 import com.toddysoft.ui.security.dto.LoginUserDto;
-import com.toddysoft.ui.security.dto.RegisterUserDto;
 import com.toddysoft.ui.security.entity.User;
 import com.toddysoft.ui.security.service.AuthenticationService;
 import com.toddysoft.ui.security.service.JwtService;
@@ -26,13 +25,6 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
-        User registeredUser = authenticationService.signup(registerUserDto);
-
-        return ResponseEntity.ok(registeredUser);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
@@ -44,21 +36,6 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    public static class LoginResponse {
-        private final String token;
-        private final long expiresIn;
-
-        public LoginResponse(String token, long expiresIn) {
-            this.token = token;
-            this.expiresIn = expiresIn;
-        }
-
-        public String getToken() {
-            return token;
-        }
-
-        public long getExpiresIn() {
-            return expiresIn;
-        }
+    public record LoginResponse(String token, long expiresIn) {
     }
 }

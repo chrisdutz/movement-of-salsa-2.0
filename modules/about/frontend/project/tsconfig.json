@@ -23,7 +23,6 @@
     /* Make the types in the main app store available in the local module */
     "paths": {
       "mainApp/Types": ["../../../../frontend/project/src/store/types.ts"],
-      "mainApp/ServerEvents": ["../../../../frontend/project/src/utils/ServerEvents.tsx"],
       "mainApp/components/AdminList": ["../../../../frontend/project/src/components/AdminList.tsx"]
     }
   },

@@ -58,13 +58,13 @@
               <skip>false</skip>
               <classes>
                 <!-- Here come the REST controllers -->
+                <class>com.toddysoft.ui.contact.controller.ContactController</class>
                 <class>com.toddysoft.ui.modules.controller.ApplicationController</class>
-                <class>com.toddysoft.ui.security.controller.AuthenticationController</class>
                 <class>com.toddysoft.ui.permissions.controller.PermissionController</class>
+                <class>com.toddysoft.ui.security.controller.AuthenticationController</class>
+                <class>com.toddysoft.ui.security.controller.RegistrationController</class>
                 <class>com.toddysoft.ui.security.controller.RoleController</class>
                 <class>com.toddysoft.ui.security.controller.UserController</class>
-                <class>com.toddysoft.ui.websocket.event.UiApplicationEvent</class>
-                <class>com.toddysoft.ui.websocket.event.LogoutEvent</class>
               </classes>
               <excludeClasses>
                 <excludeClass>java.lang.Comparable</excludeClass>
