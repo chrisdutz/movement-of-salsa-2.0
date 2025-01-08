@@ -72,6 +72,20 @@ public class UserService implements FrontendModuleProvider {
         userRepository.delete(user);
     }
 
+    @Transactional
+    public void updateUserPassword(String email, String newPassword) {
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        if(byEmail.isEmpty()) {
+            throw new IllegalArgumentException("invalid arguments");
+        }
+
+        // As we've already encoded the user in the AuthenticationService, we just need
+        // to update the password field with the already encoded password.
+        User user = byEmail.get();
+        user.setPassword(newPassword);
+        userRepository.save(user);
+    }
+
     protected User maskedUserClone(User user) {
         return new User(user.getId(), user.getFirstName(), user.getLastName(),
                 user.getStreet(), user.getZip(), user.getCity(), user.getCountry(),

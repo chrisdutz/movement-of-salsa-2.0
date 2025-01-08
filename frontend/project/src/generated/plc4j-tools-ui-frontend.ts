@@ -44,6 +44,14 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP POST /api/auth/reset-password
+     * Java method: com.toddysoft.ui.security.controller.AuthenticationController.resetPassword
+     */
+    resetPassword(arg0: ResetPasswordDto, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/auth/reset-password`, data: arg0, options: options });
+    }
+
+    /**
      * HTTP POST /api/contact
      * Java method: com.toddysoft.ui.contact.controller.ContactController.sendContactRequest
      */
@@ -160,6 +168,11 @@ export interface RegisterUserDto {
     lastName: string;
     password: string;
     sex: Sex;
+}
+
+export interface ResetPasswordDto {
+    email: string;
+    password: string;
 }
 
 export interface Role {
