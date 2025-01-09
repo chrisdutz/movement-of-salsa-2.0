@@ -89,8 +89,6 @@ export default function MainLayout() {
     const [selectedModuleTitle, setSelectedModuleTitle] = useState<string>('Selected Module');
     const [menuItems, setMenuItems] = useState<MenuItem[]>()
 
-    // Check if the currently selected route is available, if not
-    // navigate to the first module in the list.
     const moduleList = useSelector((state: RootState) =>
         state.moduleList.moduleList
     );
@@ -106,20 +104,28 @@ export default function MainLayout() {
         // Update the menu settings
         setMenuItems(groupModulesByType(moduleList, navigate, setSelectedModuleTitle))
 
-        console.log("Current location", location, moduleList)
-        const isValidRoute = moduleList.length > 0 ? moduleList.map(module => module.routerUrl).includes(location.pathname) : true;
+        const isValidRoute = moduleList.length > 0 ? moduleList.map(module => module.routerUrl).includes(location.pathname) : false;
+        // If no currently available route is selected,
+        // select the first main module as a default.
         if(!isValidRoute) {
-           console.log("Invalid route")
-           const mainModules = moduleList.filter(module => module.type === "Main")
-           let fallbackRoute = "/";
-           let fallbackTitle = ""
-           if(mainModules.length > 0) {
-               fallbackRoute = mainModules[0].routerUrl
-               fallbackTitle = mainModules[0].name
-           }
-           console.log("Redirecting", fallbackRoute, fallbackTitle, mainModules)
-           navigate(fallbackRoute, {replace: true});
-           setSelectedModuleTitle(fallbackTitle)
+            const mainModules = moduleList.filter(module => module.type === "Main")
+            let fallbackRoute = "/";
+            let fallbackTitle = ""
+            if(mainModules.length > 0) {
+                fallbackRoute = mainModules[0].routerUrl
+                fallbackTitle = mainModules[0].name
+            }
+            navigate(fallbackRoute, {replace: true});
+            setSelectedModuleTitle(fallbackTitle)
+        }
+        // If one is selected, update the page title accordingly.
+        else {
+            const selectedModule = moduleList.filter(module => module.routerUrl === location.pathname)
+            let fallbackTitle = ""
+            if(selectedModule.length > 0) {
+                fallbackTitle = selectedModule[0].name
+            }
+            setSelectedModuleTitle(fallbackTitle)
         }
     }, [location.pathname, moduleList, navigate]);
 
