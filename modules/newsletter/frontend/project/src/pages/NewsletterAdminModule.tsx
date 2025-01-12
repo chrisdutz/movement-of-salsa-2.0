@@ -7,7 +7,7 @@ export default function NewsletterAdminModule() {
 
     return (
         <>
-            <Card title="Kurse" className={"mb-4"}>
+            <Card title="Newsletter" className={"mb-4"}>
             </Card>
         </>
     )

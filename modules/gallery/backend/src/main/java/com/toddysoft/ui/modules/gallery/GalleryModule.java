@@ -12,8 +12,8 @@ public class GalleryModule implements FrontendModuleProvider {
     @Override
     public List<FrontendModule> getFrontendModules() {
         return List.of(
-                new FrontendModule("Main", "Gallery", "fa-camera", "/gallery", "/modules/gallery/assets/galleryModule.js", "GalleryMainModule", 20),
-                new FrontendModule("Admin", "Gallery", "fa-camera", "/admin/gallery", "/modules/gallery/assets/galleryModule.js", "GalleryAdminModule", 20));
+                new FrontendModule("Main", "Gallery", "fa-camera", "/gallery", "/modules/gallery/assets/galleryModule.js", "GalleryMainModule", 40),
+                new FrontendModule("Admin", "Gallery", "fa-camera", "/admin/gallery", "/modules/gallery/assets/galleryModule.js", "GalleryAdminModule", 80));
     }
 
 }

@@ -22,6 +22,12 @@
             <column name="action_name" value="use admin module"/>
             <column name="rule" value='UserHasRole("Administrator")'/>
         </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="43"/>
+            <column name="module_name" value="lesson types"/>
+            <column name="action_name" value="use admin module"/>
+            <column name="rule" value='UserHasRole("Administrator")'/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>
