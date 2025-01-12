@@ -15,7 +15,10 @@
 
   <modules>
     <module>about</module>
+    <module>gallery</module>
+    <module>lessons</module>
     <module>news</module>
+    <module>newsletter</module>
   </modules>
 
 </project>

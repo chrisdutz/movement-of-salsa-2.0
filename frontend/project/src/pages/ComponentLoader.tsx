@@ -1,4 +1,4 @@
-import TermsAndConditions from "./content/TermsAndConditions.tsx"
+import TermsAndConditions from "./main/TermsAndConditions.tsx"
 import React, {Suspense} from "react"
 import axios from "axios"
 import {
@@ -11,6 +11,7 @@ import Logout from "./Logout.tsx"
 import Users from "./admin/Users.tsx";
 import Roles from "./admin/Roles.tsx";
 import Permissions from "./admin/Permissions.tsx";
+import Profile from "./user/Profile.tsx";
 
 const componentMap: { [key: string]: React.FC } = {
     Login: Login,
@@ -18,6 +19,7 @@ const componentMap: { [key: string]: React.FC } = {
     Permissions: Permissions,
     Roles: Roles,
     Users: Users,
+    Profile: Profile,
 };
 
 export const loadInternalComponent = (moduleName: string): React.ReactNode => {

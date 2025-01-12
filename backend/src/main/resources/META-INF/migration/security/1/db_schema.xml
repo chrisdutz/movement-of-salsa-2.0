@@ -66,6 +66,7 @@
         <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="sec_user_roles" constraintName="fk_sec_users_username" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sec_users"/>
         <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="sec_user_roles" constraintName="fk_sec_roles_name" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="sec_roles"/>
 
+        <!-- Create the default roles -->
         <insert tableName="sec_roles">
             <column name="id" valueNumeric="10"/>
             <column name="name" value="Administrator"/>
@@ -75,9 +76,10 @@
             <column name="name" value="User"/>
         </insert>
 
+        <!-- Create the default users -->
         <insert tableName="sec_users">
             <column name="id" valueNumeric="10"/>
-            <column name="email" value="admin"/>
+            <column name="email" value="admin@movement-of-salsa.de"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
             <column name="first_name" value="Default"/>
@@ -85,13 +87,14 @@
         </insert>
         <insert tableName="sec_users">
             <column name="id" valueNumeric="11"/>
-            <column name="email" value="user"/>
+            <column name="email" value="user@movement-of-salsa.de"/>
             <!-- This is "toddysoft" encoded -->
             <column name="password" value="$2a$10$.ZrCUpXHywuRrh4Ke5xVbuPGIitMQBRq5DeSQF9RqJjnpowQ5Ukm."/>
             <column name="first_name" value="Default"/>
             <column name="last_name" value="User"/>
         </insert>
 
+        <!-- Assign the roles to the users -->
         <insert tableName="sec_user_roles">
             <column name="user_id" valueNumeric="10"/>
             <column name="role_id" valueNumeric="10"/>
@@ -106,7 +109,6 @@
         </insert>
 
         <!-- Permissions Stuff -->
-
         <createTable tableName="sec_action_permission">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -143,25 +145,31 @@
         </insert>
         <insert tableName="sec_action_permission">
             <column name="id" valueNumeric="3"/>
+            <column name="module_name" value="profile"/>
+            <column name="action_name" value="use user module"/>
+            <column name="rule" value='UserHasRole("User")'/>
+        </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="4"/>
             <column name="module_name" value="permissions"/>
             <column name="action_name" value="use admin module"/>
             <column name="rule" value='UserHasRole("Administrator")'/>
         </insert>
         <insert tableName="sec_action_permission">
-            <column name="id" valueNumeric="4"/>
+            <column name="id" valueNumeric="5"/>
             <column name="module_name" value="login"/>
             <column name="action_name" value="use main module"/>
             <column name="rule" value="!LoggedIn()"/>
         </insert>
         <insert tableName="sec_action_permission">
-            <column name="id" valueNumeric="5"/>
+            <column name="id" valueNumeric="6"/>
             <column name="module_name" value="logout"/>
             <column name="action_name" value="use main module"/>
             <column name="rule" value="LoggedIn()"/>
         </insert>
 
         <insert tableName="sec_action_permission">
-            <column name="id" valueNumeric="6"/>
+            <column name="id" valueNumeric="7"/>
             <column name="module_name" value="user"/>
             <column name="action_name" value="list"/>
             <column name="rule" value="true"/>

@@ -14,7 +14,7 @@ public class LoginService implements FrontendModuleProvider {
         return List.of(
                 // Settings module, where an admin can manage users
                 new FrontendModule("Main", "Login", "fa-user", "/login", "", "Login", 100),
-                new FrontendModule("Main", "Logout", "fa-user", "/logout", "", "Logout", 101));
+                new FrontendModule("Main", "Logout", "fa-right-from-bracket", "/logout", "", "Logout", 101));
     }
 
 }

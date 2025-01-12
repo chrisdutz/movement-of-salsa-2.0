@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <changeSet author="cdutz" id="202501121123-1">
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="60"/>
+            <column name="module_name" value="newsletter"/>
+            <column name="action_name" value="use user module"/>
+            <column name="rule" value='UserHasRole("User")'/>
+        </insert>
+        <insert tableName="sec_action_permission">
+            <column name="id" valueNumeric="61"/>
+            <column name="module_name" value="newsletter"/>
+            <column name="action_name" value="use admin module"/>
+            <column name="rule" value='UserHasRole("Administrator")'/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

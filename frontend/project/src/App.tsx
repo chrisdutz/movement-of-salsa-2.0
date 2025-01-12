@@ -9,10 +9,10 @@ import Login from "./pages/Login.tsx";
 import Logout from "./pages/Logout.tsx";
 import {Toast} from "primereact/toast";
 import React, {useEffect, useRef} from "react";
-import TermsAndConditions from "./pages/content/TermsAndConditions.tsx";
-import Contact from "./pages/content/Contact.tsx";
-import Imprint from "./pages/content/Imprint.tsx";
-import Privacy from "./pages/content/Privacy.tsx";
+import TermsAndConditions from "./pages/main/TermsAndConditions.tsx";
+import Contact from "./pages/main/Contact.tsx";
+import Imprint from "./pages/main/Imprint.tsx";
+import Privacy from "./pages/main/Privacy.tsx";
 import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
 
 const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;

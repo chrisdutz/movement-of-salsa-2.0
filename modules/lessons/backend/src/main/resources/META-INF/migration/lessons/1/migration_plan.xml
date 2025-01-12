@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<migration-plan>
+    <schema-migration src="db_schema.xml"/>
+</migration-plan>

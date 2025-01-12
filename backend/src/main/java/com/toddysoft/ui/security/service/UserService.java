@@ -29,7 +29,9 @@ public class UserService implements FrontendModuleProvider {
     public List<FrontendModule> getFrontendModules() {
         return List.of(
                 // Settings module, where an admin can manage users
-                new FrontendModule("Admin", "Users", "fa-users", "/admin/users", "", "Users", 10));
+                new FrontendModule("Admin", "Users", "fa-users", "/admin/users", "", "Users", 10),
+                // Module, where users can edit the settings of their own user-object
+                new FrontendModule("User", "Profile", "fa-user", "/user/users", "", "Profile", 10));
     }
 
     @Transactional(readOnly = true)

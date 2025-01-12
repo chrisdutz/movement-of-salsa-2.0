@@ -16,13 +16,13 @@
         </createTable>
 
         <insert tableName="sec_action_permission">
-            <column name="id" valueNumeric="30"/>
+            <column name="id" valueNumeric="50"/>
             <column name="module_name" value="news"/>
             <column name="action_name" value="use main module"/>
             <column name="rule" value="true"/>
         </insert>
         <insert tableName="sec_action_permission">
-            <column name="id" valueNumeric="31"/>
+            <column name="id" valueNumeric="51"/>
             <column name="module_name" value="news"/>
             <column name="action_name" value="use admin module"/>
             <column name="rule" value='UserHasRole("Administrator")'/>
