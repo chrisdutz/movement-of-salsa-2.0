@@ -33,6 +33,6 @@ export default function NewsMainModule() {
                     </div>
                 </Card>
             )})}
-            </div>
+        </div>
     )
 }
