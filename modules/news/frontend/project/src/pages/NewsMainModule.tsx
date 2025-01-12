@@ -4,6 +4,7 @@ import {useSelector} from "react-redux";
 import axios from "axios";
 import {BaseStore} from "mainApp/Types";
 import {Card} from "primereact/card";
+import {Image} from "primereact/image";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -25,7 +26,13 @@ export default function NewsMainModule() {
     return (
         <div className="flex flex-column gap-4">
             {news && news.map(value => {
-                return (<Card title={value.title}><div dangerouslySetInnerHTML={{__html: value.description}}/></Card>)})}
-        </div>
-    )
-}
+                return (<Card title={value.title}>
+                    <div className="flex flex-column md:flex-row gap-4 w-full">
+                        <div><Image src={value.image.imageData}/></div>
+                        <div dangerouslySetInnerHTML={{__html: value.description}}/>
+                    </div>
+                </Card>
+            )})}
+            </div>
+            )
+            }
