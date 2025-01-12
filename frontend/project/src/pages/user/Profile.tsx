@@ -1,15 +1,18 @@
 import {Toolbar} from "primereact/toolbar";
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import {Button} from "primereact/button";
 import {confirmDialog} from "primereact/confirmdialog";
 import {RestApplicationClient, User} from "../../generated/plc4j-tools-ui-frontend.ts";
 import axios from "axios";
 import {InputNumber, InputNumberChangeEvent} from "primereact/inputnumber";
 import {InputText} from "primereact/inputtext";
+import {Toast} from "primereact/toast";
 
 const restClient = new RestApplicationClient(axios);
 
 export default function Profile() {
+    const toast = useRef<Toast>(null)
+
     const [initialized, setInitialized] = useState<boolean>(false)
     const [editItem, setEditItem] = useState<User | undefined>()
     const [dirty, setDirty] = useState<boolean>(false)
@@ -47,6 +50,12 @@ export default function Profile() {
                         onClick={() => {
                     if (editItem) {
                         restClient.saveUser(editItem).then(() => {
+                            toast.current?.show({severity: 'success', summary: 'Successful', detail: 'Profile saved', life: 3000})
+                            setDirty(false);
+                            setEditItem(undefined);
+                            setInitialized(false);
+                        }).catch(() => {
+                            toast.current?.show({severity: 'error', summary: 'Error', detail: 'Saving profile failed', life: 3000})
                             setDirty(false);
                             setEditItem(undefined);
                             setInitialized(false);
@@ -62,6 +71,7 @@ export default function Profile() {
 
     return (
         <>
+            <Toast ref={toast}/>
             <Toolbar className="mb-4" start={editorToolbarTemplate}/>
             <div className="p-fluid">
                 <div className="field">

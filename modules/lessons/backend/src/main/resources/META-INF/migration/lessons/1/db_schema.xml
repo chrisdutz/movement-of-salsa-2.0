@@ -4,6 +4,245 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9 http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
 
     <changeSet author="cdutz" id="20241226-1">
+        <createTable tableName="lessons_course_type">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="code" type="VARCHAR(10)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="list_order" type="INT"/>
+            <column name="image_data" type="LONGTEXT"/>
+            <column name="height" type="INT"/>
+            <column name="width" type="INT"/>
+        </createTable>
+
+
+        <createTable tableName="lessons_course">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="LONGTEXT"/>
+            <column name="fixed_costs" type="REAL"/>
+            <column name="closed" type="BIT" defaultValueBoolean="false"/>
+
+            <column name="course_type_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_course_course_type_id" tableName="lessons_course" unique="false">
+            <column name="course_type_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="course_type_id" baseTableName="lessons_course"
+                                 constraintName="fk_lessons_course_course_type_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course_type"/>
+
+
+        <createTable tableName="lessons_lesson">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="start_time" type="TIMESTAMP"/>
+            <column name="end_time" type="TIME"/>
+            <column name="location" type="VARCHAR(255)"/>
+            <column name="location_lat" type="DOUBLE"/>
+            <column name="location_lon" type="DOUBLE"/>
+
+            <column name="course_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_lesson_course_id" tableName="lessons_lesson" unique="false">
+            <column name="course_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="lessons_lesson"
+                                 constraintName="fk_lessons_lesson_course_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course"/>
+
+
+        <createTable tableName="lessons_couple">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="date" type="DATE"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="confirmed" type="BIT" defaultValueBoolean="false"/>
+
+            <column name="course_id" type="BIGINT"/>
+            <column name="gent_id" type="BIGINT"/>
+            <column name="lady_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_couple_course_id" tableName="lessons_couple" unique="false">
+            <column name="course_id"/>
+        </createIndex>
+        <createIndex indexName="fk_lessons_couple_gent_id" tableName="lessons_couple" unique="false">
+            <column name="gent_id"/>
+        </createIndex>
+        <createIndex indexName="fk_lessons_couple_lady_id" tableName="lessons_couple" unique="false">
+            <column name="lady_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="lessons_couple"
+                                 constraintName="fk_lessons_couple_course_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course"/>
+        <addForeignKeyConstraint baseColumnNames="gent_id" baseTableName="lessons_couple"
+                                 constraintName="fk_lessons_couple_gent_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="sec_users"/>
+        <addForeignKeyConstraint baseColumnNames="lady_id" baseTableName="lessons_couple"
+                                 constraintName="fk_lessons_couple_lady_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="sec_users"/>
+
+
+        <createTable tableName="lessons_course_registration">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="course_registration_type" type="VARCHAR(10)"/>
+            <column name="rate_name" type="VARCHAR(255)"/>
+            <column name="remarks" type="LONGTEXT"/>
+            <column name="price" type="REAL"/>
+            <column name="discount" type="REAL"/>
+            <column name="discount_remarks" type="LONGTEXT"/>
+
+            <column name="course_id" type="BIGINT"/>
+            <column name="registrar_id" type="BIGINT"/>
+            <column name="partner_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_course_registration_course_id" tableName="lessons_course_registration" unique="false">
+            <column name="course_id"/>
+        </createIndex>
+        <createIndex indexName="fk_lessons_course_registration_registrar_id" tableName="lessons_course_registration" unique="false">
+            <column name="registrar_id"/>
+        </createIndex>
+        <createIndex indexName="fk_lessons_course_registration_partner_id" tableName="lessons_course_registration" unique="false">
+            <column name="partner_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="lessons_course_registration"
+                                 constraintName="fk_lessons_course_registration_course_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course"/>
+        <addForeignKeyConstraint baseColumnNames="registrar_id" baseTableName="lessons_course_registration"
+                                 constraintName="fk_lessons_course_registration_resistrar_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="sec_users"/>
+        <addForeignKeyConstraint baseColumnNames="partner_id" baseTableName="lessons_course_registration"
+                                 constraintName="fk_lessons_course_registration_partner_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="sec_users"/>
+
+
+        <createTable tableName="lessons_course_type_rate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="price" type="REAL"/>
+            <column name="couple_rate" type="BIT" defaultValueBoolean="false"/>
+            <column name="list_order" type="INT"/>
+
+            <column name="course_type_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_course_type_rate_course_type_id" tableName="lessons_course_type_rate"
+                     unique="false">
+            <column name="course_type_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="course_type_id" baseTableName="lessons_course_type_rate"
+                                 constraintName="fk_lessons_course_type_rate_course_type_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course_type"/>
+
+
+        <createTable tableName="lessons_course_video">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="filename" type="VARCHAR(255)"/>
+
+            <column name="course_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_course_video_course_id" tableName="lessons_course_video" unique="false">
+            <column name="course_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="lessons_course_video"
+                                 constraintName="fk_lessons_course_video_course_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course"/>
+
+
+        <!--createTable tableName="lessons_course_type_news_registration">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="coursetype_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_course_type_news_registration_coursetype_id" tableName="lessons_course_type_news_registration" unique="false">
+            <column name="coursetype_id"/>
+        </createIndex>
+        <createIndex indexName="fk_lessons_course_type_news_registration_user_id" tableName="lessons_course_type_news_registration" unique="false">
+            <column name="user_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="coursetype_id" baseTableName="lessons_course_type_news_registration"
+                                 constraintName="fkc_lessons_course_type_news_registration_coursetype_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course_type"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="lessons_course_type_news_registration"
+                                 constraintName="fkc_lessons_course_type_news_registration_user_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="sec_users"/>
+
+
+        <createTable tableName="lessons_course_type_news_message">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="subject" type="VARCHAR(255)"/>
+            <column name="message" type="LONGTEXT"/>
+            <column name="date" type="DATETIME"/>
+
+            <column name="coursetype_id" type="BIGINT"/>
+        </createTable>
+        <createIndex indexName="fk_lessons_course_type_news_message_coursetype_id" tableName="lessons_course_type_news_message" unique="false">
+            <column name="coursetype_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="coursetype_id" baseTableName="lessons_course_type_news_message"
+                                 constraintName="fkc_lessons_course_type_news_message_coursetype_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="lessons_course_type"/>
+
+
+        <createTable tableName="lessons_course_type_news_post">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="date" type="DATETIME"/>
+
+            <column name="message_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <createIndex indexName="fk_lessons_course_type_news_post_message_id" tableName="lessons_course_type_news_post" unique="false">
+            <column name="message_id"/>
+        </createIndex>
+        <createIndex indexName="fk_lessons_course_type_news_post_user_id" tableName="lessons_course_type_news_post" unique="false">
+            <column name="user_id"/>
+        </createIndex>
+        <addForeignKeyConstraint baseColumnNames="message_id" baseTableName="lessons_course_type_news_post"
+                                 constraintName="fkc_lessons_course_type_news_post_message_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="newsletter_message"/>
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="lessons_course_type_news_post"
+                                 constraintName="fkc_lessons_course_type_news_post_user_id" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="sec_users"/-->
+
+
         <insert tableName="sec_action_permission">
             <column name="id" valueNumeric="40"/>
             <column name="module_name" value="lessons"/>

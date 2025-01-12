@@ -145,6 +145,12 @@ export interface GrantedAuthority extends Serializable {
     authority: string;
 }
 
+export interface Image {
+    height: number;
+    imageData: string;
+    width: number;
+}
+
 export interface LoginResponse {
     expiresIn: number;
     token: string;

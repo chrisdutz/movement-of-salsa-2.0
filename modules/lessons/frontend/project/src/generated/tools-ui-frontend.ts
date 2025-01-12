@@ -12,52 +12,61 @@ export class RestApplicationClient<O> {
     }
 
     /**
-     * HTTP GET /api/news
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.findAll
+     * HTTP GET /api/course-types
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.findAll
      */
-    findAll(options?: O): RestResponse<NewsEntry[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/news`, options: options });
+    findAll(options?: O): RestResponse<CourseType[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/course-types`, options: options });
     }
 
     /**
-     * HTTP POST /api/news
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.save
+     * HTTP POST /api/course-types
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.save
      */
-    save(arg0: NewsEntry, options?: O): RestResponse<NewsEntry> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/news`, data: arg0, options: options });
+    save(arg0: CourseType, options?: O): RestResponse<CourseType> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/course-types`, data: arg0, options: options });
     }
 
     /**
-     * HTTP DELETE /api/news/{id}
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.deleteById
+     * HTTP DELETE /api/course-types/{id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.deleteById
      */
     deleteById(id: string, options?: O): RestResponse<void> {
-        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/news/${id}`, options: options });
+        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/course-types/${id}`, options: options });
     }
 
     /**
-     * HTTP GET /api/news/{id}
-     * Java method: com.toddysoft.ui.modules.news.controller.NewsController.findById
+     * HTTP GET /api/course-types/{id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.findById
      */
-    findById(id: string, options?: O): RestResponse<NewsEntry> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/news/${id}`, options: options });
+    findById(id: string, options?: O): RestResponse<CourseType> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/course-types/${id}`, options: options });
     }
+}
+
+export interface CourseType {
+    code: string;
+    description: string;
+    id: number;
+    image: Image;
+    listOrder: number;
+    rates: CourseTypeRate[];
+    title: string;
+}
+
+export interface CourseTypeRate {
+    coupleRate: boolean;
+    courseType: CourseType;
+    id: number;
+    listOrder: number;
+    price: number;
+    title: string;
 }
 
 export interface Image {
     height: number;
     imageData: string;
     width: number;
-}
-
-export interface NewsEntry {
-    description: string;
-    id: number;
-    image: Image;
-    listPosition: number;
-    newsEndDate: Date;
-    newsStartDate: Date;
-    title: string;
 }
 
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;

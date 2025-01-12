@@ -1,6 +1,7 @@
 package com.toddysoft.ui.modules.news.entity;
 
 
+import com.toddysoft.ui.image.entity.Image;
 import jakarta.persistence.*;
 
 import java.util.Calendar;
@@ -24,6 +25,9 @@ public class NewsEntry {
 
     @Lob
     protected String description;
+
+    @Embedded
+    protected Image image;
 
     public NewsEntry() {
     }
@@ -76,4 +80,11 @@ public class NewsEntry {
         this.description = description;
     }
 
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
 }

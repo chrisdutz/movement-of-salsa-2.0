@@ -59,6 +59,7 @@
               <classes>
                 <!-- Here come the REST controllers -->
                 <class>com.toddysoft.ui.contact.controller.ContactController</class>
+                <class>com.toddysoft.ui.image.entity.Image</class>
                 <class>com.toddysoft.ui.modules.controller.ApplicationController</class>
                 <class>com.toddysoft.ui.permissions.controller.PermissionController</class>
                 <class>com.toddysoft.ui.security.controller.AuthenticationController</class>

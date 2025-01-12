@@ -13,6 +13,9 @@
             <column name="description" type="LONGTEXT"/>
             <column name="news_start_date" type="DATETIME"/>
             <column name="news_end_date" type="DATETIME"/>
+            <column name="image_data" type="LONGTEXT"/>
+            <column name="height" type="INT"/>
+            <column name="width" type="INT"/>
         </createTable>
 
         <insert tableName="sec_action_permission">

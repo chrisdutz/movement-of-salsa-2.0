@@ -1,5 +1,5 @@
 import {NewsEntry, RestApplicationClient} from "../generated/tools-ui-frontend.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import axios from "axios";
 import {BaseStore} from "mainApp/Types";
@@ -12,18 +12,15 @@ export default function NewsMainModule() {
     const authToken = useSelector((baseState: BaseStore) => {
         return baseState.authentication.authToken
     })
-    const [initialized, setInitialized] = useState(false)
     const [news, setNews] = useState<NewsEntry[]>([]);
 
-    // Load the initial list of drivers and connections and initialize the store with that.
-    if (!initialized) {
+    useEffect(() => {
         // Make all axios requests use the bearer token from now on.
         axios.defaults.headers.common['Authorization'] = "Bearer " + authToken
-        setInitialized(true);
         restClient.findAll().then(newsResponse => {
             setNews(newsResponse.data)
         })
-    }
+    }, [authToken]);
 
     return (
         <div className="flex flex-column gap-4">

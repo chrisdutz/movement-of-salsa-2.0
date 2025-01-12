@@ -15,6 +15,8 @@ import {Editor, EditorTextChangeEvent} from "primereact/editor";
 import {MultiSelect, MultiSelectChangeEvent} from "primereact/multiselect";
 import {Dropdown, DropdownChangeEvent} from "primereact/dropdown";
 import {Password} from "primereact/password";
+import ImageEditor, {ImageEditorEvent} from "./ImageEditor.tsx";
+import {Checkbox} from "primereact/checkbox";
 
 export interface AdminController<E> {
     findAll(options?: Axios.AxiosRequestConfig): RestResponse<E[]>
@@ -145,7 +147,9 @@ export default function AdminList<T extends DataTableValue>({
     const editorToolbarTemplate = () => {
         return (
             <div className="flex flex-wrap gap-2">
-                <Button label="Save" icon="pi pi-save" severity="success" className="mr-2" onClick={() => {
+                <Button label="Save" icon="pi pi-save" severity="success" className="mr-2"
+                        disabled={!dirty}
+                        onClick={() => {
                     if (editItem) {
                         controller.save(editItem).then(() => {
                             setDirty(false);
@@ -187,6 +191,13 @@ export default function AdminList<T extends DataTableValue>({
         }*/
 
         switch (column.fieldType) {
+            case "Boolean":
+                return <Checkbox id={"field" + index}
+                                 checked={value}
+                                 onChange={event => onChange(event.checked)}
+                                 disabled={!column.editable}
+                                 required={column.required}
+                                 className={classNames({'p-invalid': column.required && !value})}/>
             case "Date":
                 return <Calendar id={"field" + index}
                                  value={value}
@@ -226,6 +237,13 @@ export default function AdminList<T extends DataTableValue>({
                                  disabled={!column.editable}
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
+            case "Image":
+                return <ImageEditor id={"field" + index}
+                                    value={value}
+                                    onChange={(event: ImageEditorEvent) => onChange(event.value)}
+                                    disabled={!column.editable}
+                                    required={column.required}
+                                    className={classNames({'p-invalid': column.required && !value})}/>
             case "Number":
                 return <InputNumber id={"field" + index}
                                     value={value}
