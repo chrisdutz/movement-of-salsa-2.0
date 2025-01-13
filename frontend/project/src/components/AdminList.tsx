@@ -2,7 +2,7 @@ import {Toast} from "primereact/toast";
 import {Toolbar} from "primereact/toolbar";
 import {DataTable, DataTableValue} from "primereact/datatable";
 import {Column} from "primereact/column";
-import React, {useRef, useState} from "react";
+import React, {JSX, useRef, useState} from "react";
 import {RestResponse} from "../generated/plc4j-tools-ui-frontend";
 import {Button} from "primereact/button";
 import * as Axios from "axios";
@@ -42,7 +42,8 @@ export interface EditorColumn<E> {
     getter?: (item: E) => any,
     setter?: (item: E, value: any) => void,
     selectOptions?: any[],
-    optionLabel?: string
+    optionLabel?: string,
+    fieldEditor?: (value:E, setValue: (newValue:E) => void) => JSX.Element
 }
 
 interface AdminListProps<T> {
@@ -68,6 +69,11 @@ export default function AdminList<T extends DataTableValue>({
     const [items, setItems] = useState<T[]>([]);
     const [editItem, setEditItem] = useState<T | undefined>()
     const [dirty, setDirty] = useState<boolean>(false)
+
+    function setEditItemAndMarkDirty(value: T | undefined) {
+        setEditItem(value)
+        setDirty(true);
+    }
 
     if (!initialized) {
         setInitialized(true);
@@ -198,6 +204,8 @@ export default function AdminList<T extends DataTableValue>({
                                  disabled={!column.editable}
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
+            case "Custom":
+                return column.fieldEditor && column.fieldEditor(editItem, setEditItemAndMarkDirty)
             case "Date":
                 return <Calendar id={"field" + index}
                                  value={value}

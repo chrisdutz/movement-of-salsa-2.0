@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "build:dev": "tsc && vite build --mode development --minify false",
     "lint": "eslint  --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "antlr4ts": "antlr4ts src/generated/permissions/parser/Expression.g4",

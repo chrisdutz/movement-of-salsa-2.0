@@ -32,6 +32,10 @@ public class CourseTypeController implements AdminController<CourseType> {
 
     @PostMapping
     public CourseType save(@RequestBody CourseType item) {
+        // Link the course-type objects.
+        item.getRates().forEach(courseTypeRate -> courseTypeRate.setCourseType(item));
+
+        // Save the entity.
         if (item.getId() == 0) {
             return courseTypeService.createItem(item);
         } else {

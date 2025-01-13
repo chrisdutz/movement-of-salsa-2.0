@@ -1,5 +1,7 @@
 package com.toddysoft.ui.modules.lessons.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,6 +20,8 @@ public class CourseTypeRate implements Comparable<CourseTypeRate> {
     protected boolean coupleRate;
 
     @ManyToOne
+    // Ignoring this, as otherwise we'd have a circular json dependency.
+    @JsonIgnore
     protected CourseType courseType;
 
     public CourseTypeRate() {

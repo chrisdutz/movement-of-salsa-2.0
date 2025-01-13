@@ -56,7 +56,6 @@ export interface CourseType {
 
 export interface CourseTypeRate {
     coupleRate: boolean;
-    courseType: CourseType;
     id: number;
     listOrder: number;
     price: number;

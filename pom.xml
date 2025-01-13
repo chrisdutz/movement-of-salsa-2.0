@@ -21,6 +21,8 @@
     <derby.version>10.17.1.0</derby.version>
 
     <junit.jupiter.version>5.11.4</junit.jupiter.version>
+
+    <npm.build.arguments>run build</npm.build.arguments>
   </properties>
 
   <modules>
@@ -143,5 +145,14 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
+  <profiles>
+    <profile>
+      <id>development</id>
+      <properties>
+        <npm.build.arguments>run build:dev</npm.build.arguments>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>
