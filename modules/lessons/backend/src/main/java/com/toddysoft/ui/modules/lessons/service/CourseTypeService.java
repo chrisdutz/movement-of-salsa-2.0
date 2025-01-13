@@ -1,5 +1,7 @@
 package com.toddysoft.ui.modules.lessons.service;
 
+import com.toddysoft.ui.image.entity.Image;
+import com.toddysoft.ui.image.service.ImageService;
 import com.toddysoft.ui.modules.lessons.entity.CourseType;
 import com.toddysoft.ui.modules.lessons.repository.CourseTypeRepository;
 import org.springframework.stereotype.Component;
@@ -11,10 +13,11 @@ import java.util.List;
 public class CourseTypeService
 {
     private final CourseTypeRepository courseTypeRepository;
-    //private ImageService imageService;
+    private final ImageService imageService;
 
-    public CourseTypeService(CourseTypeRepository courseTypeRepository) {
+    public CourseTypeService(CourseTypeRepository courseTypeRepository, ImageService imageService) {
         this.courseTypeRepository = courseTypeRepository;
+        this.imageService = imageService;
     }
 
     //////////////////////////////////////////////
@@ -24,10 +27,10 @@ public class CourseTypeService
     @Transactional
     public CourseType createItem(CourseType courseType) {
         // If some image-data was provided ... resize it.
-        /*if((courseType.getImage() != null) && (courseType.getImage().getImageData() != null)) {
+        if((courseType.getImage() != null) && (courseType.getImage().getImageData() != null)) {
             final Image resizedImage = imageService.resizeImage(courseType.getImage().getImageData(), 240, 240);
-            newsEntry.setImage(resizedImage);
-        }*/
+            courseType.setImage(resizedImage);
+        }
 
         return courseTypeRepository.save(courseType);
     }
@@ -40,10 +43,10 @@ public class CourseTypeService
     @Transactional
     public CourseType updateItem(CourseType courseType) {
         // If some image-data was provided ... resize it.
-        /*if((courseType.getImage() != null) && (courseType.getImage().getImageData() != null)) {
+        if((courseType.getImage() != null) && (courseType.getImage().getImageData() != null)) {
             final Image resizedImage = imageService.resizeImage(courseType.getImage().getImageData(), 240, 240);
             courseType.setImage(resizedImage);
-        }*/
+        }
         return courseTypeRepository.save(courseType);
     }
 
