@@ -26,7 +26,7 @@ public class CourseTypeController implements AdminController<CourseType> {
     }
 
     @GetMapping("/{id}")
-    public CourseType findById(@PathVariable long id) {
+    public CourseType findById(@PathVariable("id") long id) {
         return courseTypeService.readItem(id);
     }
 
@@ -44,7 +44,7 @@ public class CourseTypeController implements AdminController<CourseType> {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable long id) {
+    public void deleteById(@PathVariable("id") long id) {
         CourseType item = courseTypeService.readItem(id);
         courseTypeService.deleteItem(item);
     }

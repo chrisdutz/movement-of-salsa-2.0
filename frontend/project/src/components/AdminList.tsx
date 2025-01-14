@@ -2,7 +2,7 @@ import {Toast} from "primereact/toast";
 import {Toolbar} from "primereact/toolbar";
 import {DataTable, DataTableValue} from "primereact/datatable";
 import {Column} from "primereact/column";
-import React, {JSX, useRef, useState} from "react";
+import React, {JSX, useEffect, useRef, useState} from "react";
 import {RestResponse} from "../generated/plc4j-tools-ui-frontend";
 import {Button} from "primereact/button";
 import * as Axios from "axios";
@@ -17,6 +17,7 @@ import {Dropdown, DropdownChangeEvent} from "primereact/dropdown";
 import {Password} from "primereact/password";
 import ImageEditor, {ImageEditorEvent} from "./ImageEditor.tsx";
 import {Checkbox} from "primereact/checkbox";
+import {ProgressSpinner} from "primereact/progressspinner";
 
 export interface AdminController<E> {
     findAll(options?: Axios.AxiosRequestConfig): RestResponse<E[]>
@@ -43,7 +44,7 @@ export interface EditorColumn<E> {
     setter?: (item: E, value: any) => void,
     selectOptions?: any[],
     optionLabel?: string,
-    fieldEditor?: (value:E, setValue: (newValue:E) => void) => JSX.Element
+    fieldEditor?: (value: E, setValue: (newValue: E) => void) => JSX.Element
 }
 
 interface AdminListProps<T> {
@@ -66,32 +67,33 @@ export default function AdminList<T extends DataTableValue>({
     const toast = useRef<Toast>(null)
 
     const [initialized, setInitialized] = useState<boolean>(false)
+    const [loading, setLoading] = useState(false);
     const [items, setItems] = useState<T[]>([]);
     const [editItem, setEditItem] = useState<T | undefined>()
     const [dirty, setDirty] = useState<boolean>(false)
+
+    useEffect(() => {
+        if (!initialized) {
+            setLoading(true);
+            setInitialized(true);
+            controller.findAll().then(response => {
+                setItems(response.data)
+                setLoading(false);
+            })
+            if (initializer) {
+                initializer();
+            }
+        }
+    }, [initialized, controller, initializer]);
 
     function setEditItemAndMarkDirty(value: T | undefined) {
         setEditItem(value)
         setDirty(true);
     }
 
-    if (!initialized) {
-        setInitialized(true);
-        controller.findAll().then(response => {
-            setItems(response.data)
-        })
-        if (initializer) {
-            initializer();
-        }
-    }
+    const showCreateItemDialog = () => setEditItem(emptyItem)
 
-    const showCreateItemDialog = () => {
-        setEditItem(emptyItem);
-    }
-
-    const showEditItemDialog = (item: T) => {
-        setEditItem(item);
-    }
+    const showEditItemDialog = (item: T) => setEditItem(item);
 
     const showConfirmDeleteItemDialog = (item: T) => {
         confirmDialog({
@@ -100,9 +102,7 @@ export default function AdminList<T extends DataTableValue>({
             icon: 'pi pi-exclamation-triangle',
             defaultFocus: 'accept',
             accept: () => {
-                if (controller.delete) {
-                    controller.delete(item).then(() => setInitialized(false))
-                }
+                controller.delete?.(item).then(() => setInitialized(false));
             }
         });
     }
@@ -126,6 +126,16 @@ export default function AdminList<T extends DataTableValue>({
             setEditItem(undefined);
         }
     }
+
+    const handleSave = () => {
+        if (editItem) {
+            controller.save(editItem).then(() => {
+                setDirty(false);
+                setEditItem(undefined);
+                setInitialized(false);
+            });
+        }
+    };
 
     const listToolbarTemplate = () => {
         return (
@@ -152,69 +162,64 @@ export default function AdminList<T extends DataTableValue>({
 
     const editorToolbarTemplate = () => {
         return (
-            <div className="flex flex-wrap gap-2">
-                <Button label="Save" icon="pi pi-save" severity="success" className="mr-2"
+            <div className="flex align-items-center gap-2">
+                <Button label="Save" icon="pi pi-save" severity="success"
                         disabled={!dirty}
+                        onClick={handleSave}/>
+                <Button label="Abort" icon="pi pi-times-circle" severity="danger"
                         onClick={() => {
-                    if (editItem) {
-                        controller.save(editItem).then(() => {
-                            setDirty(false);
-                            setEditItem(undefined);
-                            setInitialized(false);
-                        });
-                    }
-                }}/>
-                <Button label="Abort" icon="pi pi-times-circle" severity="danger" className="mr-2"
-                        onClick={() => editItem && showConfirmAbortEditItemDialog()}/>
+                            editItem && showConfirmAbortEditItemDialog()
+                        }}/>
             </div>
         )
     }
 
     function renderEditor(index: number, column: EditorColumn<T>, editItem: T) {
-        let value: any;
-        let onChange: (value: any) => void;
-        if (column.field) {
-            onChange = (changedValue: any) => {
-                const updatedItem = {...editItem, [column.field as string]: changedValue};
-                setEditItem(updatedItem);
-                setDirty(true);
-            }
-            value = editItem[column.field];
-        } else if (column.getter) {
-            console.log("Using `getter` not implemented yet")
-            /*if(editItem && column && column.setter && value) {
-                onChange = (value: any) => {
-                    column.setter(editItem, value);
-                    setDirty(true);
-                }
-            }*/
-            value = column.getter(editItem);
-        }
-
-        // Just output the text, if the column is not editable
-        /*if(!column.editable) {
-            return value;
-        }*/
+        const value = column.field ? editItem[column.field] : column.getter?.(editItem);
+        const onChange = (changedValue: any) => {
+            const updatedItem = column.field
+                ? {...editItem, [column.field]: changedValue}
+                : {...editItem};
+            column.setter?.(updatedItem, changedValue);
+            setEditItemAndMarkDirty(updatedItem);
+        };
 
         switch (column.fieldType) {
             case "Boolean":
-                return <Checkbox id={"field" + index}
+                return <Checkbox id={`field${index}`}
                                  checked={value}
                                  onChange={event => onChange(event.checked)}
                                  disabled={!column.editable}
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "Custom":
-                return column.fieldEditor && column.fieldEditor(editItem, setEditItemAndMarkDirty)
+                // Create a stable wrapper for the custom field editor to isolate the React hooks of any child
+                // from those of the parent (Particularly important when using an AdminList as editor for a
+                // field of the current AdminList instance).
+                const CustomFieldWrapper = ({column, value, setValue}: {
+                    column: EditorColumn<T>,
+                    value: T,
+                    setValue: (newValue: T) => void
+                }) => {
+                    // Ensure the fieldEditor function exists before calling it
+                    return column.fieldEditor
+                        ? column.fieldEditor(value, (updatedValue: T) => setValue(updatedValue))
+                        : null;
+                };
+
+                return <CustomFieldWrapper
+                    column={column}
+                    value={editItem}
+                    setValue={setEditItemAndMarkDirty}/>
             case "Date":
-                return <Calendar id={"field" + index}
+                return <Calendar id={`field${index}`}
                                  value={value}
                                  onChange={(event) => onChange(event.value)}
                                  disabled={!column.editable}
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "DateTime":
-                return <Calendar id={"field" + index}
+                return <Calendar id={`field${index}`}
                                  value={value}
                                  onChange={(event) => onChange(event.value)}
                                  showTime={true}
@@ -223,7 +228,7 @@ export default function AdminList<T extends DataTableValue>({
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "Editor":
-                return <Editor id={"field" + index}
+                return <Editor id={`field${index}`}
                                value={value}
                                onTextChange={(event: EditorTextChangeEvent) => onChange(event.htmlValue)}
                                disabled={!column.editable}
@@ -231,14 +236,14 @@ export default function AdminList<T extends DataTableValue>({
                                className={classNames({'p-invalid': column.required && !value})}
                                style={{height: '320px', background: 'white', color: 'black'}}/>
             case "Email":
-                return <InputText id={"field" + index}
+                return <InputText id={`field${index}`}
                                   value={value}
                                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
                                   disabled={!column.editable}
                                   required={column.required}
                                   className={classNames({'p-invalid': column.required && !value})}/>
             case "Enum":
-                return <Dropdown id={"field" + index}
+                return <Dropdown id={`field${index}`}
                                  value={value}
                                  options={column.selectOptions}
                                  onChange={(event: DropdownChangeEvent) => onChange(event.value)}
@@ -246,28 +251,28 @@ export default function AdminList<T extends DataTableValue>({
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "Image":
-                return <ImageEditor id={"field" + index}
+                return <ImageEditor id={`field${index}`}
                                     value={value}
                                     onChange={(event: ImageEditorEvent) => onChange(event.value)}
                                     disabled={!column.editable}
                                     required={column.required}
                                     className={classNames({'p-invalid': column.required && !value})}/>
             case "Number":
-                return <InputNumber id={"field" + index}
+                return <InputNumber id={`field${index}`}
                                     value={value}
                                     onChange={(event: InputNumberChangeEvent) => onChange(event.value)}
                                     disabled={!column.editable}
                                     required={column.required}
                                     className={classNames({'p-invalid': column.required && !value})}/>
             case "Password":
-                return <Password id={"field" + index}
+                return <Password id={`field${index}`}
                                  value={value}
                                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
                                  disabled={!column.editable}
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "Select":
-                return <Dropdown id={"field" + index}
+                return <Dropdown id={`field${index}`}
                                  value={value}
                                  options={column.selectOptions}
                                  optionLabel={column.optionLabel}
@@ -276,14 +281,14 @@ export default function AdminList<T extends DataTableValue>({
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "Text":
-                return <InputText id={"field" + index}
+                return <InputText id={`field${index}`}
                                   value={value}
                                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
                                   disabled={!column.editable}
                                   required={column.required}
                                   className={classNames({'p-invalid': column.required && !value})}/>
             case "Time":
-                return <Calendar id={"field" + index}
+                return <Calendar id={`field${index}`}
                                  value={value}
                                  onChange={(event) => onChange(event.value)}
                                  timeOnly={true} hourFormat="24"
@@ -292,7 +297,7 @@ export default function AdminList<T extends DataTableValue>({
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "MultiSelect":
                 console.log("Options", column.selectOptions)
-                return <MultiSelect id={"field" + index}
+                return <MultiSelect id={`field${index}`}
                                     value={value}
                                     options={column.selectOptions}
                                     optionLabel={column.optionLabel}
@@ -300,10 +305,16 @@ export default function AdminList<T extends DataTableValue>({
                                     disabled={!column.editable}
                                     required={column.required}
                                     className={classNames({'p-invalid': column.required && !value})}/>
+            default:
+                console.log(`Unhandled field type: ${column.fieldType}`)
+                return <span>{value}</span>;
         }
-        return <></>
     }
 
+    // Output a loading spinner as long as we're loading data
+    if (loading) return <ProgressSpinner/>;
+
+    // Otherwise render normally
     return (
         <>
             <Toast ref={toast}/>
@@ -316,13 +327,15 @@ export default function AdminList<T extends DataTableValue>({
                     <Toolbar className="mb-4" start={listToolbarTemplate}/>
                     <DataTable value={items} sortField={listSortColumn} sortOrder={-1} showGridlines stripedRows
                                tableStyle={{minWidth: '50rem'}}>
-                        {listColumns.map((column) => {
+                        {listColumns.map((column, index) => {
                             if (column.field) {
-                                return <Column header={column.header}
+                                return <Column key={"column" + index}
+                                               header={column.header}
                                                field={column.field}
                                                sortable={column.sortable}/>
                             } else if (column.getter) {
-                                return <Column header={column.header}
+                                return <Column key={"column" + index}
+                                               header={column.header}
                                                body={column.getter}
                                                sortable={column.sortable}/>
                             }

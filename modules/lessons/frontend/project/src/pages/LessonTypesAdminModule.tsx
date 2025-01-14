@@ -4,14 +4,8 @@ import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 
 import AdminList from "mainApp/components/AdminList";
 import {CourseType, CourseTypeRate, RestApplicationClient, RestResponse} from "../generated/tools-ui-frontend.ts";
-import axios, {AxiosRequestConfig} from "axios";
-import {DataTable} from "primereact/datatable";
-import {Column, ColumnEditorOptions} from "primereact/column";
-import {Button} from "primereact/button";
-import {InputText} from "primereact/inputtext";
-import {InputNumber, InputNumberChangeEvent} from "primereact/inputnumber";
-import {Checkbox, CheckboxChangeEvent} from "primereact/checkbox";
-import React from "react";
+import axios, * as Axios from "axios";
+import {AxiosRequestConfig} from "axios";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -38,126 +32,77 @@ export default function LessonTypesAdminModule() {
             {
                 label: "Rates", required: false, editable: true, fieldType: "Custom", field: "rates", fieldEditor:
                     (value, setValue) => {
-                        // Handler for adding a new rate
-                        function addRate() {
-                            console.log("Before adding", value)
-                            const updatedRates = [...value.rates, {
+                        return AdminList<CourseTypeRate>({
+                            emptyItem: {
                                 id: 0, listOrder: 0, title: "", price: 0, coupleRate: false
-                            }]
-                            const updatedCourseType = {
-                                ...value,
-                                rates: updatedRates
-                            }
-                            setValue(updatedCourseType)
-                            console.log("After adding", updatedCourseType)
-                        }
-
-                        // Template for the buttons for deleting a given rate
-                        const listItemActionsTemplate = (item: CourseTypeRate) => {
-                            return (
-                                <React.Fragment>
-                                    <Button icon="pi pi-trash" rounded outlined className="mr-2"
-                                            onClick={() => {
-                                                const index = value.rates.indexOf(item, 0);
-                                                if (index > -1) {
-                                                    console.log("value.rates before", value.rates)
-                                                    value.rates.splice(index, 1);
-                                                    const updatedCourseType = {
-                                                        ...value,
-                                                        rates: value.rates
-                                                    }
-                                                    setValue(updatedCourseType)
-                                                    console.log("value.rates after", value.rates.length)
-                                                }
-                                            }}/>
-                                </React.Fragment>
-                            )
-                        }
-
-                        function listOrderEditor(options: ColumnEditorOptions) {
-                            return <InputNumber value={options.value} maxFractionDigits={0}
-                                                onChange={(e: InputNumberChangeEvent) => {
-                                                    const updatedRates = [...value.rates];
-                                                    if (e.value) {
-                                                        updatedRates[options.rowIndex].listOrder = e.value;
-                                                    }
-                                                    const updatedCourseType = {
-                                                        ...value,
-                                                        rates: updatedRates
-                                                    }
-                                                    setValue(updatedCourseType)
-                                                    console.log("value.rates after", updatedCourseType)
-                                                }}/>;
-                        }
-
-                        function titleEditor(options: ColumnEditorOptions) {
-                            return <InputText type="text" value={options.value}
-                                              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                  const updatedRates = [...value.rates];
-                                                  console.log("Title", e.target.value, e)
-                                                  if (e.target.value) {
-                                                      updatedRates[options.rowIndex].title = e.target.value;
-                                                  }
-                                                  const updatedCourseType = {
-                                                      ...value,
-                                                      rates: updatedRates
-                                                  }
-                                                  setValue(updatedCourseType)
-                                                  console.log("value.rates after", updatedCourseType)
-                                              }}/>;
-                        }
-
-                        function priceEditor(options: ColumnEditorOptions) {
-                            return <InputNumber value={options.value} maxFractionDigits={2}
-                                                onChange={(e: InputNumberChangeEvent) => {
-                                                    const updatedRates = [...value.rates];
-                                                    if (e.value) {
-                                                        updatedRates[options.rowIndex].price = e.value;
-                                                    }
-                                                    const updatedCourseType = {
-                                                        ...value,
-                                                        rates: updatedRates
-                                                    }
-                                                    setValue(updatedCourseType)
-                                                    console.log("value.rates after", updatedCourseType)
-                                                }}/>;
-                        }
-
-                        function coupleRateEditor(options: ColumnEditorOptions) {
-                            return <Checkbox checked={options.value} onChange={(e: CheckboxChangeEvent) => {
-                                const updatedRates = [...value.rates];
-                                console.log("Event", e)
-                                console.log("Options", options)
-                                console.log("Rates", updatedRates)
-                                console.log("Row", options.rowIndex)
-                                console.log("Checked", e.checked, e)
-                                if (e.checked != undefined) {
-                                    console.log("Before Update", updatedRates[options.rowIndex])
-                                    updatedRates[options.rowIndex].coupleRate = e.checked;
-                                    console.log("After Update", updatedRates[options.rowIndex])
-                                }
-                                const updatedCourseType = {
-                                    ...value,
-                                    rates: updatedRates
-                                }
-                                setValue(updatedCourseType)
-                            }}/>;
-                        }
-
-                        return <div>
-                            <Button label="Add" onClick={() => addRate()}/>
-                            <DataTable value={value.rates} editMode="cell">
-                                <Column key="ratePos" field="listOrder" header="Position"
-                                        editor={(options) => listOrderEditor(options)}/>
-                                <Column key="rateTitle" field="title" header="Title"
-                                        editor={(options) => titleEditor(options)}/>
-                                <Column key="ratePrice" field="price" header="Price"
-                                        editor={(options) => priceEditor(options)}/>
-                                <Column key="rateCoupleRate" field="coupleRate" header="Couple Rate"
-                                        editor={(options) => coupleRateEditor(options)}/>
-                                <Column key="rateDelete" body={listItemActionsTemplate}/>
-                            </DataTable>
-                        </div>
+                            },
+                            listColumns: [
+                                {sortable: true, header: "Position", field: "listOrder"},
+                                {sortable: true, header: "Title", field: "title"},
+                                {sortable: true, header: "Price", field: "price"},
+                                {sortable: true, header: "Couple Rate", field: "coupleRate"}
+                            ],
+                            listSortColumn: "listOrder",
+                            editorColumns: [
+                                {
+                                    label: "Position",
+                                    required: true,
+                                    editable: true,
+                                    fieldType: "Number",
+                                    field: "listOrder"
+                                },
+                                {label: "Title", required: true, editable: true, fieldType: "Text", field: "title"},
+                                {label: "Price", required: true, editable: true, fieldType: "Number", field: "price"},
+                                {
+                                    label: "Couple Rate",
+                                    required: false,
+                                    editable: true,
+                                    fieldType: "Boolean",
+                                    field: "coupleRate"
+                                },
+                            ],
+                            controller: {
+                                findAll(): RestResponse<CourseTypeRate[]> {
+                                    const response: Axios.GenericAxiosResponse<CourseTypeRate[]> = {
+                                        data: value.rates,
+                                        status: 200,
+                                        statusText: "OK",
+                                        headers: {},
+                                        config: {headers: {} as Axios.AxiosRequestHeaders},
+                                        request: {},
+                                    };
+                                    return Promise.resolve(response);
+                                },
+                                save(entry: CourseTypeRate): RestResponse<CourseTypeRate> {
+                                    // Replace the old instance of the rate with the new one.
+                                    value.rates = value.rates.map(curValue => curValue.id == entry.id ? entry : curValue)
+                                    setValue(value)
+                                    const response: Axios.GenericAxiosResponse<CourseTypeRate> = {
+                                        data: entry,
+                                        status: 200,
+                                        statusText: "OK",
+                                        headers: {},
+                                        config: {headers: {} as Axios.AxiosRequestHeaders},
+                                        request: {},
+                                    };
+                                    return Promise.resolve(response);
+                                },
+                                delete(entry: CourseTypeRate): RestResponse<void> {
+                                    // Filter out the currently selected item.
+                                    value.rates = value.rates.filter(curValue => curValue.id != entry.id)
+                                    setValue(value)
+                                    const response: Axios.GenericAxiosResponse<void> = {
+                                        data: undefined,
+                                        status: 200,
+                                        statusText: "OK",
+                                        headers: {},
+                                        config: {headers: {} as Axios.AxiosRequestHeaders},
+                                        request: {},
+                                    };
+                                    return Promise.resolve(response);
+                                },
+                            },
+                        })
                     }
             }
         ],
@@ -169,7 +114,7 @@ export default function LessonTypesAdminModule() {
                 return restClient.save(entry, options);
             },
             delete: function (entry: CourseType, options?: AxiosRequestConfig): RestResponse<void> {
-                return restClient.deleteById(entry.id.toString(), options)
+                return restClient.deleteById(entry.id, options)
             }
         },
     })

@@ -31,7 +31,7 @@ export class RestApplicationClient<O> {
      * HTTP DELETE /api/course-types/{id}
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.deleteById
      */
-    deleteById(id: string, options?: O): RestResponse<void> {
+    deleteById(id: number, options?: O): RestResponse<void> {
         return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/course-types/${id}`, options: options });
     }
 
