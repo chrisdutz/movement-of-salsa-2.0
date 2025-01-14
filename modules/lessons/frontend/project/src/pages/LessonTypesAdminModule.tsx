@@ -13,21 +13,23 @@ const restClient = new RestApplicationClient(axios);
 export default function LessonTypesAdminModule() {
     return AdminList<CourseType>({
         emptyItem: {
-            id: 0, code: "", description: "", image: {
+            id: 0, code: "", description: "", hidden: false, image: {
                 height: 0, width: 0, imageData: ""
             }, listOrder: 0, rates: [], title: ""
         },
         listColumns: [
             {sortable: true, header: "Pos", field: "listOrder"},
             {sortable: true, header: "Code", field: "code"},
-            {sortable: true, header: "Title", field: "title"}
+            {sortable: true, header: "Title", field: "title"},
+            {sortable: true, header: "Hidden", field: "hidden"}
         ],
-        listSortColumn: "listPosition",
+        listSortColumn: "listOrder",
         editorColumns: [
             {label: "Position", required: true, editable: true, fieldType: "Number", field: "listOrder"},
             {label: "Code", required: true, editable: true, fieldType: "Text", field: "code"},
             {label: "Title", required: true, editable: true, fieldType: "Text", field: "title"},
             {label: "Description", required: true, editable: true, fieldType: "Editor", field: "description"},
+            {label: "Hidden", required: false, editable: true, fieldType: "Boolean", field: "hidden"},
             {label: "Image", required: true, editable: true, fieldType: "Image", field: "image"},
             {
                 label: "Rates", required: false, editable: true, fieldType: "Custom", field: "rates", fieldEditor:

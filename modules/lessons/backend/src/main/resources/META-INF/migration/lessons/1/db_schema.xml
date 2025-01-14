@@ -11,6 +11,7 @@
             <column name="code" type="VARCHAR(10)"/>
             <column name="title" type="VARCHAR(255)"/>
             <column name="description" type="LONGTEXT"/>
+            <column name="hidden" type="BIT" defaultValueBoolean="false"/>
             <column name="list_order" type="INT"/>
             <column name="image_data" type="LONGTEXT"/>
             <column name="height" type="INT"/>

@@ -28,6 +28,14 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP GET /api/course-types/not-hidden
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.findAllNotHidden
+     */
+    findAllNotHidden(options?: O): RestResponse<CourseType[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/course-types/not-hidden`, options: options });
+    }
+
+    /**
      * HTTP DELETE /api/course-types/{id}
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.deleteById
      */
@@ -47,6 +55,7 @@ export class RestApplicationClient<O> {
 export interface CourseType {
     code: string;
     description: string;
+    hidden: boolean;
     id: number;
     image: Image;
     listOrder: number;

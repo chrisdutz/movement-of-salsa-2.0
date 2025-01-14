@@ -25,6 +25,11 @@ public class CourseTypeController implements AdminController<CourseType> {
         return courseTypeService.listItems();
     }
 
+    @GetMapping("/not-hidden")
+    public List<CourseType> findAllNotHidden() {
+        return courseTypeService.listNotHiddenItems();
+    }
+
     @GetMapping("/{id}")
     public CourseType findById(@PathVariable("id") long id) {
         return courseTypeService.readItem(id);

@@ -21,6 +21,8 @@ public class CourseType {
     @Lob
     protected String description;
 
+    protected boolean hidden;
+
     @Embedded
     protected Image image;
 
@@ -69,6 +71,14 @@ public class CourseType {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public Image getImage() {

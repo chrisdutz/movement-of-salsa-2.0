@@ -60,4 +60,9 @@ public class CourseTypeService
         return courseTypeRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public List<CourseType> listNotHiddenItems() {
+        return courseTypeRepository.findByHiddenOrderByListOrder(false);
+    }
+
 }

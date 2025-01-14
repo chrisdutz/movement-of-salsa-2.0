@@ -325,7 +325,7 @@ export default function AdminList<T extends DataTableValue>({
                 /* List view */
                 <>
                     <Toolbar className="mb-4" start={listToolbarTemplate}/>
-                    <DataTable value={items} sortField={listSortColumn} sortOrder={-1} showGridlines stripedRows
+                    <DataTable value={items} sortField={listSortColumn} sortOrder={1} showGridlines stripedRows
                                tableStyle={{minWidth: '50rem'}}>
                         {listColumns.map((column, index) => {
                             if (column.field) {
