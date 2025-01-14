@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <migration-plan>
     <schema-migration src="db_schema.xml"/>
+    <cvs-data-import table="lessons_course_type" src="META-INF/migration/lessons/1/LESSONS_COURSE_TYPE.csv"/>
+    <cvs-data-import table="lessons_course_type_rate" src="META-INF/migration/lessons/1/LESSONS_COURSE_TYPE_RATE.csv"/>
 </migration-plan>

@@ -39,7 +39,7 @@ export class RestApplicationClient<O> {
      * HTTP GET /api/course-types/{id}
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.findById
      */
-    findById(id: string, options?: O): RestResponse<CourseType> {
+    findById(id: number, options?: O): RestResponse<CourseType> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/course-types/${id}`, options: options });
     }
 }

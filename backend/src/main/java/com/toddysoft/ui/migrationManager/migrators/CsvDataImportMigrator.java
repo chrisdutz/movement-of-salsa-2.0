@@ -68,9 +68,9 @@ public class CsvDataImportMigrator implements Migrator {
                         ResultSet columns = null;
                         PreparedStatement stmnt = null;
                         try {
-                            // Get the columns metadata.
+                            // Get the columns' metadata.
                             columns = connection.getMetaData().getColumns(
-                                    null, null, tableName, null);
+                                    null, null, tableName.toUpperCase(), null);
                             final Map<String, String> types = new HashMap<String, String>();
                             while (columns.next()) {
                                 types.put(columns.getString("COLUMN_NAME").toUpperCase(),
@@ -96,7 +96,13 @@ public class CsvDataImportMigrator implements Migrator {
                                             data = data.replaceAll("\\\\", "");
                                         }
 
-                                        if(columnTypeName.contains("INT")) {
+                                        if(columnTypeName.contains("BIGINT")) {
+                                            if(data == null) {
+                                                stmnt.setNull(i + 1, Types.INTEGER);
+                                            } else {
+                                                stmnt.setLong(i + 1, Long.parseLong(data));
+                                            }
+                                        } else if(columnTypeName.contains("INT")) {
                                             if(data == null) {
                                                 stmnt.setNull(i + 1, Types.INTEGER);
                                             } else {
