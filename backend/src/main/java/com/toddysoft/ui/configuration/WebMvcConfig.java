@@ -12,8 +12,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         // Forward all non-API and non-static resource requests to index.html
         // (Technically all urls that don't contain a dot, which is usually used for ".css", ".js", ".png" files)
-        registry.addViewController("/{path:[^\\.]*}").setViewName("forward:/index.html");
-    }
+        registry.addViewController("/{path:^(?!api$)[^\\.]*}")
+                .setViewName("forward:/index.html");
+        registry.addViewController("/{path:^(?!api$)[^\\.]*}/{subpath:[^\\.]*}")
+                .setViewName("forward:/index.html");    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {

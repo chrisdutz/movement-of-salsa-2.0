@@ -44,6 +44,7 @@ export interface EditorColumn<E> {
     setter?: (item: E, value: any) => void,
     selectOptions?: any[],
     optionLabel?: string,
+    optionLabelFunction?: (item: any) => string,
     fieldEditor?: (value: E, setValue: (newValue: E) => void) => JSX.Element
 }
 
@@ -272,14 +273,26 @@ export default function AdminList<T extends DataTableValue>({
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "Select":
-                return <Dropdown id={`field${index}`}
-                                 value={value}
-                                 options={column.selectOptions}
-                                 optionLabel={column.optionLabel}
-                                 onChange={(event: DropdownChangeEvent) => onChange(event.value)}
-                                 disabled={!column.editable}
-                                 required={column.required}
-                                 className={classNames({'p-invalid': column.required && !value})}/>
+                if(column.optionLabelFunction) {
+                    return <Dropdown id={`field${index}`}
+                                     value={value}
+                                     options={column.selectOptions}
+                                     itemTemplate={column.optionLabelFunction}
+                                     valueTemplate={column.optionLabelFunction}
+                                     onChange={(event: DropdownChangeEvent) => onChange(event.value)}
+                                     disabled={!column.editable}
+                                     required={column.required}
+                                     className={classNames({'p-invalid': column.required && !value})}/>
+                } else {
+                    return <Dropdown id={`field${index}`}
+                                     value={value}
+                                     options={column.selectOptions}
+                                     optionLabel={column.optionLabel}
+                                     onChange={(event: DropdownChangeEvent) => onChange(event.value)}
+                                     disabled={!column.editable}
+                                     required={column.required}
+                                     className={classNames({'p-invalid': column.required && !value})}/>
+                }
             case "Text":
                 return <InputText id={`field${index}`}
                                   value={value}

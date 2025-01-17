@@ -1,5 +1,6 @@
 package com.toddysoft.ui.modules.lessons.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class Course {
         this.lessons = lessons;
     }
 
+    @JsonIgnore
     public Lesson getFirstLesson() {
         if(lessons != null) {
             Lesson first = null;
@@ -68,6 +70,7 @@ public class Course {
         return null;
     }
 
+    @JsonIgnore
     public Lesson getLastLesson() {
         if(lessons != null) {
             Lesson last = null;

@@ -1,5 +1,6 @@
 package com.toddysoft.ui.modules.lessons.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Calendar;
@@ -22,6 +23,8 @@ public class Lesson {
     protected Double locationLon;
 
     @ManyToOne
+    // Ignoring this, as otherwise we'd have a circular json dependency.
+    @JsonIgnore
     protected Course course;
 
     public Lesson() {

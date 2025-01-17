@@ -76,8 +76,16 @@ export default function LessonTypesAdminModule() {
                                     return Promise.resolve(response);
                                 },
                                 save(entry: CourseTypeRate): RestResponse<CourseTypeRate> {
+                                    // Insert a new entry.
+                                    if(entry.id == 0) {
+                                        // Generate a fake id
+                                        entry.id = (value.rates.length + 1) * -1;
+                                        value.rates.push(entry);
+                                    }
                                     // Replace the old instance of the rate with the new one.
-                                    value.rates = value.rates.map(curValue => curValue.id == entry.id ? entry : curValue)
+                                    else {
+                                        value.rates = value.rates.map(curValue => curValue.id == entry.id ? entry : curValue)
+                                    }
                                     setValue(value)
                                     const response: Axios.GenericAxiosResponse<CourseTypeRate> = {
                                         data: entry,
@@ -110,13 +118,13 @@ export default function LessonTypesAdminModule() {
         ],
         controller: {
             findAll(options?: AxiosRequestConfig | undefined): RestResponse<CourseType[]> {
-                return restClient.findAll(options);
+                return restClient.findAll$GET$api_coursetypes(options);
             },
             save(entry: CourseType, options?: AxiosRequestConfig | undefined): RestResponse<CourseType> {
-                return restClient.save(entry, options);
+                return restClient.save$POST$api_coursetypes(entry, options);
             },
             delete: function (entry: CourseType, options?: AxiosRequestConfig): RestResponse<void> {
-                return restClient.deleteById(entry.id, options)
+                return restClient.deleteById$DELETE$api_coursetypes_id(entry.id, options)
             }
         },
     })

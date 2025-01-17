@@ -49,6 +49,7 @@
             <configuration>
               <skip>false</skip>
               <classes>
+                <class>com.toddysoft.ui.modules.lessons.controller.CourseController</class>
                 <class>com.toddysoft.ui.modules.lessons.controller.CourseTypeController</class>
               </classes>
               <excludeClasses>

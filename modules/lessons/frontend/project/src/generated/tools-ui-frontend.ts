@@ -15,7 +15,7 @@ export class RestApplicationClient<O> {
      * HTTP GET /api/course-types
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.findAll
      */
-    findAll(options?: O): RestResponse<CourseType[]> {
+    findAll$GET$api_coursetypes(options?: O): RestResponse<CourseType[]> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/course-types`, options: options });
     }
 
@@ -23,7 +23,7 @@ export class RestApplicationClient<O> {
      * HTTP POST /api/course-types
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.save
      */
-    save(arg0: CourseType, options?: O): RestResponse<CourseType> {
+    save$POST$api_coursetypes(arg0: CourseType, options?: O): RestResponse<CourseType> {
         return this.httpClient.request({ method: "POST", url: uriEncoding`api/course-types`, data: arg0, options: options });
     }
 
@@ -39,7 +39,7 @@ export class RestApplicationClient<O> {
      * HTTP DELETE /api/course-types/{id}
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.deleteById
      */
-    deleteById(id: number, options?: O): RestResponse<void> {
+    deleteById$DELETE$api_coursetypes_id(id: number, options?: O): RestResponse<void> {
         return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/course-types/${id}`, options: options });
     }
 
@@ -47,9 +47,49 @@ export class RestApplicationClient<O> {
      * HTTP GET /api/course-types/{id}
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.findById
      */
-    findById(id: number, options?: O): RestResponse<CourseType> {
+    findById$GET$api_coursetypes_id(id: number, options?: O): RestResponse<CourseType> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/course-types/${id}`, options: options });
     }
+
+    /**
+     * HTTP GET /api/courses
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findAll
+     */
+    findAll$GET$api_courses(options?: O): RestResponse<CourseDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses`, options: options });
+    }
+
+    /**
+     * HTTP POST /api/courses
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.save
+     */
+    save$POST$api_courses(arg0: CourseDto, options?: O): RestResponse<CourseDto> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/courses`, data: arg0, options: options });
+    }
+
+    /**
+     * HTTP DELETE /api/courses/{id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.deleteById
+     */
+    deleteById$DELETE$api_courses_id(id: number, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/courses/${id}`, options: options });
+    }
+
+    /**
+     * HTTP GET /api/courses/{id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findById
+     */
+    findById$GET$api_courses_id(id: number, options?: O): RestResponse<CourseDto> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/${id}`, options: options });
+    }
+}
+
+export interface CourseDto {
+    closed: boolean;
+    courseTypeCode: string;
+    courseTypeId: number;
+    id: number;
+    lessons: Lesson[];
 }
 
 export interface CourseType {
@@ -75,6 +115,15 @@ export interface Image {
     height: number;
     imageData: string;
     width: number;
+}
+
+export interface Lesson {
+    endTime: Date;
+    id: number;
+    location: string;
+    locationLat: number;
+    locationLon: number;
+    startTime: Date;
 }
 
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;
