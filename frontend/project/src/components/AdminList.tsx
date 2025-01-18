@@ -27,25 +27,33 @@ export interface AdminController<E> {
     delete?(entry: E, options?: Axios.AxiosRequestConfig): RestResponse<void>
 }
 
+export interface ItemAction<E> {
+    icon: string;
+    label?: string;
+    onClick: (item:E) => void;
+}
+
 export interface ListColumn<E> {
     header: string;
     sortable: boolean;
+    fieldType?: any;
     field?: string;
     getter?: (item: E) => any;
 }
 
 export interface EditorColumn<E> {
-    label: string,
-    required: boolean,
-    editable: boolean,
-    fieldType: any,
-    field?: string,
-    getter?: (item: E) => any,
-    setter?: (item: E, value: any) => void,
-    selectOptions?: any[],
-    optionLabel?: string,
-    optionLabelFunction?: (item: any) => string,
-    fieldEditor?: (value: E, setValue: (newValue: E) => void) => JSX.Element
+    label: string;
+    required: boolean;
+    editable: boolean;
+    fieldType: any;
+    field?: string;
+    getter?: (item: E) => any;
+    setter?: (item: E, value: any) => void;
+    selectOptions?: any[];
+    optionLabel?: string;
+    optionLabelFunction?: (item: any) => string;
+    optionValueFunction?: (item: any) => any;
+    fieldEditor?: (value: E, setValue: (newValue: E) => void) => JSX.Element;
 }
 
 interface AdminListProps<T> {
@@ -53,7 +61,9 @@ interface AdminListProps<T> {
     emptyItem: T;
     listColumns: ListColumn<T>[];
     listSortColumn: string;
+    listActions?: ItemAction<T>[];
     editorColumns: EditorColumn<T>[];
+    editorActions?: ItemAction<T>[];
     initializer?: () => void;
 }
 
@@ -62,7 +72,9 @@ export default function AdminList<T extends DataTableValue>({
                                                                 emptyItem,
                                                                 listColumns,
                                                                 listSortColumn,
+                                                                listActions,
                                                                 editorColumns,
+                                                                //editorActions,
                                                                 initializer
                                                             }: AdminListProps<T>) {
     const toast = useRef<Toast>(null)
@@ -157,6 +169,12 @@ export default function AdminList<T extends DataTableValue>({
                     <Button icon="pi pi-trash" rounded outlined className="mr-2"
                             onClick={() => showConfirmDeleteItemDialog(item)}/>
                 }
+                {listActions &&
+                    listActions.map(value =>
+                        <Button icon={value.icon} rounded outlined className="mr-2"
+                                label={value.label} onClick={() => value.onClick(item)}/>
+                    )
+                }
             </React.Fragment>
         )
     }
@@ -175,6 +193,22 @@ export default function AdminList<T extends DataTableValue>({
         )
     }
 
+    function renderListColumn(data: any, column:ListColumn<T>) {
+        const value = column.field ? data[column.field] : column.getter?.(data);
+        switch (column.fieldType) {
+            case "Date": {
+                return new Date(value).toLocaleDateString()
+            }
+            case "DateTime": {
+                return new Date(value).toLocaleString()
+            }
+            case "Time": {
+                return new Date(value).toLocaleTimeString()
+            }
+        }
+        return value.toString();
+    }
+
     function renderEditor(index: number, column: EditorColumn<T>, editItem: T) {
         const value = column.field ? editItem[column.field] : column.getter?.(editItem);
         const onChange = (changedValue: any) => {
@@ -187,12 +221,15 @@ export default function AdminList<T extends DataTableValue>({
 
         switch (column.fieldType) {
             case "Boolean":
-                return <Checkbox id={`field${index}`}
-                                 checked={value}
-                                 onChange={event => onChange(event.checked)}
-                                 disabled={!column.editable}
-                                 required={column.required}
-                                 className={classNames({'p-invalid': column.required && !value})}/>
+                return <>
+                    <br/>
+                    <Checkbox id={`field${index}`}
+                              checked={value}
+                              onChange={event => onChange(event.checked)}
+                              disabled={!column.editable}
+                              required={column.required}
+                              className={classNames({'p-invalid': column.required && !value})}/>
+                </>
             case "Custom":
                 // Create a stable wrapper for the custom field editor to isolate the React hooks of any child
                 // from those of the parent (Particularly important when using an AdminList as editor for a
@@ -275,11 +312,11 @@ export default function AdminList<T extends DataTableValue>({
             case "Select":
                 if(column.optionLabelFunction) {
                     return <Dropdown id={`field${index}`}
-                                     value={value}
+                                     value={column.optionValueFunction ? column.selectOptions?.find(curValue => column.optionValueFunction && column.optionValueFunction(curValue) == value) : value}
                                      options={column.selectOptions}
                                      itemTemplate={column.optionLabelFunction}
                                      valueTemplate={column.optionLabelFunction}
-                                     onChange={(event: DropdownChangeEvent) => onChange(event.value)}
+                                     onChange={(event: DropdownChangeEvent) => column.optionValueFunction ? onChange(column.optionValueFunction(event.value)) : onChange(event.value)}
                                      disabled={!column.editable}
                                      required={column.required}
                                      className={classNames({'p-invalid': column.required && !value})}/>
@@ -342,14 +379,22 @@ export default function AdminList<T extends DataTableValue>({
                                tableStyle={{minWidth: '50rem'}}>
                         {listColumns.map((column, index) => {
                             if (column.field) {
-                                return <Column key={"column" + index}
-                                               header={column.header}
-                                               field={column.field}
-                                               sortable={column.sortable}/>
+                                if(column.fieldType) {
+                                    return <Column key={"column" + index}
+                                                   header={column.header}
+                                                   field={column.field}
+                                                   body={(data) => renderListColumn(data, column)}
+                                                   sortable={column.sortable}/>
+                                } else {
+                                    return <Column key={"column" + index}
+                                                   header={column.header}
+                                                   field={column.field}
+                                                   sortable={column.sortable}/>
+                                }
                             } else if (column.getter) {
                                 return <Column key={"column" + index}
                                                header={column.header}
-                                               body={column.getter}
+                                               body={(data) => renderListColumn(data, column)}
                                                sortable={column.sortable}/>
                             }
                         })}

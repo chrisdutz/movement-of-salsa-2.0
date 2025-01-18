@@ -1,7 +1,6 @@
 package com.toddysoft.ui.modules.lessons.service;
 
 import com.toddysoft.ui.modules.lessons.entity.Course;
-import com.toddysoft.ui.modules.lessons.entity.CourseType;
 import com.toddysoft.ui.modules.lessons.repository.CourseRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

@@ -5,11 +5,14 @@ import com.toddysoft.ui.components.admin.AdminController;
 import com.toddysoft.ui.modules.lessons.dto.CourseDto;
 import com.toddysoft.ui.modules.lessons.entity.Course;
 import com.toddysoft.ui.modules.lessons.entity.CourseType;
+import com.toddysoft.ui.modules.lessons.entity.Lesson;
 import com.toddysoft.ui.modules.lessons.service.CourseService;
 import com.toddysoft.ui.modules.lessons.service.CourseTypeService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
@@ -52,14 +55,19 @@ public class CourseController implements AdminController<CourseDto> {
 
         course.setClosed(item.isClosed());
         course.setCourseType(courseType);
-        course.setLessons(item.getLessons());
-        course.getLessons().forEach(lesson -> {
-            // Change the fake temp-id with an empty id, so JPA will generate a new one.
-            if(lesson.getId() <= 0) {
+        List<Lesson> newLessons = item.getLessons();
+        newLessons.forEach(lesson -> {
+            if(lesson.getId() < 0) {
                 lesson.setId(0);
             }
             lesson.setCourse(course);
         });
+        if(course.getLessons() == null) {
+            course.setLessons(new ArrayList<>());
+        } else {
+            course.getLessons().clear();
+        }
+        course.getLessons().addAll(newLessons);
 
         Course persistedCourse;
         if(course.getId() == 0) {
