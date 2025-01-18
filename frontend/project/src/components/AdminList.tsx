@@ -200,10 +200,19 @@ export default function AdminList<T extends DataTableValue>({
                 return new Date(value).toLocaleDateString()
             }
             case "DateTime": {
-                return new Date(value).toLocaleString()
+                return new Date(value).toLocaleString([], {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })
             }
             case "Time": {
-                return new Date(value).toLocaleTimeString()
+                return new Date(value).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                })
             }
         }
         return value.toString();
