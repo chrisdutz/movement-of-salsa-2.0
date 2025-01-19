@@ -2,7 +2,7 @@ import {Toast} from "primereact/toast";
 import {Toolbar} from "primereact/toolbar";
 import {DataTable, DataTableValue} from "primereact/datatable";
 import {Column} from "primereact/column";
-import React, {JSX, useEffect, useRef, useState} from "react";
+import React, {JSX, ReactNode, useEffect, useRef, useState} from "react";
 import {RestResponse} from "../generated/plc4j-tools-ui-frontend";
 import {Button} from "primereact/button";
 import * as Axios from "axios";
@@ -27,16 +27,23 @@ export interface AdminController<E> {
     delete?(entry: E, options?: Axios.AxiosRequestConfig): RestResponse<void>
 }
 
+export interface GlobalAction {
+    icon: string;
+    label?: string;
+    severity?: 'secondary' | 'success' | 'info' | 'warning' | 'danger' | 'help' | 'contrast' | undefined;
+    onClick: () => void;
+}
+
 export interface ItemAction<E> {
     icon: string;
     label?: string;
-    onClick: (item:E) => void;
+    onClick: (item:E, setChildEditor:React.Dispatch<React.SetStateAction<ReactNode>>) => void;
 }
 
 export interface ListColumn<E> {
     header: string;
     sortable: boolean;
-    fieldType?: any;
+    fieldType?: 'Date' | 'DateTime' | 'Time' | undefined;
     field?: string;
     getter?: (item: E) => any;
 }
@@ -45,7 +52,7 @@ export interface EditorColumn<E> {
     label: string;
     required: boolean;
     editable: boolean;
-    fieldType: any;
+    fieldType: 'Boolean' | 'Custom' | 'Date' | 'DateTime' | 'Editor' | 'Email' | 'Enum' | 'Image' | 'Number' | 'Password' | 'Select' | 'Text' | 'Time' | 'MultiSelect' | undefined;
     field?: string;
     getter?: (item: E) => any;
     setter?: (item: E, value: any) => void;
@@ -59,8 +66,9 @@ export interface EditorColumn<E> {
 interface AdminListProps<T> {
     controller: AdminController<T>;
     emptyItem: T;
+    globalActions?: GlobalAction[];
     listColumns: ListColumn<T>[];
-    listSortColumn: string;
+    listSortColumn?: string;
     listActions?: ItemAction<T>[];
     editorColumns: EditorColumn<T>[];
     editorActions?: ItemAction<T>[];
@@ -70,6 +78,7 @@ interface AdminListProps<T> {
 export default function AdminList<T extends DataTableValue>({
                                                                 controller,
                                                                 emptyItem,
+                                                                globalActions,
                                                                 listColumns,
                                                                 listSortColumn,
                                                                 listActions,
@@ -84,6 +93,8 @@ export default function AdminList<T extends DataTableValue>({
     const [items, setItems] = useState<T[]>([]);
     const [editItem, setEditItem] = useState<T | undefined>()
     const [dirty, setDirty] = useState<boolean>(false)
+
+    const [childEditor, setChildEditor] = useState<ReactNode>()
 
     useEffect(() => {
         if (!initialized) {
@@ -157,25 +168,31 @@ export default function AdminList<T extends DataTableValue>({
                 {controller.delete &&
                     <Button label="New" icon="pi pi-plus" severity="success" onClick={showCreateItemDialog}/>
                 }
+                {globalActions &&
+                    globalActions.map((value) =>
+                        <Button icon={value.icon} severity={value.severity}
+                                label={value.label} onClick={() => value.onClick()}/>
+                    )
+                }
             </div>
         )
     }
 
     const listItemActionsTemplate = (item: T) => {
         return (
-            <React.Fragment>
-                <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => showEditItemDialog(item)}/>
+            <div className="flex flex-wrap gap-2">
+                <Button icon="pi pi-pencil" rounded outlined onClick={() => showEditItemDialog(item)}/>
                 {controller.delete &&
-                    <Button icon="pi pi-trash" rounded outlined className="mr-2"
+                    <Button icon="pi pi-trash" rounded outlined
                             onClick={() => showConfirmDeleteItemDialog(item)}/>
                 }
                 {listActions &&
-                    listActions.map(value =>
-                        <Button icon={value.icon} rounded outlined className="mr-2"
-                                label={value.label} onClick={() => value.onClick(item)}/>
+                    listActions.map((value) =>
+                        <Button icon={value.icon} rounded outlined
+                                label={value.label} onClick={() => value.onClick(item, setChildEditor)}/>
                     )
                 }
-            </React.Fragment>
+            </div>
         )
     }
 
@@ -370,6 +387,10 @@ export default function AdminList<T extends DataTableValue>({
         }
     }
 
+    const ChildEditorWrapper: React.FC<{ editor: ReactNode }> = ({ editor }) => {
+        return <>{editor}</>;
+    };
+
     // Output a loading spinner as long as we're loading data
     if (loading) return <ProgressSpinner/>;
 
@@ -380,7 +401,7 @@ export default function AdminList<T extends DataTableValue>({
 
             <ConfirmDialog/>
 
-            {!editItem ? (
+            {!editItem && !childEditor ? (
                 /* List view */
                 <>
                     <Toolbar className="mb-4" start={listToolbarTemplate}/>
@@ -410,7 +431,7 @@ export default function AdminList<T extends DataTableValue>({
                         <Column body={listItemActionsTemplate}/>
                     </DataTable>
                 </>
-            ) : (
+            ) : editItem ? (
                 /* Editor view */
                 <>
                     <Toolbar className="mb-4" start={editorToolbarTemplate}/>
@@ -425,6 +446,8 @@ export default function AdminList<T extends DataTableValue>({
                         })}
                     </div>
                 </>
+            ) : (
+                <ChildEditorWrapper editor={childEditor} />
             )}
         </>
     )
