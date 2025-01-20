@@ -2,6 +2,7 @@ package com.toddysoft.ui.security.service;
 
 import com.toddysoft.ui.modules.api.FrontendModuleProvider;
 import com.toddysoft.ui.modules.model.FrontendModule;
+import com.toddysoft.ui.security.entity.Sex;
 import com.toddysoft.ui.security.entity.User;
 import com.toddysoft.ui.security.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,6 +41,19 @@ public class UserService implements FrontendModuleProvider {
         return StreamSupport
                 .stream(userRepository.findAll().spliterator(), false)
                 .map(this::maskedUserClone).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> listBySex(Sex sex) {
+        // TODO: Mask the password
+        return StreamSupport
+                .stream(userRepository.findAll().spliterator(), false)
+                .map(this::maskedUserClone).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<User> readById(Long id) {
+        return userRepository.findById(id);
     }
 
     @Transactional(readOnly = true)

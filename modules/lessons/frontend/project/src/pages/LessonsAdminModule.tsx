@@ -12,25 +12,9 @@ import {
 import axios, * as Axios from "axios";
 import {AxiosRequestConfig} from "axios";
 import {useEffect, useState} from "react";
+import RegistrationsAdminModule from "./RegistrationsAdminModule.tsx";
 
-const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
 axios.defaults.baseURL = 'http://localhost:8080';
-axios.interceptors.response.use((response) => {
-    function transformDates(obj: any): any {
-        if (obj && typeof obj === 'object') {
-            for (const key in obj) {
-                if (typeof obj[key] === 'string' && isoDateRegex.test(obj[key])) {
-                    obj[key] = new Date(obj[key]);
-                } else if (typeof obj[key] === 'object') {
-                    transformDates(obj[key]);
-                }
-            }
-        }
-        return obj;
-    }
-    response.data = transformDates(response.data);
-    return response;
-});
 const restClient = new RestApplicationClient(axios);
 
 export default function LessonsAdminModule() {
@@ -63,8 +47,8 @@ export default function LessonsAdminModule() {
             {
                 icon: "fa-solid fa-sack-dollar",
                 label: "Reg.",
-                onClick: item => {
-                    console.log("Registrations Clicked", item)
+                onClick: (item, setChildEditor) => {
+                    setChildEditor(<RegistrationsAdminModule course={item} onClose={() => setChildEditor(undefined)}/>)
                 }
             },
             {
@@ -113,15 +97,10 @@ export default function LessonsAdminModule() {
                             ],
                             listSortColumn: "startTime",
                             editorColumns: [
-                                {
-                                    label: "Date",
-                                    required: true,
-                                    editable: true,
-                                    fieldType: "Date",
-                                    field: "startTime"
-                                },
+                                {label: "Date", required: true, editable: true, fieldType: "Date", field: "startTime"},
                                 {label: "Start Time", required: true, editable: true, fieldType: "Time", field: "startTime"},
                                 {label: "End Time", required: true, editable: true, fieldType: "Time", field: "endTime"},
+                                // TODO: Add something to reset lat and lon, if the location changes
                                 {label: "Location", required: true, editable: true, fieldType: "Text", field: "location"},
                             ],
                             controller: {

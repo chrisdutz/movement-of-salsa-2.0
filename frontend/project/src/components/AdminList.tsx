@@ -60,6 +60,7 @@ export interface EditorColumn<E> {
     optionLabel?: string;
     optionLabelFunction?: (item: any) => string;
     optionValueFunction?: (item: any) => any;
+    onOptionSelected?: (item: E, setValue: (newValue: E) => void, selectedItem: any) => void;
     fieldEditor?: (value: E, setValue: (newValue: E) => void) => JSX.Element;
 }
 
@@ -70,6 +71,7 @@ interface AdminListProps<T> {
     listColumns: ListColumn<T>[];
     listSortColumn?: string;
     listActions?: ItemAction<T>[];
+    onOpenEditor?: (selectedValue: T | undefined) => void;
     editorColumns: EditorColumn<T>[];
     editorActions?: ItemAction<T>[];
     initializer?: () => void;
@@ -82,6 +84,7 @@ export default function AdminList<T extends DataTableValue>({
                                                                 listColumns,
                                                                 listSortColumn,
                                                                 listActions,
+                                                                onOpenEditor,
                                                                 editorColumns,
                                                                 //editorActions,
                                                                 initializer
@@ -91,7 +94,7 @@ export default function AdminList<T extends DataTableValue>({
     const [initialized, setInitialized] = useState<boolean>(false)
     const [loading, setLoading] = useState(false);
     const [items, setItems] = useState<T[]>([]);
-    const [editItem, setEditItem] = useState<T | undefined>()
+    const [editItem, setEditItemInternal] = useState<T | undefined>()
     const [dirty, setDirty] = useState<boolean>(false)
 
     const [childEditor, setChildEditor] = useState<ReactNode>()
@@ -109,6 +112,13 @@ export default function AdminList<T extends DataTableValue>({
             }
         }
     }, [initialized, controller, initializer]);
+
+    function setEditItem(value: T | undefined) {
+        if(onOpenEditor) {
+            onOpenEditor(value)
+        }
+        setEditItemInternal(value)
+    }
 
     function setEditItemAndMarkDirty(value: T | undefined) {
         setEditItem(value)
@@ -238,9 +248,17 @@ export default function AdminList<T extends DataTableValue>({
     function renderEditor(index: number, column: EditorColumn<T>, editItem: T) {
         const value = column.field ? editItem[column.field] : column.getter?.(editItem);
         const onChange = (changedValue: any) => {
+            // Only actually execute a change, if it really changed.
+            if(column.field && editItem[column.field] == changedValue) {
+                return
+            }
+            // Create a new instance.
+            // If the "field" option is set, update the given field directly.
+            // Otherwise, simply create a copy of the old one.
             const updatedItem = column.field
                 ? {...editItem, [column.field]: changedValue}
                 : {...editItem};
+            // If a setter is provided, call that to change the value on the clone.
             column.setter?.(updatedItem, changedValue);
             setEditItemAndMarkDirty(updatedItem);
         };
@@ -338,11 +356,17 @@ export default function AdminList<T extends DataTableValue>({
             case "Select":
                 if(column.optionLabelFunction) {
                     return <Dropdown id={`field${index}`}
-                                     value={column.optionValueFunction ? column.selectOptions?.find(curValue => column.optionValueFunction && column.optionValueFunction(curValue) == value) : value}
+                                     value={column.optionValueFunction ? column.selectOptions?.find(curOption => column.optionValueFunction && column.optionValueFunction(curOption) == value) : value}
                                      options={column.selectOptions}
                                      itemTemplate={column.optionLabelFunction}
                                      valueTemplate={column.optionLabelFunction}
-                                     onChange={(event: DropdownChangeEvent) => column.optionValueFunction ? onChange(column.optionValueFunction(event.value)) : onChange(event.value)}
+                                     onChange={(event: DropdownChangeEvent) => {
+                                         if(column.onOptionSelected) {
+                                             column.onOptionSelected(editItem, setEditItemAndMarkDirty, event.value);
+                                         } else {
+                                             return column.optionValueFunction ? onChange(column.optionValueFunction(event.value)) : onChange(event.value);
+                                         }
+                                     }}
                                      disabled={!column.editable}
                                      required={column.required}
                                      className={classNames({'p-invalid': column.required && !value})}/>
@@ -372,7 +396,6 @@ export default function AdminList<T extends DataTableValue>({
                                  required={column.required}
                                  className={classNames({'p-invalid': column.required && !value})}/>
             case "MultiSelect":
-                console.log("Options", column.selectOptions)
                 return <MultiSelect id={`field${index}`}
                                     value={value}
                                     options={column.selectOptions}

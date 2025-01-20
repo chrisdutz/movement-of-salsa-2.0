@@ -36,8 +36,8 @@ public class CourseTypeService
     }
 
     @Transactional(readOnly = true)
-    public CourseType readItem(long newsEntryId) {
-        return courseTypeRepository.getReferenceById(newsEntryId);
+    public CourseType readItem(long id) {
+        return courseTypeRepository.getReferenceById(id);
     }
 
     @Transactional

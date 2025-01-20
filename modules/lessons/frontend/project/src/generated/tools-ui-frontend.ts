@@ -68,6 +68,14 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP GET /api/courses/{courseTypeId}/rates
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findCourseTypeRates
+     */
+    findCourseTypeRates(courseTypeId: number, options?: O): RestResponse<CourseTypeRate[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/${courseTypeId}/rates`, options: options });
+    }
+
+    /**
      * HTTP DELETE /api/courses/{id}
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.deleteById
      */
@@ -82,6 +90,46 @@ export class RestApplicationClient<O> {
     findById$GET$api_courses_id(id: number, options?: O): RestResponse<CourseDto> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/${id}`, options: options });
     }
+
+    /**
+     * HTTP POST /api/registrations
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.save
+     */
+    save$POST$api_registrations(arg0: CourseRegistrationDto, options?: O): RestResponse<CourseRegistrationDto> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/registrations`, data: arg0, options: options });
+    }
+
+    /**
+     * HTTP GET /api/registrations/partners/{user-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.findFindPartnersForUser
+     */
+    findFindPartnersForUser(userId: number, options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/partners/${userId}`, options: options });
+    }
+
+    /**
+     * HTTP GET /api/registrations/registrars
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.findUsers
+     */
+    findUsers(options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/registrars`, options: options });
+    }
+
+    /**
+     * HTTP GET /api/registrations/{course-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.findRegistrationsForCourse
+     */
+    findRegistrationsForCourse(courseId: number, options?: O): RestResponse<CourseRegistrationDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/${courseId}`, options: options });
+    }
+
+    /**
+     * HTTP DELETE /api/registrations/{id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.deleteById
+     */
+    deleteById$DELETE$api_registrations_id(id: number, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/registrations/${id}`, options: options });
+    }
 }
 
 export interface CourseDto {
@@ -90,6 +138,21 @@ export interface CourseDto {
     courseTypeId: number;
     id: number;
     lessons: Lesson[];
+}
+
+export interface CourseRegistrationDto {
+    courseId: number;
+    courseRegistrationType: CourseRegistrationType;
+    courseStartDate: Date;
+    courseTypeCode: string;
+    discount: number;
+    discountRemarks: string;
+    id: number;
+    partner?: UserDto;
+    price: number;
+    rateName: string;
+    registrar: UserDto;
+    remarks: string;
 }
 
 export interface CourseType {
@@ -126,7 +189,17 @@ export interface Lesson {
     startTime: Date;
 }
 
+export interface UserDto {
+    id: number;
+    name: string;
+    sex: Sex;
+}
+
+export type CourseRegistrationType = "SINGLE" | "COUPLE";
+
 export type RestResponse<R> = Promise<Axios.GenericAxiosResponse<R>>;
+
+export type Sex = "MALE" | "FEMALE";
 
 function uriEncoding(template: TemplateStringsArray, ...substitutions: any[]): string {
     let result = "";

@@ -5,6 +5,7 @@ import com.toddysoft.ui.components.admin.AdminController;
 import com.toddysoft.ui.modules.lessons.dto.CourseDto;
 import com.toddysoft.ui.modules.lessons.entity.Course;
 import com.toddysoft.ui.modules.lessons.entity.CourseType;
+import com.toddysoft.ui.modules.lessons.entity.CourseTypeRate;
 import com.toddysoft.ui.modules.lessons.entity.Lesson;
 import com.toddysoft.ui.modules.lessons.service.CourseService;
 import com.toddysoft.ui.modules.lessons.service.CourseTypeService;
@@ -82,6 +83,12 @@ public class CourseController implements AdminController<CourseDto> {
     public void deleteById(@PathVariable("id") long id) {
         Course item = courseService.readItem(id);
         courseService.deleteItem(item);
+    }
+
+    @GetMapping("/{courseTypeId}/rates")
+    public List<CourseTypeRate> findCourseTypeRates(@PathVariable("courseTypeId") long courseTypeId) {
+        Course course = courseService.readItem(courseTypeId);
+        return course.getCourseType().getRates();
     }
 
 }

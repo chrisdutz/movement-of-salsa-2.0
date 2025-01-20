@@ -40,8 +40,8 @@ public class CourseService
     }
 
     @Transactional(readOnly = true)
-    public Course readItem(long newsEntryId) {
-        return courseRepository.getReferenceById(newsEntryId);
+    public Course readItem(long id) {
+        return courseRepository.getReferenceById(id);
     }
 
     @Transactional
@@ -65,6 +65,11 @@ public class CourseService
         RestClient restClient = null;
         ObjectMapper objectMapper = null;
         for (Lesson lesson : course.getLessons()) {
+            // Only update the geo-coordinates, if the location has changed.
+            if(lesson.getLocationLat() != null && lesson.getLocationLon() != null) {
+                continue;
+            }
+
             String location = lesson.getLocation();
 
             if (!coordinates.containsKey(lesson.getLocation())) {
