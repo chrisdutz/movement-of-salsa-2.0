@@ -43,7 +43,7 @@ export interface ItemAction<E> {
 export interface ListColumn<E> {
     header: string;
     sortable: boolean;
-    fieldType?: 'Date' | 'DateTime' | 'Time' | undefined;
+    fieldType?: 'Date' | 'DateTime' | 'Time' | 'HTML' | undefined;
     field?: string;
     getter?: (item: E) => any;
 }
@@ -433,11 +433,21 @@ export default function AdminList<T extends DataTableValue>({
                         {listColumns.map((column, index) => {
                             if (column.field) {
                                 if(column.fieldType) {
-                                    return <Column key={"column" + index}
-                                                   header={column.header}
-                                                   field={column.field}
-                                                   body={(data) => renderListColumn(data, column)}
-                                                   sortable={column.sortable}/>
+                                    if(column.fieldType == "HTML") {
+                                        return <Column key={"column" + index}
+                                                       header={column.header}
+                                                       field={column.field}
+                                                       body={(data) =>
+                                                            <div dangerouslySetInnerHTML={{ __html: renderListColumn(data, column) }}/>
+                                                       }
+                                                       sortable={column.sortable}/>
+                                    } else {
+                                        return <Column key={"column" + index}
+                                                       header={column.header}
+                                                       field={column.field}
+                                                       body={(data) => renderListColumn(data, column)}
+                                                       sortable={column.sortable}/>
+                                    }
                                 } else {
                                     return <Column key={"column" + index}
                                                    header={column.header}

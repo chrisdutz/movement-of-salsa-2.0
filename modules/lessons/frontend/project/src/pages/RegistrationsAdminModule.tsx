@@ -63,15 +63,22 @@ export default function RegistrationsAdminModule( {course, onClose}:Registration
             {label: "Back to Lessons", icon: "pi pi-times-circle", severity: "danger", onClick: () => onClose()},
         ],
         listColumns: [
-            {sortable: true, header: "Start Date", field: "startDate"},
+            {sortable: true, header: "Start Date", field: "courseStartDate", fieldType: "DateTime"},
             {sortable: true, header: "Course Type", field: "courseTypeCode"},
             {sortable: true, header: "Rate", field: "rateName"},
-            {sortable: true, header: "Registrar", field: "registrarName"},
-            {sortable: true, header: "Partner", field: "partnerName"},
+            {sortable: true, header: "Registrar", getter: item => {
+                return `${item.registrar.name} ${item.registrar.sex == "MALE" ? " (M)" : " (F)"}`
+            }},
+            {sortable: true, header: "Partner", getter: item => {
+                if(item.partner) {
+                    return `${item.partner.name} ${item.partner.sex == "MALE" ? " (M)" : " (F)"}`
+                }
+                return ""
+            }},
             {sortable: true, header: "Price", field: "price"},
             {sortable: true, header: "Discount", field: "discount"},
-            {sortable: true, header: "Discount Remarks", field: "discountRemarks"},
-            {sortable: true, header: "Remarks", field: "remarks"},
+            {sortable: true, header: "Discount Remarks", field: "discountRemarks", fieldType: "HTML"},
+            {sortable: true, header: "Remarks", field: "remarks", fieldType: "HTML"},
         ],
         onOpenEditor: selectedValue => {
             if(selectedValue) {
