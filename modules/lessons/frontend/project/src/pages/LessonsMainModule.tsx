@@ -3,7 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-defaulticon-compatibility';
 import 'leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css';
 import axios from "axios";
-import {BaseStore} from "mainApp/Types";
+import {RootState} from "mainApp/Store";
 import {CourseType, RestApplicationClient} from "../generated/tools-ui-frontend.ts";
 import {useSelector} from "react-redux";
 import {useEffect, useState} from "react";
@@ -13,8 +13,8 @@ axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
 
 export default function NewsMainModule() {
-    const authToken = useSelector((baseState: BaseStore) => {
-        return baseState.authentication.authToken
+    const authToken = useSelector((state: RootState)=> {
+        return state.authentication.authToken
     })
     const [courseTypes, setCourseTypes] = useState<CourseType[]>([]);
 

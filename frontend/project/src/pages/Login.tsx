@@ -9,7 +9,7 @@ import store, {
     updateModuleList,
     UpdateModuleListAction
 } from "../store/store.ts";
-import {SetAuthenticationTokenAction, SetAuthenticationUserAction} from "../store/types.ts";
+import {SetAuthenticationTokenAction, SetAuthenticationUserAction} from "../store/store.ts";
 import {Password} from "primereact/password";
 import {Toast} from "primereact/toast";
 import {Card} from "primereact/card";

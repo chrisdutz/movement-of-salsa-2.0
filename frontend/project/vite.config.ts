@@ -23,7 +23,7 @@ export default defineConfig({
                 dummy: "dummy.js",
             },
             exposes: {
-                './BaseStore': './src/store/types',
+                './Store': './src/store/store',
                 './ApplicationModule': './src/utils/ApplicationModule',
                 './components/AdminList': './src/components/AdminList'
             },

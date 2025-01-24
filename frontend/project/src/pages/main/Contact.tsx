@@ -20,7 +20,7 @@ export default function Contact() {
     function handleSubmit() {
         restClient.sendContactRequest({
             name: name, email: email, subject: subject, message: message
-        }).then(value => {
+        }).then(() => {
             handleReset();
             toast.current?.show({severity: 'success', summary: 'Successful', detail: 'Kontakt formular erfolgreich verschickt', life: 3000})
         })

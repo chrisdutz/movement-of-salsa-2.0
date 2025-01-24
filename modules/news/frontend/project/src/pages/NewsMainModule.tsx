@@ -2,7 +2,7 @@ import {NewsEntry, RestApplicationClient} from "../generated/tools-ui-frontend.t
 import {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import axios from "axios";
-import {BaseStore} from "mainApp/Types";
+import {RootState} from "mainApp/Store";
 import {Card} from "primereact/card";
 import {Image} from "primereact/image";
 
@@ -10,8 +10,8 @@ axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
 
 export default function NewsMainModule() {
-    const authToken = useSelector((baseState: BaseStore) => {
-        return baseState.authentication.authToken
+    const authToken = useSelector((state: RootState) => {
+        return state.authentication.authToken
     })
     const [news, setNews] = useState<NewsEntry[]>([]);
 

@@ -2,7 +2,7 @@ import AdminList from "mainApp/components/AdminList";
 import {NewsEntry, RestApplicationClient, RestResponse} from "../generated/tools-ui-frontend.ts";
 import axios, {AxiosRequestConfig} from "axios";
 import {useSelector} from "react-redux";
-import {BaseStore} from "mainApp/Types";
+import {RootState} from "mainApp/Store";
 import {useEffect} from "react";
 
 const restClient = new RestApplicationClient(axios);
@@ -36,8 +36,8 @@ function dateFormat(date: Date): string {
 }
 
 export default function NewsAdminModule() {
-    const authToken = useSelector((baseState: BaseStore) => {
-        return baseState.authentication.authToken
+    const authToken = useSelector((state: RootState) => {
+        return state.authentication.authToken
     })
 
     useEffect(() => {

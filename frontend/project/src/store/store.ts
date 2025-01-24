@@ -1,18 +1,48 @@
 import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {FrontendModule} from "../generated/plc4j-tools-ui-frontend.ts"
+import {FrontendModule, type User} from "../generated/plc4j-tools-ui-frontend.ts"
 import {useDispatch} from "react-redux"
 import {createContext} from "react";
-import {
-    AuthenticationState,
-    ModulesState,
-    SetAuthenticationTokenAction,
-    SetAuthenticationUserAction,
-    SetModulesAction
-} from "./types.ts";
+import {ApplicationModule} from "../utils/ApplicationModule.ts";
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MainLayout related
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type UpdateMainLayoutTitleAction = {
+    title: string
+}
+
+export type MainLayoutState = {
+    title: string
+}
+
+export const mainLayoutInitialState:MainLayoutState = {
+    title: "",
+}
+
+const mainLayoutSlice = createSlice({
+    name: "mainLayout",
+    initialState: mainLayoutInitialState,
+    reducers: {
+        updateMainLayoutTitle: (state, action: PayloadAction<UpdateMainLayoutTitleAction>) => {
+            state.title = action.payload.title
+        }
+    }
+})
+
+export const {updateMainLayoutTitle} = mainLayoutSlice.actions
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Module list related
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type SetModulesAction = {
+    modules: ApplicationModule[];
+}
+
+export type ModulesState = {
+    modules?: ApplicationModule[];
+}
 
 export type UpdateModuleListAction = {
     moduleList: FrontendModule[]
@@ -41,6 +71,19 @@ export const {updateModuleList} = moduleListSlice.actions
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Authentication related
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type SetAuthenticationTokenAction = {
+    authToken: string;
+}
+
+export type SetAuthenticationUserAction = {
+    user: User;
+}
+
+export type AuthenticationState = {
+    authToken?: string
+    user?: User
+}
 
 const authenticationInitialState: AuthenticationState = {
 }
@@ -89,6 +132,7 @@ export const {setModules} = modulesSlice.actions
 
 const store = configureStore({
     reducer: {
+        mainLayout: mainLayoutSlice.reducer,
         moduleList: moduleListSlice.reducer,
         authentication: authenticationSlice.reducer,
     }

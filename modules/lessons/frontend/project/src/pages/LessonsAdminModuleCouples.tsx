@@ -11,6 +11,7 @@ import {
 } from "../generated/tools-ui-frontend.ts";
 import axios, {AxiosRequestConfig} from "axios";
 import {useState} from "react";
+import store, {updateMainLayoutTitle, UpdateMainLayoutTitleAction} from "mainApp/Store";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -42,7 +43,11 @@ export default function LessonsAdminModuleCouples({course, onClose}:LessonsAdmin
         },
 
         globalActions: [
-            {label: "Back to Lessons", icon: "pi pi-times-circle", severity: "danger", onClick: () => onClose()},
+            {label: "Back to Lessons", icon: "pi pi-times-circle", severity: "danger", onClick: () => {
+                    const action: UpdateMainLayoutTitleAction = {title: "Admin: Lessons"}
+                    store.dispatch(updateMainLayoutTitle(action))
+                    onClose()
+            }},
         ],
 
         globalLabel: `${gents.length > 0 ? gents.length + " gents needing pairing" : ""}${(ladies.length > 0) && (gents.length > 0) ? " " : ""}${ladies.length > 0 ? ladies.length + " ladies needing pairing" : ""}`,

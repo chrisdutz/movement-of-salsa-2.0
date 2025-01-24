@@ -22,7 +22,7 @@
 
     /* Make the types in the main app store available in the local module */
     "paths": {
-      "mainApp/Types": ["../../../../frontend/project/src/store/types.ts"],
+      "mainApp/Store": ["../../../../frontend/project/src/store/store.ts"],
       "mainApp/components/AdminList": ["../../../../frontend/project/src/components/AdminList.tsx"]
     }
   },

@@ -2,24 +2,26 @@ import logo from "../assets/logo.png";
 import {Image} from "primereact/image";
 import {Link, Outlet, useLocation, useNavigate} from "react-router-dom";
 import {useSelector} from "react-redux";
-import {RootState} from "../store/store.ts";
+import store, {RootState, updateMainLayoutTitle} from "../store/store.ts";
 import {Menubar} from "primereact/menubar";
 import {MenuItem} from "primereact/menuitem";
 import {FrontendModule} from "../generated/plc4j-tools-ui-frontend.ts";
 import {NavigateFunction} from "react-router";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Card} from "primereact/card";
+import {UpdateMainLayoutTitleAction} from "../store/store.ts";
 
-const mapFrontendModuleToMenuItem = (module: FrontendModule, title: string, navigate: NavigateFunction, titleSetter: Dispatch<SetStateAction<string>>): MenuItem => ({
+const mapFrontendModuleToMenuItem = (module: FrontendModule, title: string, navigate: NavigateFunction): MenuItem => ({
     label: module.name,
     icon: "fa-solid " + module.icon,
     command() {
         navigate(module.routerUrl);
-        titleSetter(title);
+        const action: UpdateMainLayoutTitleAction = {title: title}
+        store.dispatch(updateMainLayoutTitle(action))
     }
 });
 
-const groupModulesByType = (modules: FrontendModule[], navigate: NavigateFunction, titleSetter: Dispatch<SetStateAction<string>>): MenuItem[] => {
+const groupModulesByType = (modules: FrontendModule[], navigate: NavigateFunction): MenuItem[] => {
     const menuItems: MenuItem[] = [];
     const userMenuItems: MenuItem[] = [];
     const adminMenuItems: MenuItem[] = [];
@@ -28,17 +30,17 @@ const groupModulesByType = (modules: FrontendModule[], navigate: NavigateFunctio
     modules.forEach((module) => {
         switch (module.type) {
             case "Main": {
-                const menuItem = mapFrontendModuleToMenuItem(module, module.name, navigate, titleSetter);
+                const menuItem = mapFrontendModuleToMenuItem(module, module.name, navigate);
                 menuItems.push(menuItem)
                 break;
             }
             case "User": {
-                const menuItem = mapFrontendModuleToMenuItem(module, "User: " + module.name, navigate, titleSetter);
+                const menuItem = mapFrontendModuleToMenuItem(module, "User: " + module.name, navigate);
                 userMenuItems.push(menuItem)
                 break;
             }
             case "Admin": {
-                const menuItem = mapFrontendModuleToMenuItem(module, "Admin: " + module.name, navigate, titleSetter);
+                const menuItem = mapFrontendModuleToMenuItem(module, "Admin: " + module.name, navigate);
                 adminMenuItems.push(menuItem)
                 break;
             }
@@ -86,11 +88,14 @@ export default function MainLayout() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [selectedModuleTitle, setSelectedModuleTitle] = useState<string>('Selected Module');
     const [menuItems, setMenuItems] = useState<MenuItem[]>()
 
     const moduleList = useSelector((state: RootState) =>
         state.moduleList.moduleList
+    );
+
+    const pageTitle = useSelector((state: RootState) =>
+        state.mainLayout.title
     );
 
     // Double check, if the currently selected route is currently available to the user.
@@ -102,30 +107,21 @@ export default function MainLayout() {
         }
 
         // Update the menu settings
-        setMenuItems(groupModulesByType(moduleList, navigate, setSelectedModuleTitle))
+        setMenuItems(groupModulesByType(moduleList, navigate))
 
-        const isValidRoute = moduleList.length > 0 ? moduleList.map(module => module.routerUrl).includes(location.pathname) : false;
+        const builtInModules = ["/terms", "/contact", "/imprint", "/privacy"]
+        const isValidRoute = builtInModules.includes(location.pathname) ||
+            (moduleList.length > 0 ? moduleList.map(module => module.routerUrl).includes(location.pathname) : false);
         // If no currently available route is selected,
         // select the first main module as a default.
         if(!isValidRoute) {
             const mainModules = moduleList.filter(module => module.type === "Main")
             let fallbackRoute = "/";
-            let fallbackTitle = ""
             if(mainModules.length > 0) {
                 fallbackRoute = mainModules[0].routerUrl
-                fallbackTitle = mainModules[0].name
             }
-            navigate(fallbackRoute, {replace: true});
-            setSelectedModuleTitle(fallbackTitle)
-        }
-        // If one is selected, update the page title accordingly.
-        else {
-            const selectedModule = moduleList.filter(module => module.routerUrl === location.pathname)
-            let fallbackTitle = ""
-            if(selectedModule.length > 0) {
-                fallbackTitle = selectedModule[0].name
-            }
-            setSelectedModuleTitle(fallbackTitle)
+            console.log("Redirecting", fallbackRoute, moduleList);
+            navigate(fallbackRoute, {replace: true})
         }
     }, [location.pathname, moduleList, navigate]);
 
@@ -142,7 +138,7 @@ export default function MainLayout() {
                 <div className="flex flex-column flex-grow-1 justify-content-between ml-0 md:ml-3 mt-3">
                     {/* Title */}
                     <div>
-                        <h1 className="m-0 text-left">{selectedModuleTitle}</h1>
+                        <h1 className="m-0 text-left">{pageTitle}</h1>
                     </div>
 
                     {/* Navigation Menu */}
@@ -167,16 +163,32 @@ export default function MainLayout() {
                     <div className="flex md:flex-row ml-auto">
                         <ul className="list-none flex md:flex-row flex-column gap-4 m-0 p-0">
                             <li className="flex">
-                                <Link to="/terms" onClick={() => setSelectedModuleTitle("AGB")} className="text-decoration-none">AGB</Link>
+                                <Link to="/terms" className="text-decoration-none" onClick={() => {
+                                    const action: UpdateMainLayoutTitleAction = {title: "AGB"}
+                                    store.dispatch(updateMainLayoutTitle(action))
+                                    return undefined
+                                }}>AGB</Link>
                             </li>
                             <li className="flex">
-                                <Link to="/contact" onClick={() => setSelectedModuleTitle("Kontakt")} className="text-decoration-none">Kontakt</Link>
+                                <Link to="/contact" className="text-decoration-none" onClick={() => {
+                                    const action: UpdateMainLayoutTitleAction = {title: "Kontakt"}
+                                    store.dispatch(updateMainLayoutTitle(action))
+                                    return undefined
+                                }}>Kontakt</Link>
                             </li>
                             <li className="flex">
-                                <Link to="/imprint" onClick={() => setSelectedModuleTitle("Impressum")} className="text-decoration-none">Impressum</Link>
+                                <Link to="/imprint" className="text-decoration-none" onClick={() => {
+                                    const action: UpdateMainLayoutTitleAction = {title: "Impressum"}
+                                    store.dispatch(updateMainLayoutTitle(action))
+                                    return undefined
+                                }}>Impressum</Link>
                             </li>
                             <li className="flex">
-                                <Link to="/privacy" onClick={() => setSelectedModuleTitle("Datenschutz")} className="text-decoration-none">Datenshutz</Link>
+                                <Link to="/privacy" className="text-decoration-none" onClick={() => {
+                                    const action: UpdateMainLayoutTitleAction = {title: "Datenschutz"}
+                                    store.dispatch(updateMainLayoutTitle(action))
+                                    return undefined
+                                }}>Datenshutz</Link>
                             </li>
                         </ul>
                     </div>

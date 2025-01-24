@@ -72,7 +72,7 @@ public class CourseRegistrationController {
         Optional<User> registrar = userService.readById(item.getRegistrar().getId());
         courseRegistration.setRegistrar(registrar.orElse(null));
 
-        Optional<User> partner = item.getPartner().isPresent() ? userService.readById(item.getPartner().get().getId()) : Optional.empty();
+        Optional<User> partner = (item.getPartner() != null && item.getPartner().isPresent()) ? userService.readById(item.getPartner().get().getId()) : Optional.empty();
         courseRegistration.setPartner(partner.orElse(null));
 
         if(item.getId() == 0) {
