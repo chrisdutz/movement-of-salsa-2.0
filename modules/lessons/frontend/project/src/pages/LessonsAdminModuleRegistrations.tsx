@@ -16,12 +16,12 @@ import {useState} from "react";
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
 
-interface RegistrationsAdminModuleProps {
+interface LessonsAdminModuleRegistrationsProps {
     course: CourseDto;
     onClose: () => void;
 }
 
-export default function RegistrationsAdminModule( {course, onClose}:RegistrationsAdminModuleProps ) {
+export default function LessonsAdminModuleRegistrations({course, onClose}:LessonsAdminModuleRegistrationsProps ) {
     /*const [courseRegistrations, setCourseRegistrations] = useState<CourseRegistrationDto[]>()
     useEffect(() => {
         restClient.findRegistrationsForCourse(courseId).then(value => {
@@ -49,6 +49,7 @@ export default function RegistrationsAdminModule( {course, onClose}:Registration
                 id: 0,
                 name: "",
                 sex: "MALE",
+                size: 0,
             },
 
             partner: undefined,

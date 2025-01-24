@@ -10,21 +10,16 @@ import java.util.Optional;
 public class CourseRegistrationDto {
 
     protected long id;
-
     protected Long courseId;
     protected Calendar courseStartDate;
     protected String courseTypeCode;
-
     protected CourseRegistrationType courseRegistrationType;
     protected String rateName;
-
     protected UserDto registrar;
     protected Optional<UserDto> partner;
-
     protected Float price;
     protected Float discount;
     protected String discountRemarks;
-
     protected String remarks;
 
     public CourseRegistrationDto() {
@@ -54,9 +49,9 @@ public class CourseRegistrationDto {
         this.courseTypeCode = courseRegistration.getCourse().getCourseType().getCode();
         this.courseRegistrationType = courseRegistration.getCourseRegistrationType();
         this.rateName = courseRegistration.getRateName();
-        this.registrar = new UserDto(registrarUser.getId(), registrarUser.getLastName() + ", " + registrarUser.getFirstName(), registrarUser.getSex());
+        this.registrar = new UserDto(registrarUser);
         if(courseRegistration.getCourseRegistrationType() == CourseRegistrationType.COUPLE && partnerUser != null) {
-            this.partner = Optional.of(new UserDto(partnerUser.getId(), partnerUser.getLastName() + ", " + partnerUser.getFirstName(), partnerUser.getSex()));
+            this.partner = Optional.of(new UserDto(partnerUser));
         } else {
             this.partner = Optional.empty();
         }

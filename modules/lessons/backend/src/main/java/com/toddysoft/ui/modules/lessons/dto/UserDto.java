@@ -1,20 +1,30 @@
 package com.toddysoft.ui.modules.lessons.dto;
 
 import com.toddysoft.ui.security.entity.Sex;
+import com.toddysoft.ui.security.entity.User;
 
 public class UserDto {
 
-    private long id;
-    private String name;
-    private Sex sex;
+    protected long id;
+    protected String name;
+    protected Sex sex;
+    protected Integer size;
 
     public UserDto() {
     }
 
-    public UserDto(long id, String name, Sex sex) {
+    public UserDto(long id, String name, Sex sex, Integer size) {
         this.id = id;
         this.name = name;
         this.sex = sex;
+        this.size = size;
+    }
+
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.name = user.getLastName() + ", " + user.getFirstName();
+        this.sex = user.getSex();
+        this.size = user.getSize();
     }
 
     public long getId() {
@@ -39,5 +49,13 @@ public class UserDto {
 
     public void setSex(Sex sex) {
         this.sex = sex;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 }

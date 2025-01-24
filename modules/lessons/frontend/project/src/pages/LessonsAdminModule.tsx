@@ -12,7 +12,8 @@ import {
 import axios, * as Axios from "axios";
 import {AxiosRequestConfig} from "axios";
 import {useEffect, useState} from "react";
-import RegistrationsAdminModule from "./RegistrationsAdminModule.tsx";
+import LessonsAdminModuleRegistrations from "./LessonsAdminModuleRegistrations.tsx";
+import LessonsAdminModuleCouples from "./LessonsAdminModuleCouples.tsx";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -48,14 +49,14 @@ export default function LessonsAdminModule() {
                 icon: "fa-solid fa-sack-dollar",
                 label: "Reg.",
                 onClick: (item, setChildEditor) => {
-                    setChildEditor(<RegistrationsAdminModule course={item} onClose={() => setChildEditor(undefined)}/>)
+                    setChildEditor(<LessonsAdminModuleRegistrations course={item} onClose={() => setChildEditor(undefined)}/>)
                 }
             },
             {
                 icon: "fa-solid fa-people",
                 label: "Couples",
-                onClick: item => {
-                    console.log("Couples Clicked", item)
+                onClick: (item, setChildEditor) => {
+                    setChildEditor(<LessonsAdminModuleCouples course={item} onClose={() => setChildEditor(undefined)}/>)
                 }
             },
             {

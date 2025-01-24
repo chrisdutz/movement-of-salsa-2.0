@@ -40,7 +40,7 @@ public class CourseRegistrationController {
 
     @GetMapping("/registrars")
     public List<UserDto> findUsers() {
-        return userService.list().stream().map(user -> new UserDto(user.getId(), user.getLastName() + ", " + user.getFirstName(), user.getSex())).toList();
+        return userService.list().stream().map(UserDto::new).toList();
     }
 
     @GetMapping("/partners/{user-id}")
@@ -50,7 +50,7 @@ public class CourseRegistrationController {
             Sex registrarSex = registrar.get().getSex();
             Sex partnerSex = (registrarSex == Sex.MALE) ? Sex.FEMALE : Sex.MALE;
             // TODO: Order by the number of times they have danced together.
-            return userService.list().stream().filter(user -> user.getSex() == partnerSex).map(user -> new UserDto(user.getId(), user.getLastName() + ", " + user.getFirstName(), user.getSex())).toList();
+            return userService.list().stream().filter(user -> user.getSex() == partnerSex).map(UserDto::new).toList();
         }
         return Collections.emptyList();
     }

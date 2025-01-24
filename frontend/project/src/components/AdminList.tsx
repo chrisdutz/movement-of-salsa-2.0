@@ -18,6 +18,7 @@ import {Password} from "primereact/password";
 import ImageEditor, {ImageEditorEvent} from "./ImageEditor.tsx";
 import {Checkbox} from "primereact/checkbox";
 import {ProgressSpinner} from "primereact/progressspinner";
+import {Message} from "primereact/message";
 
 export interface AdminController<E> {
     findAll(options?: Axios.AxiosRequestConfig): RestResponse<E[]>
@@ -68,6 +69,7 @@ interface AdminListProps<T> {
     controller: AdminController<T>;
     emptyItem: T;
     globalActions?: GlobalAction[];
+    globalLabel?: string;
     listColumns: ListColumn<T>[];
     listSortColumn?: string;
     listActions?: ItemAction<T>[];
@@ -81,6 +83,7 @@ export default function AdminList<T extends DataTableValue>({
                                                                 controller,
                                                                 emptyItem,
                                                                 globalActions,
+                                                                globalLabel,
                                                                 listColumns,
                                                                 listSortColumn,
                                                                 listActions,
@@ -183,6 +186,16 @@ export default function AdminList<T extends DataTableValue>({
                         <Button icon={value.icon} severity={value.severity}
                                 label={value.label} onClick={() => value.onClick()}/>
                     )
+                }
+            </div>
+        )
+    }
+
+    const listToolbarMessagesTemplate = () => {
+        return (
+            <div className="flex flex-wrap gap-2">
+                {globalLabel && globalLabel.length > 0 &&
+                    <Message severity="warn" text={globalLabel} />
                 }
             </div>
         )
@@ -427,7 +440,7 @@ export default function AdminList<T extends DataTableValue>({
             {!editItem && !childEditor ? (
                 /* List view */
                 <>
-                    <Toolbar className="mb-4" start={listToolbarTemplate}/>
+                    <Toolbar className="mb-4" start={listToolbarTemplate} end={listToolbarMessagesTemplate}/>
                     <DataTable value={items} sortField={listSortColumn} sortOrder={1} showGridlines stripedRows
                                tableStyle={{minWidth: '50rem'}}>
                         {listColumns.map((column, index) => {

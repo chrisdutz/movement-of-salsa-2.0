@@ -8,13 +8,9 @@ import java.util.List;
 public class CourseDto {
 
     protected long id;
-
     protected boolean closed;
-
     protected Long courseTypeId;
-
     protected String courseTypeCode;
-
     protected List<Lesson> lessons;
 
     public CourseDto() {

@@ -7,6 +7,8 @@ import com.toddysoft.ui.modules.lessons.entity.CourseRegistration;
 import com.toddysoft.ui.modules.lessons.entity.Lesson;
 import com.toddysoft.ui.modules.lessons.repository.CourseRegistrationRepository;
 import com.toddysoft.ui.modules.lessons.repository.CourseRepository;
+import com.toddysoft.ui.modules.lessons.types.CourseRegistrationType;
+import com.toddysoft.ui.security.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import org.springframework.web.client.RestClient;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +61,21 @@ public class CourseRegistrationService
     @Transactional(readOnly = true)
     public List<CourseRegistration> listItems(long courseId) {
         return courseRegistrationRepository.findByCourse_Id(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> listPayingUsers(long courseId) {
+        List<CourseRegistration> courseRegistrations = listItems(courseId);
+        Map<Long, User> users = new HashMap<>();
+        for (CourseRegistration courseRegistration : courseRegistrations) {
+            User registrar = courseRegistration.getRegistrar();
+            users.put(registrar.getId(), registrar);
+            if(courseRegistration.getCourseRegistrationType() == CourseRegistrationType.COUPLE) {
+                User partner = courseRegistration.getPartner();
+                users.put(partner.getId(), partner);
+            }
+        }
+        return new ArrayList<>(users.values());
     }
 
 }

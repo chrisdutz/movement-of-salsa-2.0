@@ -12,6 +12,46 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP POST /api/couples
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.save
+     */
+    save$POST$api_couples(arg0: CourseCoupleDto, options?: O): RestResponse<CourseCoupleDto> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/couples`, data: arg0, options: options });
+    }
+
+    /**
+     * HTTP GET /api/couples/unpaired-gents/{course-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.findUnpairedGents
+     */
+    findUnpairedGents(courseId: number, options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/couples/unpaired-gents/${courseId}`, options: options });
+    }
+
+    /**
+     * HTTP GET /api/couples/unpaired-ladies/{course-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.findUnpairedLadies
+     */
+    findUnpairedLadies(courseId: number, options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/couples/unpaired-ladies/${courseId}`, options: options });
+    }
+
+    /**
+     * HTTP DELETE /api/couples/{couple-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.deleteById
+     */
+    deleteById$DELETE$api_couples_coupleId(coupleId: number, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/couples/${coupleId}`, options: options });
+    }
+
+    /**
+     * HTTP GET /api/couples/{course-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.findCouplesForCourse
+     */
+    findCouplesForCourse(courseId: number, options?: O): RestResponse<CourseCoupleDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/couples/${courseId}`, options: options });
+    }
+
+    /**
      * HTTP GET /api/course-types
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseTypeController.findAll
      */
@@ -132,6 +172,17 @@ export class RestApplicationClient<O> {
     }
 }
 
+export interface CourseCoupleDto {
+    confirmed: boolean;
+    courseId: number;
+    gent: UserDto;
+    gentPaying: boolean;
+    id: number;
+    lady: UserDto;
+    ladyPaying: boolean;
+    remarks: string;
+}
+
 export interface CourseDto {
     closed: boolean;
     courseTypeCode: string;
@@ -193,6 +244,7 @@ export interface UserDto {
     id: number;
     name: string;
     sex: Sex;
+    size: number;
 }
 
 export type CourseRegistrationType = "SINGLE" | "COUPLE";
