@@ -117,10 +117,13 @@ export default function MainLayout() {
         if(!isValidRoute) {
             const mainModules = moduleList.filter(module => module.type === "Main")
             let fallbackRoute = "/";
+            let fallbackTitle = ""
             if(mainModules.length > 0) {
                 fallbackRoute = mainModules[0].routerUrl
+                fallbackTitle = mainModules[0].name
             }
-            console.log("Redirecting", fallbackRoute, moduleList);
+            const action: UpdateMainLayoutTitleAction = {title: fallbackTitle}
+            store.dispatch(updateMainLayoutTitle(action))
             navigate(fallbackRoute, {replace: true})
         }
     }, [location.pathname, moduleList, navigate]);
@@ -166,28 +169,24 @@ export default function MainLayout() {
                                 <Link to="/terms" className="text-decoration-none" onClick={() => {
                                     const action: UpdateMainLayoutTitleAction = {title: "AGB"}
                                     store.dispatch(updateMainLayoutTitle(action))
-                                    return undefined
                                 }}>AGB</Link>
                             </li>
                             <li className="flex">
                                 <Link to="/contact" className="text-decoration-none" onClick={() => {
                                     const action: UpdateMainLayoutTitleAction = {title: "Kontakt"}
                                     store.dispatch(updateMainLayoutTitle(action))
-                                    return undefined
                                 }}>Kontakt</Link>
                             </li>
                             <li className="flex">
                                 <Link to="/imprint" className="text-decoration-none" onClick={() => {
                                     const action: UpdateMainLayoutTitleAction = {title: "Impressum"}
                                     store.dispatch(updateMainLayoutTitle(action))
-                                    return undefined
                                 }}>Impressum</Link>
                             </li>
                             <li className="flex">
                                 <Link to="/privacy" className="text-decoration-none" onClick={() => {
                                     const action: UpdateMainLayoutTitleAction = {title: "Datenschutz"}
                                     store.dispatch(updateMainLayoutTitle(action))
-                                    return undefined
                                 }}>Datenshutz</Link>
                             </li>
                         </ul>
