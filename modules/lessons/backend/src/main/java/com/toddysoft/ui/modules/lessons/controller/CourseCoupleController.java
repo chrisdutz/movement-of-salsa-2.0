@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 //@CrossOrigin(origins = {"http://localhost:8080", "http://localhost:5173"})
@@ -78,8 +80,8 @@ public class CourseCoupleController {
 
     @GetMapping("/unpaired-gents/{course-id}")
     public List<UserDto> findUnpairedGents(@PathVariable("course-id") long courseId) {
-        List<Couple> couples = courseCoupleService.listItems(courseId);
         List<Long> pairedGentsIds = new ArrayList<>();
+        List<Couple> couples = courseCoupleService.listItems(courseId);
         for (Couple couple : couples) {
             pairedGentsIds.add(couple.getGent().getId());
         }
@@ -93,8 +95,8 @@ public class CourseCoupleController {
 
     @GetMapping("/unpaired-ladies/{course-id}")
     public List<UserDto> findUnpairedLadies(@PathVariable("course-id") long courseId) {
-        List<Couple> couples = courseCoupleService.listItems(courseId);
         List<Long> pairedLadiesIds = new ArrayList<>();
+        List<Couple> couples = courseCoupleService.listItems(courseId);
         for (Couple couple : couples) {
             pairedLadiesIds.add(couple.getLady().getId());
         }
@@ -103,7 +105,49 @@ public class CourseCoupleController {
                 .filter(user -> user.getSex() == Sex.FEMALE)
                 .filter(user -> !pairedLadiesIds.contains(user.getId()))
                 .map(UserDto::new)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @GetMapping("/possible-guest-gents/{course-id}")
+    public List<UserDto> findPossibleGuestGents(@PathVariable("course-id") long courseId) {
+        Map<Long, User> possibleGents = userService.list().stream()
+                .filter(user -> user.getSex() == Sex.MALE)
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+        // Remove all gents that are already paired.
+        List<Couple> couples = courseCoupleService.listItems(courseId);
+        for (Couple couple : couples) {
+            possibleGents.remove(couple.getGent().getId());
+        }
+        // Remove the gents that are registered (They are provided by findUnpairedGents)
+        List<User> payingUsers = courseRegistrationService.listPayingUsers(courseId);
+        payingUsers.stream()
+                .filter(user -> user.getSex() == Sex.MALE)
+                .forEach(user -> possibleGents.remove(user.getId()));
+        // Map what's left to UserDto
+        return possibleGents.values().stream()
+                .map(UserDto::new)
+                .toList();
+    }
+
+    @GetMapping("/possible-guest-ladies/{course-id}")
+    public List<UserDto> findPossibleGuestLadies(@PathVariable("course-id") long courseId) {
+        Map<Long, User> possibleLadies = userService.list().stream()
+                .filter(user -> user.getSex() == Sex.FEMALE)
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+        // Remove all ladies that are already paired.
+        List<Couple> couples = courseCoupleService.listItems(courseId);
+        for (Couple couple : couples) {
+            possibleLadies.remove(couple.getLady().getId());
+        }
+        // Remove the ladies that are registered (They are provided by findUnpairedLadies)
+        List<User> payingUsers = courseRegistrationService.listPayingUsers(courseId);
+        payingUsers.stream()
+                .filter(user -> user.getSex() == Sex.FEMALE)
+                .forEach(user -> possibleLadies.remove(user.getId()));
+        // Map what's left to UserDto
+        return possibleLadies.values().stream()
+                .map(UserDto::new)
+                .toList();
     }
 
 }

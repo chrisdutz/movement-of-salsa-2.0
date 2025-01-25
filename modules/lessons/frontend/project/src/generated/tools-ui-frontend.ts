@@ -20,6 +20,22 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP GET /api/couples/possible-guest-gents/{course-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.findPossibleGuestGents
+     */
+    findPossibleGuestGents(courseId: number, options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/couples/possible-guest-gents/${courseId}`, options: options });
+    }
+
+    /**
+     * HTTP GET /api/couples/possible-guest-ladies/{course-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.findPossibleGuestLadies
+     */
+    findPossibleGuestLadies(courseId: number, options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/couples/possible-guest-ladies/${courseId}`, options: options });
+    }
+
+    /**
      * HTTP GET /api/couples/unpaired-gents/{course-id}
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseCoupleController.findUnpairedGents
      */

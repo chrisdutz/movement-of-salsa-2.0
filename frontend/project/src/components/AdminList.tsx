@@ -47,6 +47,7 @@ export interface ListColumn<E> {
     fieldType?: 'Date' | 'DateTime' | 'Time' | 'HTML' | undefined;
     field?: string;
     getter?: (item: E) => any;
+    styleFunction?: (item: E) => string;
 }
 
 export interface EditorColumn<E> {
@@ -124,6 +125,7 @@ export default function AdminList<T extends DataTableValue>({
     }
 
     function setEditItemAndMarkDirty(value: T | undefined) {
+        console.log("Updating", value)
         setEditItem(value)
         setDirty(true);
     }
@@ -235,27 +237,38 @@ export default function AdminList<T extends DataTableValue>({
 
     function renderListColumn(data: any, column:ListColumn<T>) {
         const value = column.field ? data[column.field] : column.getter?.(data);
-        switch (column.fieldType) {
-            case "Date": {
-                return new Date(value).toLocaleDateString()
+
+        const renderFunction = (fieldType: 'Date' | 'DateTime' | 'Time' | 'HTML' | undefined, value:any) => {
+            switch (fieldType) {
+                case "Date": {
+                    return new Date(value).toLocaleDateString()
+                }
+                case "DateTime": {
+                    return new Date(value).toLocaleString([], {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    })
+                }
+                case "Time": {
+                    return new Date(value).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                    })
+                }
             }
-            case "DateTime": {
-                return new Date(value).toLocaleString([], {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                })
-            }
-            case "Time": {
-                return new Date(value).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                })
-            }
+            return value.toString();
         }
-        return value.toString();
+
+        if(column.styleFunction) {
+            const computedClassNames = column.styleFunction(data)
+            return <div className={computedClassNames}>
+                {renderFunction(column.fieldType, value)}
+            </div>
+        }
+        return renderFunction(column.fieldType, value)
     }
 
     function renderEditor(index: number, column: EditorColumn<T>, editItem: T) {
