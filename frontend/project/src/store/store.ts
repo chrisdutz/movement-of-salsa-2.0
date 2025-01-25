@@ -12,12 +12,18 @@ export type UpdateMainLayoutTitleAction = {
     title: string
 }
 
+export type UpdateMainLayoutSubTitleAction = {
+    subTitle: string
+}
+
 export type MainLayoutState = {
     title: string
+    subTitle: string
 }
 
 export const mainLayoutInitialState:MainLayoutState = {
     title: "",
+    subTitle: "",
 }
 
 const mainLayoutSlice = createSlice({
@@ -26,11 +32,14 @@ const mainLayoutSlice = createSlice({
     reducers: {
         updateMainLayoutTitle: (state, action: PayloadAction<UpdateMainLayoutTitleAction>) => {
             state.title = action.payload.title
+        },
+        updateMainLayoutSubTitle: (state, action: PayloadAction<UpdateMainLayoutSubTitleAction>) => {
+            state.subTitle = action.payload.subTitle
         }
     }
 })
 
-export const {updateMainLayoutTitle} = mainLayoutSlice.actions
+export const {updateMainLayoutTitle, updateMainLayoutSubTitle} = mainLayoutSlice.actions
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Module list related

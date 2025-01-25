@@ -11,7 +11,10 @@ import {
 } from "../generated/tools-ui-frontend.ts";
 import axios, {AxiosRequestConfig} from "axios";
 import {useState} from "react";
-import store, {updateMainLayoutTitle, UpdateMainLayoutTitleAction} from "mainApp/Store";
+import store, {
+    updateMainLayoutSubTitle,
+    UpdateMainLayoutSubTitleAction,
+} from "mainApp/Store";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -44,8 +47,8 @@ export default function LessonsAdminModuleCouples({course, onClose}:LessonsAdmin
 
         globalActions: [
             {label: "Back to Lessons", icon: "pi pi-times-circle", severity: "danger", onClick: () => {
-                    const action: UpdateMainLayoutTitleAction = {title: "Admin: Lessons"}
-                    store.dispatch(updateMainLayoutTitle(action))
+                    const action: UpdateMainLayoutSubTitleAction = {subTitle: ""}
+                    store.dispatch(updateMainLayoutSubTitle(action))
                     onClose()
             }},
         ],
@@ -79,12 +82,14 @@ export default function LessonsAdminModuleCouples({course, onClose}:LessonsAdmin
         },
 
         editorColumns: [
+            // TODO: Replace this by list-view, where gents can be added.
             {label: "Gent", required: true, editable: newCouple, fieldType: "Select", field: "gent",
                 selectOptions: gents,
                 optionLabelFunction: (item:UserDto) => {
                     return (item) ? item.name + ((item.size) ? ` (${item.size})` : "") : "Select a male"
                 },
             },
+            // TODO: Replace this by list-view, where ladies can be added.
             {label: "Lady", required: true, editable: newCouple, fieldType: "Select", field: "lady",
                 selectOptions: ladies,
                 optionLabelFunction: (item:UserDto) => {

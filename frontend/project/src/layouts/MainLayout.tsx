@@ -98,6 +98,10 @@ export default function MainLayout() {
         state.mainLayout.title
     );
 
+    const pageSubTitle = useSelector((state: RootState) =>
+        state.mainLayout.subTitle
+    );
+
     // Double check, if the currently selected route is currently available to the user.
     // If this is not the case, redirect to the first main module in the list.
     useEffect(() => {
@@ -142,7 +146,10 @@ export default function MainLayout() {
                     {/* Title */}
                     <div>
                         <h1 className="m-0 text-left">{pageTitle}</h1>
-                    </div>
+                        {pageSubTitle &&
+                            <h3 className="m-0 text-left">{pageSubTitle}</h3>
+                        }
+                   </div>
 
                     {/* Navigation Menu */}
                     <div className="align-self-stretch mt-3">

@@ -12,7 +12,10 @@ import {
 import axios from "axios";
 import {AxiosRequestConfig} from "axios";
 import {useState} from "react";
-import store, {updateMainLayoutTitle, UpdateMainLayoutTitleAction} from "mainApp/Store";
+import store, {
+    updateMainLayoutSubTitle,
+    UpdateMainLayoutSubTitleAction,
+} from "mainApp/Store";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -63,8 +66,8 @@ export default function LessonsAdminModuleRegistrations({course, onClose}:Lesson
         },
         globalActions: [
             {label: "Back to Lessons", icon: "pi pi-times-circle", severity: "danger", onClick: () => {
-                    const action: UpdateMainLayoutTitleAction = {title: "Admin: Lessons"}
-                    store.dispatch(updateMainLayoutTitle(action))
+                    const action: UpdateMainLayoutSubTitleAction = {subTitle: ""}
+                    store.dispatch(updateMainLayoutSubTitle(action))
                     onClose()
                 }},
         ],

@@ -14,7 +14,10 @@ import {AxiosRequestConfig} from "axios";
 import {useEffect, useState} from "react";
 import LessonsAdminModuleRegistrations from "./LessonsAdminModuleRegistrations.tsx";
 import LessonsAdminModuleCouples from "./LessonsAdminModuleCouples.tsx";
-import store, {updateMainLayoutTitle, UpdateMainLayoutTitleAction} from "mainApp/Store";
+import store, {
+    updateMainLayoutSubTitle,
+    UpdateMainLayoutSubTitleAction,
+} from "mainApp/Store";
 
 axios.defaults.baseURL = 'http://localhost:8080';
 const restClient = new RestApplicationClient(axios);
@@ -54,8 +57,8 @@ export default function LessonsAdminModule() {
                     const firstLesson = item.lessons.reduce((earliest, current) =>
                         current.startTime < earliest.startTime ? current : earliest);
                     const firstLessonDate:string = firstLesson ? " - " + new Date(firstLesson.startTime).toLocaleDateString() : ""
-                    const action: UpdateMainLayoutTitleAction = {title: `Admin: Lessons / ${item.courseTypeCode}${firstLessonDate} / Registrations`}
-                    store.dispatch(updateMainLayoutTitle(action))
+                    const action: UpdateMainLayoutSubTitleAction = {subTitle: `${item.courseTypeCode}${firstLessonDate} / Registrations`}
+                    store.dispatch(updateMainLayoutSubTitle(action))
                 }
             },
             {
@@ -66,8 +69,8 @@ export default function LessonsAdminModule() {
                     const firstLesson = item.lessons.reduce((earliest, current) =>
                         current.startTime < earliest.startTime ? current : earliest);
                     const firstLessonDate:string = firstLesson ? " - " + new Date(firstLesson.startTime).toLocaleDateString() : ""
-                    const action: UpdateMainLayoutTitleAction = {title: `Admin: Lessons / ${item.courseTypeCode}${firstLessonDate} / Couples`}
-                    store.dispatch(updateMainLayoutTitle(action))
+                    const action: UpdateMainLayoutSubTitleAction = {subTitle: `${item.courseTypeCode}${firstLessonDate} / Couples`}
+                    store.dispatch(updateMainLayoutSubTitle(action))
                 }
             },
             {
@@ -78,8 +81,8 @@ export default function LessonsAdminModule() {
                     const firstLesson = item.lessons.reduce((earliest, current) =>
                         current.startTime < earliest.startTime ? current : earliest);
                     const firstLessonDate:string = firstLesson ? " - " + new Date(firstLesson.startTime).toLocaleDateString() : ""
-                    const action: UpdateMainLayoutTitleAction = {title: `Admin: Lessons / ${item.courseTypeCode}${firstLessonDate} / Videos`}
-                    store.dispatch(updateMainLayoutTitle(action))
+                    const action: UpdateMainLayoutSubTitleAction = {subTitle: `${item.courseTypeCode}${firstLessonDate} / Videos`}
+                    store.dispatch(updateMainLayoutSubTitle(action))
                 }
             },
             {
@@ -90,8 +93,8 @@ export default function LessonsAdminModule() {
                     const firstLesson = item.lessons.reduce((earliest, current) =>
                         current.startTime < earliest.startTime ? current : earliest);
                     const firstLessonDate:string = firstLesson ? " - " + new Date(firstLesson.startTime).toLocaleDateString() : ""
-                    const action: UpdateMainLayoutTitleAction = {title: `Admin: Lessons / ${item.courseTypeCode}${firstLessonDate} / List`}
-                    store.dispatch(updateMainLayoutTitle(action))
+                    const action: UpdateMainLayoutSubTitleAction = {subTitle: `${item.courseTypeCode}${firstLessonDate} / List`}
+                    store.dispatch(updateMainLayoutSubTitle(action))
                 }
             }
         ],
