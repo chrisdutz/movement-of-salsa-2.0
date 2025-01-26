@@ -124,6 +124,14 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP GET /api/courses/up-and-running
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findUpAndRunningCourses
+     */
+    findUpAndRunningCourses(options?: O): RestResponse<CourseDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/up-and-running`, options: options });
+    }
+
+    /**
      * HTTP GET /api/courses/{courseTypeId}/rates
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findCourseTypeRates
      */

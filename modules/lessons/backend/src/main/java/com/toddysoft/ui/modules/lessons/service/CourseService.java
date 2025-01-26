@@ -14,9 +14,7 @@ import org.springframework.web.client.RestClient;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class CourseService
@@ -58,6 +56,11 @@ public class CourseService
     @Transactional(readOnly = true)
     public List<Course> listItems() {
         return courseRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Course> listUpAndRunningCourses() {
+        return courseRepository.findCoursesWithLessonsAfter(Calendar.getInstance());
     }
 
     protected void updateCoordinates(Course course) {

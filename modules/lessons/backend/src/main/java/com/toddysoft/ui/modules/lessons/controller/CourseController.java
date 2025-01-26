@@ -91,4 +91,10 @@ public class CourseController implements AdminController<CourseDto> {
         return course.getCourseType().getRates();
     }
 
+    @GetMapping("/up-and-running")
+    public List<CourseDto> findUpAndRunningCourses() {
+        List<Course> courses = courseService.listUpAndRunningCourses();
+        return courses.stream().map(CourseDto::new).toList();
+    }
+
 }

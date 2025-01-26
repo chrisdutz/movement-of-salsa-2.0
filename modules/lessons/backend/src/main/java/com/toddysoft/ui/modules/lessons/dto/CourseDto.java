@@ -1,5 +1,6 @@
 package com.toddysoft.ui.modules.lessons.dto;
 
+import com.toddysoft.ui.modules.lessons.entity.Course;
 import com.toddysoft.ui.modules.lessons.entity.Lesson;
 
 import java.util.Calendar;
@@ -22,6 +23,14 @@ public class CourseDto {
         this.courseTypeId = courseTypeId;
         this.courseTypeCode = courseTypeCode;
         this.lessons = lessons;
+    }
+
+    public CourseDto(Course course) {
+        this.id = course.getId();
+        this.closed = course.isClosed();
+        this.courseTypeId = course.getCourseType().getId();
+        this.courseTypeCode = course.getCourseType().getCode();
+        this.lessons = course.getLessons();
     }
 
     public long getId() {
