@@ -1,6 +1,6 @@
 import {Toast} from "primereact/toast";
 import {Toolbar} from "primereact/toolbar";
-import {DataTable, DataTableValue} from "primereact/datatable";
+import {DataTable, DataTableStateEvent, DataTableValue, SortOrder} from "primereact/datatable";
 import {Column} from "primereact/column";
 import React, {JSX, ReactNode, useEffect, useRef, useState} from "react";
 import {RestResponse} from "../generated/plc4j-tools-ui-frontend";
@@ -73,6 +73,7 @@ interface AdminListProps<T> {
     globalLabel?: string;
     listColumns: ListColumn<T>[];
     listSortColumn?: string;
+    listSortOrder?: SortOrder;
     listActions?: ItemAction<T>[];
     onOpenEditor?: (selectedValue: T | undefined) => void;
     editorColumns: EditorColumn<T>[];
@@ -87,6 +88,7 @@ export default function AdminList<T extends DataTableValue>({
                                                                 globalLabel,
                                                                 listColumns,
                                                                 listSortColumn,
+                                                                listSortOrder,
                                                                 listActions,
                                                                 onOpenEditor,
                                                                 editorColumns,
@@ -100,6 +102,8 @@ export default function AdminList<T extends DataTableValue>({
     const [items, setItems] = useState<T[]>([]);
     const [editItem, setEditItemInternal] = useState<T | undefined>()
     const [dirty, setDirty] = useState<boolean>(false)
+    const [sortColumnName, setSortColumnName] = useState<string | undefined>(listSortColumn)
+    const [sortOrder, setSortOrder] = useState<SortOrder>(listSortOrder)
 
     const [childEditor, setChildEditor] = useState<ReactNode>()
 
@@ -116,6 +120,18 @@ export default function AdminList<T extends DataTableValue>({
             }
         }
     }, [initialized, controller, initializer]);
+    useEffect(() => {
+        if(sortColumnName && items.length > 0) {
+            handleSort({
+                filters: {},
+                first: 0,
+                multiSortMeta: undefined,
+                rows: 0,
+                sortOrder: sortOrder,
+                sortField: sortColumnName
+            })
+        }
+    }, [loading]);
 
     function setEditItem(value: T | undefined) {
         if(onOpenEditor) {
@@ -440,6 +456,84 @@ export default function AdminList<T extends DataTableValue>({
         return <>{editor}</>;
     };
 
+    function handleSort(event: DataTableStateEvent) {
+        if (!event.sortField) {
+            return;
+        }
+
+        const currentSortFieldName = event.sortField
+        const sortColumn = listColumns.find(column => {
+            let columnName = ""
+            if(column.getter) {
+                columnName = column.header.replace(" ", "")
+            } else if (column.field) {
+                columnName = column.field
+            }
+            return columnName == currentSortFieldName
+        })
+        if(!sortColumn) {
+            return;
+        }
+
+        let currentSortOrder = sortOrder
+        if(sortColumnName == currentSortFieldName) {
+            currentSortOrder = (currentSortOrder == 1) ? -1 : 1
+            setSortOrder(currentSortOrder)
+        } else if (event.sortField) {
+            currentSortOrder = 1
+            setSortColumnName(currentSortFieldName)
+            setSortOrder(currentSortOrder)
+        }
+
+        // Ensure that event.data is defined and is an array.
+        if (!items || items.length === 0) {
+            return;
+        }
+
+        if(sortColumn.getter) {
+            // Create a new array copy from event.data.
+            const sortedData = [...items].sort((a:T, b:T) => {
+                const aValue = sortColumn.getter?.(a)
+                const bValue = sortColumn.getter?.(b)
+
+                let result = 0
+                if(aValue < bValue) {
+                    result = -1
+                } else if (aValue > bValue) {
+                    result = 1
+                }
+                result = ((currentSortOrder == 1) ? -1 : 1) * result
+                return result
+            })
+
+            setItems(sortedData)
+        } else if (sortColumn.field) {
+            // Create a new array copy from event.data.
+            const sortedData = [...items].sort((a:T, b:T) => {
+                const sortFieldName = sortColumn.field
+                const aIndexedType = a as Record<string, any>
+                const bIndexedType = b as Record<string, any>
+
+                let result = 0
+                if(sortFieldName && aIndexedType && bIndexedType) {
+                    const aValue = aIndexedType[sortFieldName]
+                    const bValue = bIndexedType[sortFieldName]
+
+                    if (aValue < bValue) {
+                        result = -1
+                    } else if (aValue > bValue) {
+                        result = 1
+                    }
+                    result = ((currentSortOrder == 1) ? -1 : 1) * result
+                }
+                return result
+            })
+
+            console.log("Sorted", sortedData)
+            setItems(sortedData)
+        }
+    }
+
     // Output a loading spinner as long as we're loading data
     if (loading) return <ProgressSpinner/>;
 
@@ -454,7 +548,9 @@ export default function AdminList<T extends DataTableValue>({
                 /* List view */
                 <>
                     <Toolbar className="mb-4" start={listToolbarTemplate} end={listToolbarMessagesTemplate}/>
-                    <DataTable value={items} sortField={listSortColumn} sortOrder={1} showGridlines stripedRows
+                    <DataTable value={items}
+                               sortMode="single" sortField={sortColumnName} sortOrder={sortOrder} onSort={handleSort}
+                               showGridlines stripedRows
                                tableStyle={{minWidth: '50rem'}}>
                         {listColumns.map((column, index) => {
                             if (column.field) {
@@ -484,7 +580,8 @@ export default function AdminList<T extends DataTableValue>({
                                 return <Column key={"column" + index}
                                                header={column.header}
                                                body={(data) => renderListColumn(data, column)}
-                                               sortable={column.sortable}/>
+                                               sortable={column.sortable}
+                                               sortField={column.header.replace(" ", "")}/>
                             }
                         })}
                         <Column body={listItemActionsTemplate}/>

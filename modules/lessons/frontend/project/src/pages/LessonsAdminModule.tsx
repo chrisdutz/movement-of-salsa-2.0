@@ -47,7 +47,8 @@ export default function LessonsAdminModule() {
             {sortable: true, header: "Course Type", field: "courseTypeCode"},
             {sortable: true, header: "Closed", field: "closed"}
         ],
-        listSortColumn: "listOrder",
+        listSortColumn: "StartDate",
+        listSortOrder: -1,
         listActions: [
             {
                 icon: "fa-solid fa-sack-dollar",

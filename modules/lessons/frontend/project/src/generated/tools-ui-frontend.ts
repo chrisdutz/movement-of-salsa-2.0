@@ -249,6 +249,17 @@ export interface CourseTypeRate {
     title: string;
 }
 
+export interface GuestUserDto extends UserDto {
+    city: string;
+    country: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    street: string;
+    zip: string;
+}
+
 export interface Image {
     height: number;
     imageData: string;
@@ -262,6 +273,15 @@ export interface Lesson {
     locationLat: number;
     locationLon: number;
     startTime: Date;
+}
+
+export interface RegisteredUserDto extends UserDto {
+    city: string;
+    country: string;
+    phone: string;
+    street: string;
+    userId: number;
+    zip: string;
 }
 
 export interface UserDto {

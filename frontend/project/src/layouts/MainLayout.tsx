@@ -47,7 +47,7 @@ const groupModulesByType = (modules: FrontendModule[], navigate: NavigateFunctio
         }
     });
 
-    // If there's at least one user menu, add a menu entry for "user" modules
+    // If there's at least one user module, add a menu entry for "user" modules
     if(userMenuItems.length > 0) {
         // Little hack to position the logout link after all others.
         if(menuItems[menuItems.length - 1].label === "Logout") {
@@ -64,7 +64,7 @@ const groupModulesByType = (modules: FrontendModule[], navigate: NavigateFunctio
         }
     }
 
-    // If there's at least one admin menu, add a menu entry for "admin" modules
+    // If there's at least one admin module, add a menu entry for "admin" modules
     if(adminMenuItems.length > 0) {
         // Little hack to position the logout link after all others.
         if(menuItems[menuItems.length - 1].label === "Logout") {

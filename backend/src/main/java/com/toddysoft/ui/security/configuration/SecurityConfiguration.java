@@ -36,8 +36,6 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                // Allow unauthenticated access to the login and application endpoints
-                                //.requestMatchers("/api/application/**", "/api/auth/**").permitAll()
                                 // Permit the loading of all modules
                                 // TODO: Change this to only allow loading of module the user has access to.
                                 .requestMatchers("/modules/**").permitAll()
