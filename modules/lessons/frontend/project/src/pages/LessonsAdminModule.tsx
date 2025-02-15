@@ -119,12 +119,12 @@ export default function LessonsAdminModule() {
                             },
                             listColumns: [
                                 {sortable: true, header: "Start Time", field: "startTime", fieldType: "DateTime"},
+                                {sortable: true, header: "End Time", field: "endTime", fieldType: "Time"},
                                 {sortable: true, header: "Location", field: "location"}
                             ],
                             listSortColumn: "startTime",
                             editorColumns: [
-                                {label: "Date", required: true, editable: true, fieldType: "Date", field: "startTime"},
-                                {label: "Start Time", required: true, editable: true, fieldType: "Time", field: "startTime"},
+                                {label: "Start Time", required: true, editable: true, fieldType: "DateTime", field: "startTime"},
                                 {label: "End Time", required: true, editable: true, fieldType: "Time", field: "endTime"},
                                 // TODO: Add something to reset lat and lon, if the location changes
                                 {label: "Location", required: true, editable: true, fieldType: "Text", field: "location"},
