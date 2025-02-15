@@ -38,6 +38,7 @@ export interface GlobalAction {
 export interface ItemAction<E> {
     icon: string;
     label?: string;
+    tooltip?: string;
     onClick: (item:E, setChildEditor:React.Dispatch<React.SetStateAction<ReactNode>>) => void;
 }
 
@@ -222,15 +223,15 @@ export default function AdminList<T extends DataTableValue>({
     const listItemActionsTemplate = (item: T) => {
         return (
             <div className="flex flex-wrap gap-2">
-                <Button icon="pi pi-pencil" rounded outlined onClick={() => showEditItemDialog(item)}/>
+                <Button icon="pi pi-pencil" tooltip="Edit" rounded outlined onClick={() => showEditItemDialog(item)}/>
                 {controller.delete &&
-                    <Button icon="pi pi-trash" rounded outlined
+                    <Button icon="pi pi-trash" tooltip="Delete" rounded outlined
                             onClick={() => showConfirmDeleteItemDialog(item)}/>
                 }
                 {listActions &&
                     listActions.map((value) =>
                         <Button icon={value.icon} rounded outlined
-                                label={value.label} onClick={() => value.onClick(item, setChildEditor)}/>
+                                label={value.label} tooltip={value.tooltip} onClick={() => value.onClick(item, setChildEditor)}/>
                     )
                 }
             </div>

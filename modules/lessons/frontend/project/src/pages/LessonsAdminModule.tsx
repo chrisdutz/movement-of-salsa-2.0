@@ -123,6 +123,30 @@ export default function LessonsAdminModule() {
                                 {sortable: true, header: "Location", field: "location"}
                             ],
                             listSortColumn: "startTime",
+                            listActions: [
+                                {
+                                    icon: "fa-solid fa-copy",
+                                    tooltip: "Create follow-up lesson",
+                                    onClick: (lesson) => {
+                                        // Clone the lesson
+                                        const newLesson = {
+                                            ...lesson,
+                                            startTime: new Date(lesson.startTime),
+                                            endTime: new Date(lesson.endTime),
+                                        }
+
+                                        // Update the start and end time by adding 7 days
+                                        newLesson.startTime.setDate(lesson.startTime.getDate() + 7)
+                                        newLesson.endTime.setDate(lesson.endTime.getDate() + 7)
+
+                                        // Update the course's lessons
+                                        setValue({
+                                            ...value,
+                                            lessons: [...value.lessons, newLesson]
+                                        })
+                                    }
+                                }
+                            ],
                             editorColumns: [
                                 {label: "Start Time", required: true, editable: true, fieldType: "DateTime", field: "startTime"},
                                 {label: "End Time", required: true, editable: true, fieldType: "Time", field: "endTime"},
