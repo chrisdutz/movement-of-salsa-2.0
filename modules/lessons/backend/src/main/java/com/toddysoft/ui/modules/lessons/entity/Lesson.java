@@ -1,9 +1,13 @@
 package com.toddysoft.ui.modules.lessons.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.toddysoft.ui.modules.lessons.utils.LocalDateTimeConvertFromUTCDeserializer;
+import com.toddysoft.ui.modules.lessons.utils.LocalTimeConvertFromUTCDeserializer;
 import jakarta.persistence.*;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "lessons_lesson")
@@ -12,11 +16,13 @@ public class Lesson {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    protected Calendar startTime;
+    @Column(name = "start_time")
+    @JsonDeserialize(using = LocalDateTimeConvertFromUTCDeserializer.class)
+    private LocalDateTime startTime;
 
-    @Temporal(TemporalType.TIME)
-    protected Calendar endTime;
+    @Column(name = "end_time")
+    @JsonDeserialize(using = LocalTimeConvertFromUTCDeserializer.class)
+    private LocalTime endTime;
 
     protected String location;
     protected Double locationLat;
@@ -38,19 +44,19 @@ public class Lesson {
         this.id = id;
     }
 
-    public Calendar getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Calendar startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public Calendar getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Calendar endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 

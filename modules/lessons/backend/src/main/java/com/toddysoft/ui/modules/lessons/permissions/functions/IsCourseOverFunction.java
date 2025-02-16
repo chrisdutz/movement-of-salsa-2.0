@@ -6,7 +6,7 @@ import com.toddysoft.ui.permissions.api.Term;
 import com.toddysoft.ui.permissions.api.TermFunction;
 import com.toddysoft.ui.permissions.api.TermType;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 public class IsCourseOverFunction implements TermFunction<Boolean> {
 
@@ -37,9 +37,9 @@ public class IsCourseOverFunction implements TermFunction<Boolean> {
             }
 
             // If at least one lesson id not over, the course is not over.
-            Calendar now = Calendar.getInstance();
+            LocalDateTime now = LocalDateTime.now();
             for(Lesson lesson : course.getLessons()) {
-                if(lesson.getStartTime().after(now)) {
+                if(lesson.getStartTime().isAfter(now)) {
                     return false;
                 }
             }

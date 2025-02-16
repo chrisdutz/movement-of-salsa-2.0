@@ -142,7 +142,6 @@ export default function AdminList<T extends DataTableValue>({
     }
 
     function setEditItemAndMarkDirty(value: T | undefined) {
-        console.log("Updating", value)
         setEditItem(value)
         setDirty(true);
     }

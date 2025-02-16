@@ -61,7 +61,7 @@ public class Course {
         if(lessons != null) {
             Lesson first = null;
             for(Lesson lesson : lessons) {
-                if((first == null) || lesson.getStartTime().before(first.getStartTime())) {
+                if((first == null) || lesson.getStartTime().isBefore(first.getStartTime())) {
                     first = lesson;
                 }
             }
@@ -75,7 +75,7 @@ public class Course {
         if(lessons != null) {
             Lesson last = null;
             for(Lesson lesson : lessons) {
-                if((last == null) || lesson.getStartTime().after(last.getStartTime())) {
+                if((last == null) || lesson.getStartTime().isAfter(last.getStartTime())) {
                     last = lesson;
                 }
             }

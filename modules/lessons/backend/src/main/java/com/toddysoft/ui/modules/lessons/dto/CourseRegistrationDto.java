@@ -4,14 +4,14 @@ import com.toddysoft.ui.modules.lessons.entity.CourseRegistration;
 import com.toddysoft.ui.modules.lessons.types.CourseRegistrationType;
 import com.toddysoft.ui.security.entity.User;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class CourseRegistrationDto {
 
     protected long id;
     protected Long courseId;
-    protected Calendar courseStartDate;
+    protected LocalDateTime courseStartDate;
     protected String courseTypeCode;
     protected CourseRegistrationType courseRegistrationType;
     protected String rateName;
@@ -25,7 +25,7 @@ public class CourseRegistrationDto {
     public CourseRegistrationDto() {
     }
 
-    public CourseRegistrationDto(long id, Long courseId, Calendar courseStartDate, String courseTypeCode, CourseRegistrationType courseRegistrationType, String rateName, UserDto registrar, Optional<UserDto> partner, Float price, Float discount, String discountRemarks, String remarks) {
+    public CourseRegistrationDto(long id, Long courseId, LocalDateTime courseStartDate, String courseTypeCode, CourseRegistrationType courseRegistrationType, String rateName, UserDto registrar, Optional<UserDto> partner, Float price, Float discount, String discountRemarks, String remarks) {
         this.id = id;
         this.courseId = courseId;
         this.courseStartDate = courseStartDate;
@@ -77,11 +77,11 @@ public class CourseRegistrationDto {
         this.courseId = courseId;
     }
 
-    public Calendar getCourseStartDate() {
+    public LocalDateTime getCourseStartDate() {
         return courseStartDate;
     }
 
-    public void setCourseStartDate(Calendar courseStartDate) {
+    public void setCourseStartDate(LocalDateTime courseStartDate) {
         this.courseStartDate = courseStartDate;
     }
 

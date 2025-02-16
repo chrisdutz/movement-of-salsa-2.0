@@ -197,8 +197,8 @@ export default function LessonsAdminModule() {
                                             }
 
                                             // Update the start and end time by adding 7 days
-                                            newLesson.startTime.setDate(lesson.startTime.getDate() + 7)
-                                            newLesson.endTime.setDate(lesson.endTime.getDate() + 7)
+                                            newLesson.startTime.setDate(new Date(lesson.startTime).getDate() + 7)
+                                            newLesson.endTime.setDate(new Date(lesson.endTime).getDate() + 7)
 
                                             // Update the course's lessons
                                             setValue({
