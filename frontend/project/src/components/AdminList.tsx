@@ -122,7 +122,7 @@ export default function AdminList<T extends DataTableValue>({
         }
     }, [initialized, controller, initializer]);
     useEffect(() => {
-        if(sortColumnName && items.length > 0) {
+        if(sortColumnName && items && items.length > 0) {
             handleSort({
                 filters: {},
                 first: 0,
@@ -233,6 +233,7 @@ export default function AdminList<T extends DataTableValue>({
                         <Button icon={value.icon} rounded outlined
                                 label={value.label} tooltip={value.tooltip} onClick={() => value.onClick(item, (value) => {
                                         setItems(value)
+                                        // Mainly to ensure sorting it happening.
                                         setInitialized(false)
                                     }, setChildEditor)}/>
                     )
