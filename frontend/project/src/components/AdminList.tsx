@@ -39,7 +39,7 @@ export interface ItemAction<E> {
     icon: string;
     label?: string;
     tooltip?: string;
-    onClick: (item:E, setChildEditor:React.Dispatch<React.SetStateAction<ReactNode>>) => void;
+    onClick: (item:E, setItems: React.Dispatch<React.SetStateAction<E[]>>, setChildEditor:React.Dispatch<React.SetStateAction<ReactNode>>) => void;
 }
 
 export interface ListColumn<E> {
@@ -231,7 +231,10 @@ export default function AdminList<T extends DataTableValue>({
                 {listActions &&
                     listActions.map((value) =>
                         <Button icon={value.icon} rounded outlined
-                                label={value.label} tooltip={value.tooltip} onClick={() => value.onClick(item, setChildEditor)}/>
+                                label={value.label} tooltip={value.tooltip} onClick={() => value.onClick(item, (value) => {
+                                        setItems(value)
+                                        setInitialized(false)
+                                    }, setChildEditor)}/>
                     )
                 }
             </div>

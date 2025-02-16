@@ -51,9 +51,38 @@ export default function LessonsAdminModule() {
         listSortOrder: -1,
         listActions: [
             {
+                icon: "fa-solid fa-copy",
+                tooltip: "Create follow-up course",
+                onClick: (course, setCourses) => {
+                    // TODO: Show a dialog asking for a start-date and use that as basis for creating the new one.
+                    const newCourse = {
+                        ...course,
+                        id: 0,
+                        lessons: course.lessons.map(lesson => {
+                            // Clone the lesson
+                            const newLesson = {
+                                ...lesson,
+                                id: 0,
+                                startTime: new Date(lesson.startTime),
+                                endTime: new Date(lesson.endTime),
+                            }
+
+                            // Update the start and end time by adding 4 weeks (7 days).
+                            newLesson.startTime.setDate(newLesson.startTime.getDate() + 28)
+                            newLesson.endTime.setDate(newLesson.endTime.getDate() + 28)
+
+                            return newLesson
+                        }),
+                    }
+                    restClient.save$POST$api_courses(newCourse).then((response) => {
+                        setCourses(oldCourses => [...oldCourses, response.data])
+                    })
+                }
+            },
+            {
                 icon: "fa-solid fa-sack-dollar",
-                label: "Reg.",
-                onClick: (item, setChildEditor) => {
+                tooltip: "Registrations",
+                onClick: (item, _, setChildEditor) => {
                     setChildEditor(<LessonsAdminModuleRegistrations course={item} onClose={() => setChildEditor(undefined)}/>)
                     const firstLesson = item.lessons.reduce((earliest, current) =>
                         current.startTime < earliest.startTime ? current : earliest);
@@ -64,8 +93,8 @@ export default function LessonsAdminModule() {
             },
             {
                 icon: "fa-solid fa-people",
-                label: "Couples",
-                onClick: (item, setChildEditor) => {
+                tooltip: "Couples",
+                onClick: (item, _, setChildEditor) => {
                     setChildEditor(<LessonsAdminModuleCouples course={item} onClose={() => setChildEditor(undefined)}/>)
                     const firstLesson = item.lessons.reduce((earliest, current) =>
                         current.startTime < earliest.startTime ? current : earliest);
@@ -76,7 +105,7 @@ export default function LessonsAdminModule() {
             },
             {
                 icon: "fa-solid fa-video",
-                label: "Videos",
+                tooltip: "Videos",
                 onClick: item => {
                     console.log("Videos Clicked", item)
                     const firstLesson = item.lessons.reduce((earliest, current) =>
@@ -88,7 +117,7 @@ export default function LessonsAdminModule() {
             },
             {
                 icon: "fa-solid fa-list",
-                label: "List",
+                tooltip: "List",
                 onClick: item => {
                     console.log("List Clicked", item)
                     const firstLesson = item.lessons.reduce((earliest, current) =>
@@ -131,6 +160,7 @@ export default function LessonsAdminModule() {
                                         // Clone the lesson
                                         const newLesson = {
                                             ...lesson,
+                                            id: 0,
                                             startTime: new Date(lesson.startTime),
                                             endTime: new Date(lesson.endTime),
                                         }
