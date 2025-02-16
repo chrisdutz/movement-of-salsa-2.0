@@ -12,6 +12,7 @@ import com.toddysoft.ui.modules.lessons.service.CourseTypeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -93,8 +94,13 @@ public class CourseController implements AdminController<CourseDto> {
 
     @GetMapping("/up-and-running")
     public List<CourseDto> findUpAndRunningCourses() {
-        List<Course> courses = courseService.listUpAndRunningCourses();
-        return courses.stream().map(CourseDto::new).toList();
+        try {
+            List<Course> courses = courseService.listUpAndRunningCourses();
+            return courses.stream().map(CourseDto::new).toList();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return Collections.emptyList();
     }
 
 }

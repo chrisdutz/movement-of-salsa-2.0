@@ -1,6 +1,6 @@
 import './App.css'
 import axios from 'axios';
-import {createBrowserRouter, Navigate, RouteObject, RouterProvider, useLocation} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouteObject, RouterProvider} from "react-router-dom";
 import MainLayout from "./layouts/MainLayout.tsx";
 import {useSelector} from "react-redux";
 import {loadExternalComponent, loadInternalComponent} from "./pages/ComponentLoader.tsx";
@@ -15,17 +15,19 @@ import Imprint from "./pages/main/Imprint.tsx";
 import Privacy from "./pages/main/Privacy.tsx";
 import {RestApplicationClient} from "./generated/plc4j-tools-ui-frontend.ts";
 
-const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
-
 axios.defaults.baseURL = 'http://localhost:8080';
 
 // Make sure date-strings are correctly parsed as Date objects.
+const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+const isoTimeRegex = /^\d{2}:\d{2}:\d{2}$/;
 axios.interceptors.response.use((response) => {
     function transformDates(obj: any): any {
         if (obj && typeof obj === 'object') {
             for (const key in obj) {
-                if (typeof obj[key] === 'string' && isoDateRegex.test(obj[key])) {
+                if (typeof obj[key] === 'string' && isoDateTimeRegex.test(obj[key])) {
                     obj[key] = new Date(obj[key]);
+                } else if (typeof obj[key] === 'string' && isoTimeRegex.test(obj[key])) {
+                    obj[key] = new Date("1970-01-01T" + obj[key])
                 } else if (typeof obj[key] === 'object') {
                     transformDates(obj[key]);
                 }
@@ -103,15 +105,6 @@ function App() {
                     }]
             }]
         return createBrowserRouter(routerDefinition)
-    })
-
-    // Make the access token available as we're using that to decide if the websocket connection should be
-    // established as well as being used to authenticate at the server.
-    const token = useSelector((state: RootState) => {
-        if(state.authentication?.authToken) {
-            return state.authentication.authToken
-        }
-        return ""
     })
 
     return (

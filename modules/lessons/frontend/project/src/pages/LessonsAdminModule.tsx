@@ -29,6 +29,28 @@ interface CopyCourseData {
     setStateAction: React.Dispatch<React.SetStateAction<CourseDto[]>>
 }
 
+// Make sure date-strings are correctly parsed as Date objects.
+const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+const isoTimeRegex = /^\d{2}:\d{2}:\d{2}$/;
+axios.interceptors.response.use((response) => {
+    function transformDates(obj: any): any {
+        if (obj && typeof obj === 'object') {
+            for (const key in obj) {
+                if (typeof obj[key] === 'string' && isoDateTimeRegex.test(obj[key])) {
+                    obj[key] = new Date(obj[key]);
+                } else if (typeof obj[key] === 'string' && isoTimeRegex.test(obj[key])) {
+                    obj[key] = new Date("1970-01-01T" + obj[key])
+                } else if (typeof obj[key] === 'object') {
+                    transformDates(obj[key]);
+                }
+            }
+        }
+        return obj;
+    }
+    response.data = transformDates(response.data);
+    return response;
+});
+
 export default function LessonsAdminModule() {
     const [courseTypes, setCourseTypes] = useState<CourseType[]>()
     const [copyCourseStartDataDialogShow, setCopyCourseStartDataDialogShow] = useState(false)
@@ -48,10 +70,15 @@ export default function LessonsAdminModule() {
 
                 // Calculate how many days later than the start day of the selected course was
                 // (so we can update all lessons accordingly)
-                const startDate = new Date(event.value)
+                const selectedStartDate = new Date(event.value)
                 const firstLessonBaseCourse = copyCourseData.baseCourse.lessons.reduce((earliest, current) =>
                     current.startTime < earliest.startTime ? current : earliest);
-                const diffDays = startDate.getDate() - new Date(firstLessonBaseCourse.startTime).getDate()
+
+                // Calculate the number of days between the start of the selected course and start date
+                const millisecondsPerDay = 1000 * 60 * 60 * 24;
+                const diffInMilliseconds = selectedStartDate.getTime() - new Date(firstLessonBaseCourse.startTime).getTime();
+                const diffInDays = Math.ceil(diffInMilliseconds / millisecondsPerDay);
+                console.log("Day Difference", diffInDays)
 
                 const newCourse = {
                     ...copyCourseData.baseCourse,
@@ -66,8 +93,8 @@ export default function LessonsAdminModule() {
                         }
 
                         // Update the start and end time by adding the diffDays.
-                        newLesson.startTime.setDate(newLesson.startTime.getDate() + diffDays)
-                        newLesson.endTime.setDate(newLesson.endTime.getDate() + diffDays)
+                        newLesson.startTime.setDate(newLesson.startTime.getDate() + diffInDays)
+                        newLesson.endTime.setDate(newLesson.endTime.getDate() + diffInDays)
 
                         return newLesson
                     }),

@@ -8,13 +8,16 @@ import {useEffect} from "react";
 const restClient = new RestApplicationClient(axios);
 
 // Make sure date-strings are correctly parsed as Date objects.
-const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
+const isoTimeRegex = /^\d{2}:\d{2}:\d{2}$/;
 axios.interceptors.response.use((response) => {
     function transformDates(obj: any): any {
         if (obj && typeof obj === 'object') {
             for (const key in obj) {
-                if (typeof obj[key] === 'string' && isoDateRegex.test(obj[key])) {
+                if (typeof obj[key] === 'string' && isoDateTimeRegex.test(obj[key])) {
                     obj[key] = new Date(obj[key]);
+                } else if (typeof obj[key] === 'string' && isoTimeRegex.test(obj[key])) {
+                    obj[key] = new Date("1970-01-01T" + obj[key])
                 } else if (typeof obj[key] === 'object') {
                     transformDates(obj[key]);
                 }
@@ -22,7 +25,6 @@ axios.interceptors.response.use((response) => {
         }
         return obj;
     }
-
     response.data = transformDates(response.data);
     return response;
 });

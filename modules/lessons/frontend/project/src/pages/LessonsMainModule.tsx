@@ -54,14 +54,17 @@ export default function NewsMainModule() {
             setCourseTypes(courseTypesResponse.data)
         })
         restClient.findUpAndRunningCourses().then(result => {
-            console.log("Result", upAndRunningCourses.data)
+            console.log("Result", result.data)
+            console.log("Old Map", upAndRunningCourses)
             const newUpAndRunningCourses:Record<string, CourseDto[]> = {}
-            result.data.forEach(course => {
-                if(!newUpAndRunningCourses[course.courseTypeCode]) {
-                    newUpAndRunningCourses[course.courseTypeCode] = [];
-                }
-                newUpAndRunningCourses[course.courseTypeCode] = [...newUpAndRunningCourses[course.courseTypeCode], course]
-            })
+            if(result.data) {
+                result.data.forEach(course => {
+                    if (!newUpAndRunningCourses[course.courseTypeCode]) {
+                        newUpAndRunningCourses[course.courseTypeCode] = [];
+                    }
+                    newUpAndRunningCourses[course.courseTypeCode] = [...newUpAndRunningCourses[course.courseTypeCode], course]
+                })
+            }
             console.log("Updated Map", newUpAndRunningCourses)
             setUpAndRunningCourses(newUpAndRunningCourses)
         })

@@ -14,6 +14,7 @@ import org.springframework.web.client.RestClient;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Component
@@ -60,7 +61,7 @@ public class CourseService
 
     @Transactional(readOnly = true)
     public List<Course> listUpAndRunningCourses() {
-        return courseRepository.findCoursesWithLessonsAfter(Calendar.getInstance());
+        return courseRepository.findCoursesWithLessonsAfter(LocalDateTime.now());
     }
 
     protected void updateCoordinates(Course course) {
