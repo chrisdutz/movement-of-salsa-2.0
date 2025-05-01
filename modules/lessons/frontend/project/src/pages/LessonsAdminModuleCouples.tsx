@@ -37,11 +37,11 @@ export default function LessonsAdminModuleCouples({course, onClose}:LessonsAdmin
             id: 0,
             courseId: course.id,
             gent: {
-                id: 0, name: "", sex: "MALE", size: 0
+                id: 0, firstName: "", lastName: "", sex: "MALE", size: 0
             },
             gentPaying: false,
             lady: {
-                id: 0, name: "", sex: "FEMALE", size: 0
+                id: 0, firstName: "", lastName: "", sex: "FEMALE", size: 0
             },
             ladyPaying: false,
             confirmed: false,
@@ -67,7 +67,7 @@ export default function LessonsAdminModuleCouples({course, onClose}:LessonsAdmin
                     return !item.gentPaying ? "text-red-600" : ""
                 },
                 getter: item => {
-                    return `${item.gent.name} ${item.gent.size > 0 ? " (" + item.gent.size + ")" : ""}`
+                    return `${item.gent.lastName}, ${item.gent.firstName} ${item.gent.size > 0 ? " (" + item.gent.size + ")" : ""}`
                 }
             },
             {
@@ -76,7 +76,7 @@ export default function LessonsAdminModuleCouples({course, onClose}:LessonsAdmin
                     return !item.ladyPaying ? "text-red-600" : ""
                 },
                 getter: item => {
-                    return `${item.lady.name} ${item.lady.size > 0 ? " (" + item.lady.size + ")" : ""}`
+                    return `${item.lady.lastName}, ${item.lady.firstName} ${item.lady.size > 0 ? " (" + item.lady.size + ")" : ""}`
                 }
             },
             {sortable: true, header: "Confirmed", field: "confirmed"},

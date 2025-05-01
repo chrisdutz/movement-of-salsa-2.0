@@ -6,23 +6,26 @@ import com.toddysoft.ui.security.entity.User;
 public class UserDto {
 
     protected long id;
-    protected String name;
+    protected String firstName;
+    protected String lastName;
     protected Sex sex;
     protected Integer size;
 
     public UserDto() {
     }
 
-    public UserDto(long id, String name, Sex sex, Integer size) {
+    public UserDto(long id, String firstName, String lastName, Sex sex, Integer size) {
         this.id = id;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.sex = sex;
         this.size = size;
     }
 
     public UserDto(User user) {
         this.id = user.getId();
-        this.name = user.getLastName() + ", " + user.getFirstName();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
         this.sex = user.getSex();
         this.size = user.getSize();
     }
@@ -35,12 +38,20 @@ public class UserDto {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Sex getSex() {

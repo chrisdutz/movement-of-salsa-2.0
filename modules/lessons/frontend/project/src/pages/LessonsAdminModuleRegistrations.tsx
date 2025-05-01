@@ -51,7 +51,8 @@ export default function LessonsAdminModuleRegistrations({course, onClose}:Lesson
 
             registrar: {
                 id: 0,
-                name: "",
+                firstName: "",
+                lastName: "",
                 sex: "MALE",
                 size: 0,
             },
@@ -76,11 +77,11 @@ export default function LessonsAdminModuleRegistrations({course, onClose}:Lesson
             {sortable: true, header: "Course Type", field: "courseTypeCode"},
             {sortable: true, header: "Rate", field: "rateName"},
             {sortable: true, header: "Registrar", getter: item => {
-                return `${item.registrar.name} ${item.registrar.sex == "MALE" ? " (M)" : " (F)"}`
+                return `${item.registrar.lastName}, ${item.registrar.firstName} ${item.registrar.sex == "MALE" ? " (M)" : " (F)"}`
             }},
             {sortable: true, header: "Partner", getter: item => {
                 if(item.partner) {
-                    return `${item.partner.name} ${item.partner.sex == "MALE" ? " (M)" : " (F)"}`
+                    return `${item.partner.lastName}, ${item.partner.firstName} ${item.partner.sex == "MALE" ? " (M)" : " (F)"}`
                 }
                 return ""
             }},
@@ -142,7 +143,7 @@ export default function LessonsAdminModuleRegistrations({course, onClose}:Lesson
             {label: "Registrar", required: false, editable: true, fieldType: "Select", field: "registrar",
                 selectOptions: registrars,
                 optionLabelFunction: (item:UserDto) => {
-                    return (item) ? item.name : "Select a user"
+                    return (item) ? item.firstName : "Select a user"
                 },
                 onOptionSelected: (oldValue, setValue, selectedItem: UserDto) => {
                     if(oldValue.courseRegistrationType == "COUPLE") {
@@ -164,7 +165,7 @@ export default function LessonsAdminModuleRegistrations({course, onClose}:Lesson
             {label: "Partner", required: partnerEditorEnabled, editable: partnerEditorEnabled, fieldType: "Select", field: "partner",
                 selectOptions: partners,
                 optionLabelFunction: (item:UserDto) => {
-                    return (item) ? item.name : "Select a partner"
+                    return (item) ? item.firstName : "Select a partner"
                 },
             },
             {label: "Price", required: true, editable: true, fieldType: "Number", field: "price"},

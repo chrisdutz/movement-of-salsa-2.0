@@ -2,8 +2,6 @@ package com.toddysoft.ui.modules.lessons.dto;
 
 public class GuestUserDto extends UserDto {
 
-    protected String firstName;
-    protected String lastName;
     protected String email;
     protected String street;
     protected String zip;
@@ -12,22 +10,6 @@ public class GuestUserDto extends UserDto {
     protected String phone;
 
     public GuestUserDto() {
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {

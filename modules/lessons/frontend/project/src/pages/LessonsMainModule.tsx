@@ -44,8 +44,10 @@ export default function NewsMainModule() {
 
     // For the registration process
     const [registration, setRegistration] = useState<CourseRegistrationDto|undefined>()
-    const [availableCourseRates/*, setAvailableCourseRates*/] = useState<CourseTypeRate[]>([])
-    const [previousPartners/*, setPreviousPartners*/] = useState<UserDto[]>([])
+    const [availableCourseRates, setAvailableCourseRates] = useState<CourseTypeRate[]>([])
+    const [partners, setPartners] = useState<UserDto[]>([])
+    const [selectedCourseRate, setSelectedCourseRate] = useState<CourseTypeRate>()
+    const [selectedRateIsPartnerRate, setSelectedRateIsPartnerRate] = useState<boolean>(false)
 
     useEffect(() => {
         // Make all axios requests use the bearer token from now on.
@@ -88,37 +90,50 @@ export default function NewsMainModule() {
                         <div className="p-fluid">
                             <div className="field mb-3">
                                 <label htmlFor="fieldSex" className="font-bold">Geschlecht</label>
-                                <Dropdown id="fieldSex" options={[{value: "MALE", label: "Männlich"}, {
-                                    value: "FEMALE",
-                                    label: "Weiblich"
-                                }]} required={true} onChange={event => {
-                                    if(registration && registration.registrar) {
-                                        (registration?.registrar as GuestUserDto).sex = event.value as Sex
-                                    }}
-                                }/>
-
+                                <Dropdown id="fieldSex" required={true}
+                                          options={[{value: "MALE", label: "Männlich"}, {
+                                              value: "FEMALE",
+                                              label: "Weiblich"
+                                          }]}
+                                          valueTemplate={(registration?.registrar as GuestUserDto).sex == "MALE" ? "Männlich" : "Weiblich"}
+                                          value={(registration?.registrar as GuestUserDto).sex}
+                                          onChange={event => {
+                                              console.log("Change", registration, event)
+                                              if(registration && registration.registrar) {
+                                                  (registration?.registrar as GuestUserDto).sex = event.value as Sex
+                                                  console.log("After change", (registration.registrar as GuestUserDto).sex)
+                                              }
+                                          }}/>
                             </div>
                             <div className="field mb-3">
                                 <label htmlFor="fieldFirstName" className="font-bold">Vorname</label>
-                                <InputText id="fieldFirstName" required={true} onChange={event => {
-                                    if(registration && registration.registrar) {
-                                        (registration?.registrar as GuestUserDto).firstName = event.target.value
-                                    }}
-                                }/>
+                                <InputText id="fieldFirstName" required={true}
+                                           value={(registration?.registrar as GuestUserDto).firstName}
+                                           onChange={event => {
+                                               if(registration && registration.registrar) {
+                                                   (registration?.registrar as GuestUserDto).firstName = event.target.value
+                                               }
+                                           }}/>
                             </div>
                             <div className="field mb-3">
                                 <label htmlFor="fieldLastName" className="font-bold">Nachname</label>
-                                <InputText id="fieldLastName" required={true} onChange={event => {
-                                    if(registration && registration.registrar) {
-                                        (registration?.registrar as GuestUserDto).lastName = event.target.value
-                                    }}}/>
+                                <InputText id="fieldLastName" required={true}
+                                           value={(registration?.registrar as GuestUserDto).lastName}
+                                           onChange={event => {
+                                               if(registration && registration.registrar) {
+                                                   (registration?.registrar as GuestUserDto).lastName = event.target.value
+                                               }
+                                           }}/>
                             </div>
                             <div className="field mb-3">
                                 <label htmlFor="fieldEmail" className="font-bold">Email Adresse</label>
-                                <InputText id="fieldEmail" type={"email"} required={true} onChange={event => {
-                                    if(registration && registration.registrar) {
-                                        (registration?.registrar as GuestUserDto).email = event.target.value
-                                    }}}/>
+                                <InputText id="fieldEmail" type={"email"} required={true}
+                                           value={(registration?.registrar as GuestUserDto).email}
+                                           onChange={event => {
+                                               if(registration && registration.registrar) {
+                                                   (registration?.registrar as GuestUserDto).email = event.target.value
+                                               }
+                                           }}/>
                             </div>
                         </div>
                     </Card>
@@ -135,43 +150,67 @@ export default function NewsMainModule() {
                     <div className="p-fluid">
                         <div className="field mb-3">
                             <label htmlFor="fieldRate" className="font-bold">Tarif</label>
-                            <Dropdown id="fieldRate" options={availableCourseRates} optionLabel="title" required={true} onChange={event => {
-                                if(registration) {
-                                    registration.rateName = event.value["title"]
-                                }}
-                            }/>
+                            <Dropdown id="fieldRate" options={availableCourseRates} required={true}
+                                      itemTemplate={option => option?.title}
+                                      valueTemplate={option => option ? option.title : "Select"}
+                                      value={selectedCourseRate}
+                                      onChange={event => {
+                                          setSelectedCourseRate(event.value)
+                                          if(registration) {
+                                              setRegistration({...registration, rateName: event.value["title"]})
+                                          }
+                                          const coupleRate = event.value["coupleRate"] as boolean
+                                          setSelectedRateIsPartnerRate(coupleRate)
+                                      }}/>
                         </div>
-                        <div className="field mb-3">
-                            <label htmlFor="fieldPartner" className="font-bold">Partner</label>
-                            <Dropdown id="fieldPartner" options={previousPartners} optionLabel="name" required={true} onChange={event => {
-                                if(registration) {
-                                    registration.partner = event.value
-                                }}
-                            }/>
-                        </div>
-                        <div className="field mb-3">
-                            <label htmlFor="fieldParnerFirstName" className="font-bold">Partner Vorname</label>
-                            <InputText id="fieldParnerFirstName" required={true} onChange={event => {
-                                if(registration) {
-                                    (registration.partner as GuestUserDto).firstName = event.target.value
-                                }}
-                            }/>
-                        </div>
-                        <div className="field mb-3">
-                            <label htmlFor="fieldParnerLastName" className="font-bold">Partner Nachname</label>
-                            <InputText id="fieldParnerLastName" required={true} onChange={event => {
-                                if(registration) {
-                                    (registration.partner as GuestUserDto).lastName = event.target.value
-                                }}
-                            }/>
-                        </div>
+                        {selectedRateIsPartnerRate &&
+                            <>
+                                {user &&
+                                    <div className="field mb-3">
+                                        <label htmlFor="fieldPartner" className="font-bold">Partner</label>
+                                        <Dropdown id="fieldPartner" options={partners} value={registration.partner}
+                                                  itemTemplate={(option) => (option) ? option.lastName + ((option.firstName && option.firstName.length > 0) ? ", " + option.firstName : "") : "Empty"}
+                                                  valueTemplate={(option) => (option) ? option.lastName + ((option.firstName && option.firstName.length > 0) ? ", " + option.firstName : "") : "Empty"}
+                                                  required={true} onChange={event => {
+                                                      if(registration) {
+                                                          setRegistration({...registration, partner: event.value})
+                                                      }
+                                                  }}/>
+                                    </div>
+                                }
+                                <div className="field mb-3">
+                                    <label htmlFor="fieldParnerFirstName" className="font-bold">Partner Vorname</label>
+                                    <InputText id="fieldParnerFirstName" required={true}
+                                               value={registration.partner?.firstName}
+                                               disabled={registration.partner?.id != 0}
+                                               onChange={event => {
+                                                   if(registration) {
+                                                       (registration.partner as GuestUserDto).firstName = event.target.value
+                                                   }
+                                               }}/>
+                                </div>
+                                <div className="field mb-3">
+                                    <label htmlFor="fieldParnerLastName" className="font-bold">Partner Nachname</label>
+                                    <InputText id="fieldParnerLastName" required={true}
+                                               value={registration.partner?.lastName}
+                                               disabled={registration.partner?.id != 0}
+                                               onChange={event => {
+                                                   if(registration) {
+                                                       (registration.partner as GuestUserDto).lastName = event.target.value
+                                                   }
+                                               }}/>
+                                </div>
+                            </>
+                        }
                         <div className="field mb-3">
                             <label htmlFor="fieldRemarks" className="font-bold">Anmerkungen</label>
-                            <InputText id="fieldRemarks" required={true} onChange={event => {
-                                if(registration) {
-                                    registration.remarks = event.target.value
-                                }}
-                            }/>
+                            <InputText id="fieldRemarks" required={true}
+                                       value={registration.remarks}
+                                       onChange={event => {
+                                           if(registration) {
+                                               registration.remarks = event.target.value
+                                           }
+                                       }}/>
                         </div>
                     </div>
                 </Card>
@@ -190,11 +229,13 @@ export default function NewsMainModule() {
                             <div className="p-fluid">
                                 <div className="field mb-3">
                                     <label htmlFor="fieldSize" className="font-bold">Größe</label>
-                                    <InputNumber id="fieldSize" required={true} onChange={event => {
-                                        if(registration && event.value) {
-                                            registration.registrar.size = event.value
-                                        }}
-                                    }/>
+                                    <InputNumber id="fieldSize" required={true}
+                                                 value={registration.registrar.size}
+                                                 onChange={event => {
+                                                     if(registration && event.value) {
+                                                         registration.registrar.size = event.value
+                                                     }
+                                                 }}/>
                                 </div>
                             </div>
                         </>
@@ -203,46 +244,55 @@ export default function NewsMainModule() {
                     <div className="p-fluid">
                         <div className="field mb-3">
                             <label htmlFor="fieldStreet" className="font-bold">Straße</label>
-                            <InputText id="fieldStreet" required={true} onChange={event => {
-                                if(registration) {
-                                    // Both types have a "street" property
-                                    (registration.registrar as GuestUserDto).street = event.target.value
-                                }}
-                            }/>
+                            <InputText id="fieldStreet" required={true}
+                                       value={(registration.registrar as GuestUserDto).street}
+                                       onChange={event => {
+                                           if(registration) {
+                                               // Both types have a "street" property
+                                               (registration.registrar as GuestUserDto).street = event.target.value
+                                           }
+                                       }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldZip" className="font-bold">PLZ</label>
-                            <InputText id="fieldZip" required={true} onChange={event => {
-                                if(registration) {
-                                    // Both types have a "street" property
-                                    (registration.registrar as GuestUserDto).zip = event.target.value
-                                }}
-                            }/>
+                            <InputText id="fieldZip" required={true}
+                                       value={(registration.registrar as GuestUserDto).zip}
+                                       onChange={event => {
+                                           if(registration) {
+                                               // Both types have a "street" property
+                                               (registration.registrar as GuestUserDto).zip = event.target.value
+                                           }
+                                       }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldCity" className="font-bold">Stadt</label>
-                            <InputText id="fieldCity" required={true} onChange={event => {
-                                if(registration) {
-                                    // Both types have a "street" property
-                                    (registration.registrar as GuestUserDto).city = event.target.value
-                                }}
-                            }/>
+                            <InputText id="fieldCity" required={true}
+                                       value={(registration.registrar as GuestUserDto).city}
+                                       onChange={event => {
+                                           if(registration) {
+                                               // Both types have a "street" property
+                                               (registration.registrar as GuestUserDto).city = event.target.value
+                                           }
+                                       }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldCountry" className="font-bold">Land</label>
-                            <InputText id="fieldCountry" required={true} onChange={event => {
-                                if(registration) {
-                                    // Both types have a "street" property
-                                    (registration.registrar as GuestUserDto).country = event.target.value
-                                }}
-                            }/>
+                            <InputText id="fieldCountry" required={true}
+                                       value={(registration.registrar as GuestUserDto).country}
+                                       onChange={event => {
+                                           if(registration) {
+                                               // Both types have a "street" property
+                                               (registration.registrar as GuestUserDto).country = event.target.value
+                                           }
+                                       }}/>
                         </div>
                     </div>
                     <p>Damit wir dich im Notfall erreichen können:</p>
                     <div className="p-fluid">
                         <div className="field mb-3">
                             <label htmlFor="fieldPhoneNumber" className="font-bold">Handynummer</label>
-                            <InputText id="fieldPhoneNumber" required={true} onChange={event => {console.log(event)}}/>
+                            <InputText id="fieldPhoneNumber" required={true}
+                                       onChange={event => {console.log(event)}}/>
                         </div>
                     </div>
                 </Card>
@@ -387,12 +437,35 @@ export default function NewsMainModule() {
                                                             registration.courseTypeCode = course.courseTypeCode
                                                             if(user) {
                                                                 registration.registrar = {} as RegisteredUserDto
-                                                                // TODO: fetch any previous partner for this user
+
+                                                                // Fetch any previous partner for this user
+                                                                restClient.findPartners().then(value1 => {
+                                                                    const partners:UserDto[] = [...value1.data, {
+                                                                        id: 0,
+                                                                        firstName: "",
+                                                                        lastName: "Neuer Partner",
+                                                                        sex: user.sex == "MALE" ? "FEMALE": "MALE",
+                                                                        size: 0,
+                                                                        // GuestUserDto properties
+                                                                        city: "",
+                                                                        country: "",
+                                                                        email: "",
+                                                                        phone: "",
+                                                                        street: "",
+                                                                        zip: ""
+                                                                    } as GuestUserDto]
+                                                                    setPartners(partners)
+                                                                })
                                                             } else {
                                                                 registration.registrar = {} as GuestUserDto
                                                             }
 
-                                                            // TODO: fetch the available rates for this course
+                                                            // Fetch the available rates for this course
+                                                            console.log("loading course rates")
+                                                            restClient.findCourseTypeRates(course.id).then(value1 => {
+                                                                console.log("loaded course rates", value1.data)
+                                                                setAvailableCourseRates(value1.data)
+                                                            })
 
                                                             setRegistration(registration)
                                                         }}/>

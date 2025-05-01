@@ -3,12 +3,17 @@ package com.toddysoft.ui.modules.lessons.controller;
 
 import com.toddysoft.ui.components.admin.AdminController;
 import com.toddysoft.ui.modules.lessons.dto.CourseDto;
+import com.toddysoft.ui.modules.lessons.dto.UserDto;
 import com.toddysoft.ui.modules.lessons.entity.Course;
 import com.toddysoft.ui.modules.lessons.entity.CourseType;
 import com.toddysoft.ui.modules.lessons.entity.CourseTypeRate;
 import com.toddysoft.ui.modules.lessons.entity.Lesson;
+import com.toddysoft.ui.modules.lessons.service.CourseCoupleService;
 import com.toddysoft.ui.modules.lessons.service.CourseService;
 import com.toddysoft.ui.modules.lessons.service.CourseTypeService;
+import com.toddysoft.ui.security.entity.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -24,10 +29,12 @@ public class CourseController implements AdminController<CourseDto> {
 
     private final CourseService courseService;
     private final CourseTypeService courseTypeService;
+    private final CourseCoupleService courseCoupleService;
 
-    public CourseController(CourseService courseService, CourseTypeService courseTypeService) {
+    public CourseController(CourseService courseService, CourseTypeService courseTypeService, CourseCoupleService courseCoupleService) {
         this.courseService = courseService;
         this.courseTypeService = courseTypeService;
+        this.courseCoupleService = courseCoupleService;
     }
 
     @GetMapping
@@ -86,9 +93,9 @@ public class CourseController implements AdminController<CourseDto> {
         courseService.deleteItem(item);
     }
 
-    @GetMapping("/{courseTypeId}/rates")
-    public List<CourseTypeRate> findCourseTypeRates(@PathVariable("courseTypeId") long courseTypeId) {
-        Course course = courseService.readItem(courseTypeId);
+    @GetMapping("/{id}/rates")
+    public List<CourseTypeRate> findCourseTypeRates(@PathVariable("id") long id) {
+        Course course = courseService.readItem(id);
         return course.getCourseType().getRates();
     }
 
@@ -101,6 +108,22 @@ public class CourseController implements AdminController<CourseDto> {
             ex.printStackTrace();
         }
         return Collections.emptyList();
+    }
+
+    @GetMapping("/partners")
+    public List<UserDto> findPartners() {
+        // Get the current user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!(authentication.getPrincipal() instanceof User user)) return Collections.emptyList();
+
+        // Get all previous partners this user has had.
+        try {
+            List<User> partners = courseCoupleService.listPartners(user);
+            return partners.stream().map(UserDto::new).toList();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
+        }
     }
 
 }

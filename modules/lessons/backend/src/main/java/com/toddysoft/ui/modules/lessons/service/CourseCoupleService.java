@@ -1,10 +1,9 @@
 package com.toddysoft.ui.modules.lessons.service;
 
-import com.toddysoft.ui.modules.lessons.dto.CourseCoupleDto;
 import com.toddysoft.ui.modules.lessons.entity.Couple;
-import com.toddysoft.ui.modules.lessons.entity.CourseRegistration;
 import com.toddysoft.ui.modules.lessons.repository.CourseCoupleRepository;
-import com.toddysoft.ui.modules.lessons.repository.CourseRegistrationRepository;
+import com.toddysoft.ui.security.entity.Sex;
+import com.toddysoft.ui.security.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -50,6 +49,15 @@ public class CourseCoupleService
     @Transactional(readOnly = true)
     public List<Couple> listItems(long courseId) {
         return courseCoupleRepository.findByCourse_Id(courseId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<User> listPartners(User user) {
+        if(user.getSex() == Sex.MALE) {
+            return courseCoupleRepository.findLadiesByGentId(user.getId());
+        } else {
+            return courseCoupleRepository.findGentsByLadyId(user.getId());
+        }
     }
 
 }

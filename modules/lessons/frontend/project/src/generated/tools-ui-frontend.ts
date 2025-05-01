@@ -124,19 +124,19 @@ export class RestApplicationClient<O> {
     }
 
     /**
+     * HTTP GET /api/courses/partners
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findPartners
+     */
+    findPartners(options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/partners`, options: options });
+    }
+
+    /**
      * HTTP GET /api/courses/up-and-running
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findUpAndRunningCourses
      */
     findUpAndRunningCourses(options?: O): RestResponse<CourseDto[]> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/up-and-running`, options: options });
-    }
-
-    /**
-     * HTTP GET /api/courses/{courseTypeId}/rates
-     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findCourseTypeRates
-     */
-    findCourseTypeRates(courseTypeId: number, options?: O): RestResponse<CourseTypeRate[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/${courseTypeId}/rates`, options: options });
     }
 
     /**
@@ -153,6 +153,14 @@ export class RestApplicationClient<O> {
      */
     findById$GET$api_courses_id(id: number, options?: O): RestResponse<CourseDto> {
         return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/${id}`, options: options });
+    }
+
+    /**
+     * HTTP GET /api/courses/{id}/rates
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findCourseTypeRates
+     */
+    findCourseTypeRates(id: number, options?: O): RestResponse<CourseTypeRate[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/${id}/rates`, options: options });
     }
 
     /**
@@ -253,8 +261,6 @@ export interface GuestUserDto extends UserDto {
     city: string;
     country: string;
     email: string;
-    firstName: string;
-    lastName: string;
     phone: string;
     street: string;
     zip: string;
@@ -285,8 +291,9 @@ export interface RegisteredUserDto extends UserDto {
 }
 
 export interface UserDto {
+    firstName: string;
     id: number;
-    name: string;
+    lastName: string;
     sex: Sex;
     size: number;
 }
