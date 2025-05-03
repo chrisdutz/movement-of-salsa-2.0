@@ -93,10 +93,10 @@ export default function NewsMainModule() {
                             <div className="field mb-3">
                                 <label htmlFor="fieldSex" className="font-bold">Geschlecht</label>
                                 <Dropdown id="fieldSex" required={true}
-                                          options={[{value: "MALE", label: "Männlich"}, {
-                                              value: "FEMALE",
-                                              label: "Weiblich"
-                                          }]}
+                                          options={[
+                                              {value: "MALE", label: "Männlich"},
+                                              {value: "FEMALE", label: "Weiblich"}
+                                          ]}
                                           valueTemplate={(registration?.registrar as GuestUserDto).sex == "MALE" ? "Männlich" : "Weiblich"}
                                           value={(registration?.registrar as GuestUserDto).sex}
                                           onChange={event => {
@@ -216,7 +216,9 @@ export default function NewsMainModule() {
                 </Card>
                 <div className="flex gap-4 pt-4 justify-content-end">
                     <Button label="Abort" severity="secondary" onClick={() => setRegistration(undefined)} />
-                    <Button label="Back" severity="secondary" icon="pi pi-arrow-left" disabled={wizardStepperRef.current?.getActiveStep() == 0} onClick={() => wizardStepperRef.current?.prevCallback()} />
+                    <Button label="Back" severity="secondary" icon="pi pi-arrow-left"
+                            disabled={user != undefined}
+                            onClick={() => wizardStepperRef.current?.prevCallback()} />
                     <Button label="Next" icon="pi pi-arrow-right" iconPos="right" onClick={() => wizardStepperRef.current?.nextCallback()} />
                     <Button label="Complete" severity="secondary" disabled={true} />
                 </div>
@@ -467,21 +469,19 @@ export default function NewsMainModule() {
                                                                         zip: ""
                                                                     } as GuestUserDto]
                                                                     setPartners(partners)
-                                                                    setAcceptedTermsOfUse(false)
-                                                                    setAcceptedTerms(false)
                                                                 })
                                                             } else {
                                                                 registration.registrar = {} as GuestUserDto
                                                             }
 
                                                             // Fetch the available rates for this course
-                                                            console.log("loading course rates")
                                                             restClient.findCourseTypeRates(course.id).then(value1 => {
-                                                                console.log("loaded course rates", value1.data)
                                                                 setAvailableCourseRates(value1.data)
                                                             })
 
                                                             setRegistration(registration)
+                                                            setAcceptedTermsOfUse(false)
+                                                            setAcceptedTerms(false)
                                                         }}/>
                                                     </p>
                                                 )}
