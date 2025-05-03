@@ -16,7 +16,7 @@ import {useEffect, useRef, useState} from "react";
 import {Image} from "primereact/image";
 import {Chip} from "primereact/chip";
 import {Button} from "primereact/button";
-import {Stepper, StepperRefAttributes} from "primereact/stepper";
+import {Stepper} from "primereact/stepper";
 import {StepperPanel} from "primereact/stepperpanel";
 import {Dropdown} from "primereact/dropdown";
 import {InputText} from "primereact/inputtext";
@@ -28,8 +28,10 @@ const restClient = new RestApplicationClient(axios);
 
 const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+type StepperRef = React.ElementRef<typeof Stepper>;
+
 export default function NewsMainModule() {
-    const wizardStepperRef = useRef<StepperRefAttributes>(null);
+    const wizardStepperRef = useRef<StepperRef>(null);
 
     const authToken = useSelector((state: RootState)=> {
         return state.authentication.authToken
@@ -194,6 +196,8 @@ export default function NewsMainModule() {
                                                   updateTarifStepValidState({
                                                       ...registration,
                                                       rateName: event.value["title"],
+                                                      courseRegistrationType: coupleRate ? "COUPLE" : "SINGLE",
+                                                      // TODO: Add the price
                                                       partner: {
                                                           id: 0,
                                                           sex: registration?.registrar.sex == 'MALE' ? "FEMALE" : "MALE"
@@ -203,6 +207,8 @@ export default function NewsMainModule() {
                                                   updateTarifStepValidState({
                                                       ...registration,
                                                       rateName: event.value["title"],
+                                                      courseRegistrationType: coupleRate ? "COUPLE" : "SINGLE",
+                                                      // TODO: Add the price
                                                       partner: undefined
                                                   })
                                               }
@@ -272,6 +278,7 @@ export default function NewsMainModule() {
                     <Button label="Complete" severity="secondary" disabled={true} />
                 </div>
             </StepperPanel>
+            {/* TODO: hier ein StepperPanel rein, bei dem man schon selektieren kann, wann man nicht kann */}
             <StepperPanel header="Weitere Informationen">
                 <Card className="flex flex-column" style={{ backgroundColor: 'lightblue' }}>
                     {registration.courseRegistrationType == "SINGLE" &&
@@ -393,7 +400,7 @@ export default function NewsMainModule() {
                     <Button label="Next" icon="pi pi-arrow-right" iconPos="right" disabled={true} />
                     <Button label="Complete" severity="secondary"
                             disabled={!acceptedTermsOfUse || !acceptedTerms}
-                            onClick={() => console.log("Complete")} />
+                            onClick={() => restClient.save$POST$api_registrations(registration)} />
                 </div>
             </StepperPanel>
         </Stepper>
@@ -503,7 +510,20 @@ export default function NewsMainModule() {
                                                             registration.courseId = course.id
                                                             registration.courseTypeCode = course.courseTypeCode
                                                             if(user) {
-                                                                registration.registrar = {} as RegisteredUserDto
+                                                                const registeredUserRegistrar = {} as RegisteredUserDto
+                                                                registeredUserRegistrar.id = user.id
+                                                                registeredUserRegistrar.firstName = user.firstName
+                                                                registeredUserRegistrar.lastName = user.lastName
+                                                                registeredUserRegistrar.sex = user.sex
+                                                                registeredUserRegistrar.size = user.size
+
+                                                                registeredUserRegistrar.street = user.street
+                                                                registeredUserRegistrar.zip = user.zip
+                                                                registeredUserRegistrar.city = user.city
+                                                                registeredUserRegistrar.country = user.country
+
+                                                                registeredUserRegistrar.phone = user.phone
+                                                                registration.registrar = registeredUserRegistrar
 
                                                                 // Fetch any previous partner for this user
                                                                 restClient.findPartners().then(value1 => {
@@ -532,7 +552,8 @@ export default function NewsMainModule() {
                                                                 setAvailableCourseRates(value1.data)
                                                             })
 
-                                                            setRegistration(registration)
+                                                            updateTarifStepValidState(registration)
+                                                            updateBillingStepValidState(registration)
                                                             setAcceptedTermsOfUse(false)
                                                             setAcceptedTerms(false)
                                                         }}/>
