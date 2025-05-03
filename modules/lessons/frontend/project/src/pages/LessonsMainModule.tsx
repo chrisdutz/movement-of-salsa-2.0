@@ -48,6 +48,8 @@ export default function NewsMainModule() {
     const [partners, setPartners] = useState<UserDto[]>([])
     const [selectedCourseRate, setSelectedCourseRate] = useState<CourseTypeRate>()
     const [selectedRateIsPartnerRate, setSelectedRateIsPartnerRate] = useState<boolean>(false)
+    const [acceptedTermsOfUse, setAcceptedTermsOfUse] = useState(false)
+    const [acceptedTerms, setAcceptedTerms] = useState(false)
 
     useEffect(() => {
         // Make all axios requests use the bearer token from now on.
@@ -98,10 +100,8 @@ export default function NewsMainModule() {
                                           valueTemplate={(registration?.registrar as GuestUserDto).sex == "MALE" ? "Männlich" : "Weiblich"}
                                           value={(registration?.registrar as GuestUserDto).sex}
                                           onChange={event => {
-                                              console.log("Change", registration, event)
                                               if(registration && registration.registrar) {
-                                                  (registration?.registrar as GuestUserDto).sex = event.value as Sex
-                                                  console.log("After change", (registration.registrar as GuestUserDto).sex)
+                                                  setRegistration({...registration, registrar: {...registration.registrar, sex: event.value as Sex}})
                                               }
                                           }}/>
                             </div>
@@ -111,7 +111,7 @@ export default function NewsMainModule() {
                                            value={(registration?.registrar as GuestUserDto).firstName}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
-                                                   (registration?.registrar as GuestUserDto).firstName = event.target.value
+                                                   setRegistration({...registration, registrar: {...registration.registrar, firstName: event.target.value}})
                                                }
                                            }}/>
                             </div>
@@ -121,7 +121,7 @@ export default function NewsMainModule() {
                                            value={(registration?.registrar as GuestUserDto).lastName}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
-                                                   (registration?.registrar as GuestUserDto).lastName = event.target.value
+                                                   setRegistration({...registration, registrar: {...registration.registrar, lastName: event.target.value}})
                                                }
                                            }}/>
                             </div>
@@ -131,14 +131,14 @@ export default function NewsMainModule() {
                                            value={(registration?.registrar as GuestUserDto).email}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
-                                                   (registration?.registrar as GuestUserDto).email = event.target.value
+                                                   setRegistration({...registration, registrar: {...registration.registrar, email: event.target.value} as GuestUserDto})
                                                }
                                            }}/>
                             </div>
                         </div>
                     </Card>
                     <div className="flex gap-4 pt-4 justify-content-end">
-                        <Button label="Abort" severity="secondary" onClick={() => console.log("Aborted")} />
+                        <Button label="Abort" severity="secondary" onClick={() => setRegistration(undefined)} />
                         <Button label="Back" severity="secondary" icon="pi pi-arrow-left" disabled={true} />
                         <Button label="Next" icon="pi pi-arrow-right" iconPos="right" onClick={() => wizardStepperRef.current?.nextCallback()} />
                         <Button label="Complete" severity="secondary" disabled={true} />
@@ -185,7 +185,7 @@ export default function NewsMainModule() {
                                                disabled={registration.partner?.id != 0}
                                                onChange={event => {
                                                    if(registration) {
-                                                       (registration.partner as GuestUserDto).firstName = event.target.value
+                                                       setRegistration({...registration, partner: {...registration.partner, firstName: event.target.value} as RegisteredUserDto})
                                                    }
                                                }}/>
                                 </div>
@@ -196,7 +196,7 @@ export default function NewsMainModule() {
                                                disabled={registration.partner?.id != 0}
                                                onChange={event => {
                                                    if(registration) {
-                                                       (registration.partner as GuestUserDto).lastName = event.target.value
+                                                       setRegistration({...registration, partner: {...registration.partner, lastName: event.target.value} as RegisteredUserDto})
                                                    }
                                                }}/>
                                 </div>
@@ -215,8 +215,8 @@ export default function NewsMainModule() {
                     </div>
                 </Card>
                 <div className="flex gap-4 pt-4 justify-content-end">
-                    <Button label="Abort" severity="secondary" onClick={() => console.log("Aborted")} />
-                    <Button label="Back" severity="secondary" icon="pi pi-arrow-left" onClick={() => wizardStepperRef.current?.prevCallback()} />
+                    <Button label="Abort" severity="secondary" onClick={() => setRegistration(undefined)} />
+                    <Button label="Back" severity="secondary" icon="pi pi-arrow-left" disabled={wizardStepperRef.current?.getActiveStep() == 0} onClick={() => wizardStepperRef.current?.prevCallback()} />
                     <Button label="Next" icon="pi pi-arrow-right" iconPos="right" onClick={() => wizardStepperRef.current?.nextCallback()} />
                     <Button label="Complete" severity="secondary" disabled={true} />
                 </div>
@@ -233,7 +233,7 @@ export default function NewsMainModule() {
                                                  value={registration.registrar.size}
                                                  onChange={event => {
                                                      if(registration && event.value) {
-                                                         registration.registrar.size = event.value
+                                                         setRegistration({...registration, registrar: {...registration.partner, size: event.value} as RegisteredUserDto})
                                                      }
                                                  }}/>
                                 </div>
@@ -245,44 +245,44 @@ export default function NewsMainModule() {
                         <div className="field mb-3">
                             <label htmlFor="fieldStreet" className="font-bold">Straße</label>
                             <InputText id="fieldStreet" required={true}
-                                       value={(registration.registrar as GuestUserDto).street}
+                                       value={(registration.registrar as RegisteredUserDto).street}
                                        onChange={event => {
-                                           if(registration) {
+                                           if(registration && registration.registrar) {
                                                // Both types have a "street" property
-                                               (registration.registrar as GuestUserDto).street = event.target.value
+                                               setRegistration({...registration, registrar: {...registration.registrar, street: event.target.value} as RegisteredUserDto})
                                            }
                                        }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldZip" className="font-bold">PLZ</label>
                             <InputText id="fieldZip" required={true}
-                                       value={(registration.registrar as GuestUserDto).zip}
+                                       value={(registration.registrar as RegisteredUserDto).zip}
                                        onChange={event => {
-                                           if(registration) {
-                                               // Both types have a "street" property
-                                               (registration.registrar as GuestUserDto).zip = event.target.value
+                                           if(registration && registration.registrar) {
+                                               // Both types have a "zip" property
+                                               setRegistration({...registration, registrar: {...registration.registrar, zip: event.target.value} as RegisteredUserDto})
                                            }
                                        }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldCity" className="font-bold">Stadt</label>
                             <InputText id="fieldCity" required={true}
-                                       value={(registration.registrar as GuestUserDto).city}
+                                       value={(registration.registrar as RegisteredUserDto).city}
                                        onChange={event => {
-                                           if(registration) {
-                                               // Both types have a "street" property
-                                               (registration.registrar as GuestUserDto).city = event.target.value
+                                           if(registration && registration.registrar) {
+                                               // Both types have a "city" property
+                                               setRegistration({...registration, registrar: {...registration.registrar, city: event.target.value} as RegisteredUserDto})
                                            }
                                        }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldCountry" className="font-bold">Land</label>
                             <InputText id="fieldCountry" required={true}
-                                       value={(registration.registrar as GuestUserDto).country}
+                                       value={(registration.registrar as RegisteredUserDto).country}
                                        onChange={event => {
-                                           if(registration) {
-                                               // Both types have a "street" property
-                                               (registration.registrar as GuestUserDto).country = event.target.value
+                                           if(registration && registration.registrar) {
+                                               // Both types have a "country" property
+                                               setRegistration({...registration, registrar: {...registration.registrar, country: event.target.value} as RegisteredUserDto})
                                            }
                                        }}/>
                         </div>
@@ -292,12 +292,18 @@ export default function NewsMainModule() {
                         <div className="field mb-3">
                             <label htmlFor="fieldPhoneNumber" className="font-bold">Handynummer</label>
                             <InputText id="fieldPhoneNumber" required={true}
-                                       onChange={event => {console.log(event)}}/>
+                                       value={(registration.registrar as RegisteredUserDto).phone}
+                                       onChange={event => {
+                                           if(registration && registration.registrar) {
+                                               // Both types have a "phone" property
+                                               setRegistration({...registration, registrar: {...registration.registrar, phone: event.target.value} as RegisteredUserDto})
+                                           }
+                                       }}/>
                         </div>
                     </div>
                 </Card>
                 <div className="flex gap-4 pt-4 justify-content-end">
-                    <Button label="Abort" severity="secondary" onClick={() => console.log("Aborted")} />
+                    <Button label="Abort" severity="secondary" onClick={() => setRegistration(undefined)} />
                     <Button label="Back" severity="secondary" icon="pi pi-arrow-left" onClick={() => wizardStepperRef.current?.prevCallback()} />
                     <Button label="Next" icon="pi pi-arrow-right" iconPos="right" onClick={() => wizardStepperRef.current?.nextCallback()} />
                     <Button label="Complete" severity="secondary" disabled={true} />
@@ -311,20 +317,26 @@ export default function NewsMainModule() {
                     <p>Solltest du dich für einen Paar-Tarif entschieden haben, bist du für die Zahlung des Komplettpreises verantwortlich. Natürlich können du und dein Partner sich die Kursgebühr teilen, allerdings bist du für die Zahlung verantwortlich.</p>
                     <div className="p-fluid">
                         <div className="field mb-3">
-                            <Checkbox id="fieldAcceptTermsOfUse" checked={false} required={true} onChange={event => {console.log(event)}}/>
+                            <Checkbox id="fieldAcceptTermsOfUse" required={true}
+                                      checked={acceptedTermsOfUse}
+                                      onChange={event => setAcceptedTermsOfUse(!!event.checked)}/>
                             <label htmlFor="fieldAcceptTermsOfUse" className="ml-2">Ich habe die (Link: AGBs) gelesen und akzeptiere diese.</label>
                         </div>
                         <div className="field mb-3">
-                            <Checkbox id="fieldConfirmTerms" checked={false} required={true} onChange={event => {console.log(event)}}/>
+                            <Checkbox id="fieldConfirmTerms" required={true}
+                                      checked={acceptedTerms}
+                                      onChange={event => setAcceptedTerms(!!event.checked)}/>
                             <label htmlFor="fieldConfirmTerms" className="ml-2">Ich wurde über alle Kosten aufgeklärt und stimme der Zahlung aus diesem Vertrag zu.</label>
                         </div>
                     </div>
                 </Card>
                 <div className="flex gap-4 pt-4 justify-content-end">
-                    <Button label="Abort" severity="secondary" onClick={() => console.log("Aborted")} />
+                    <Button label="Abort" severity="secondary" onClick={() => setRegistration(undefined)} />
                     <Button label="Back" severity="secondary" icon="pi pi-arrow-left" onClick={() => wizardStepperRef.current?.prevCallback()} />
                     <Button label="Next" icon="pi pi-arrow-right" iconPos="right" disabled={true} />
-                    <Button label="Complete" severity="secondary" onClick={() => console.log("Complete")} />
+                    <Button label="Complete" severity="secondary"
+                            disabled={!acceptedTermsOfUse || !acceptedTerms}
+                            onClick={() => console.log("Complete")} />
                 </div>
             </StepperPanel>
         </Stepper>
@@ -455,6 +467,8 @@ export default function NewsMainModule() {
                                                                         zip: ""
                                                                     } as GuestUserDto]
                                                                     setPartners(partners)
+                                                                    setAcceptedTermsOfUse(false)
+                                                                    setAcceptedTerms(false)
                                                                 })
                                                             } else {
                                                                 registration.registrar = {} as GuestUserDto
