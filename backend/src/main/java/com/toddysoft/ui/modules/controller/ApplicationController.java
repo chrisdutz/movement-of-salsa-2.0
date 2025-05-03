@@ -5,6 +5,7 @@ import com.toddysoft.ui.permissions.service.PermissionService;
 import com.toddysoft.ui.security.entity.User;
 import com.toddysoft.ui.modules.model.FrontendModule;
 import com.toddysoft.ui.modules.api.FrontendModuleProvider;
+import com.toddysoft.ui.security.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,7 +67,8 @@ public class ApplicationController {
 
         User currentUser = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(currentUser);
+        // Create a copy with a masked password.
+        return ResponseEntity.ok(UserService.maskedUserClone(currentUser));
     }
 
 }

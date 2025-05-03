@@ -16,7 +16,7 @@ public class ResetPasswordValidationClient implements ValidationClient {
 
     @Override
     public String getModuleName() {
-        return "reset password";
+        return "reset-password";
     }
 
     @Override

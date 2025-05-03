@@ -40,7 +40,7 @@ public class UserService implements FrontendModuleProvider {
         // TODO: Mask the password
         return StreamSupport
                 .stream(userRepository.findAll().spliterator(), false)
-                .map(this::maskedUserClone).toList();
+                .map(UserService::maskedUserClone).toList();
     }
 
     @Transactional(readOnly = true)
@@ -48,7 +48,7 @@ public class UserService implements FrontendModuleProvider {
         // TODO: Mask the password
         return StreamSupport
                 .stream(userRepository.findAll().spliterator(), false)
-                .map(this::maskedUserClone).toList();
+                .map(UserService::maskedUserClone).toList();
     }
 
     @Transactional(readOnly = true)
@@ -102,7 +102,7 @@ public class UserService implements FrontendModuleProvider {
         userRepository.save(user);
     }
 
-    protected User maskedUserClone(User user) {
+    public static User maskedUserClone(User user) {
         return new User(user.getId(), user.getFirstName(), user.getLastName(),
                 user.getStreet(), user.getZip(), user.getCity(), user.getCountry(),
                 user.getSex(), user.getSize(), user.getPhone(), user.getEmail(),
