@@ -58,8 +58,6 @@ public class CourseRegistration {
         this.course = course;
     }
 
-
-
     public CourseRegistrationType getCourseRegistrationType() {
         return courseRegistrationType;
     }

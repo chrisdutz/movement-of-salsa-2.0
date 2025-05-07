@@ -279,7 +279,7 @@ export default function AdminList<T extends DataTableValue>({
                     })
                 }
             }
-            return value.toString();
+            return value?.toString();
         }
 
         if(column.styleFunction) {

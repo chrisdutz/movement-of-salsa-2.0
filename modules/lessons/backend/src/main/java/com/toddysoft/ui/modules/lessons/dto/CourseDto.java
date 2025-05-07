@@ -3,7 +3,6 @@ package com.toddysoft.ui.modules.lessons.dto;
 import com.toddysoft.ui.modules.lessons.entity.Course;
 import com.toddysoft.ui.modules.lessons.entity.Lesson;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class CourseDto {

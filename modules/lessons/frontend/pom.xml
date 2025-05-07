@@ -51,11 +51,9 @@
               <classes>
                 <class>com.toddysoft.ui.modules.lessons.controller.CourseController</class>
                 <class>com.toddysoft.ui.modules.lessons.controller.CourseCoupleController</class>
-                <class>com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController</class>
+                <class>com.toddysoft.ui.modules.lessons.controller.CourseRegistrationAdminController</class>
+                <class>com.toddysoft.ui.modules.lessons.controller.CourseRegistrationUserController</class>
                 <class>com.toddysoft.ui.modules.lessons.controller.CourseTypeController</class>
-                <!-- Additional polymorphic types -->
-                <class>com.toddysoft.ui.modules.lessons.dto.GuestUserDto</class>
-                <class>com.toddysoft.ui.modules.lessons.dto.RegisteredUserDto</class>
               </classes>
               <excludeClasses>
                 <class>java.lang.Comparable</class>

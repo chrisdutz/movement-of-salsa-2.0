@@ -55,6 +55,12 @@ export default function LessonsAdminModuleRegistrations({course, onClose}:Lesson
                 lastName: "",
                 sex: "MALE",
                 size: 0,
+                email: "",
+                street: "",
+                zip: "",
+                city: "",
+                country: "",
+                phone: ""
             },
 
             partner: undefined,
@@ -178,10 +184,10 @@ export default function LessonsAdminModuleRegistrations({course, onClose}:Lesson
                 return restClient.findRegistrationsForCourse(course.id, options);
             },
             save(entry: CourseRegistrationDto, options?: AxiosRequestConfig | undefined): RestResponse<CourseRegistrationDto> {
-                return restClient.save$POST$api_registrations(entry, options);
+                return restClient.save$POST$api_registrations_admin(entry, options);
             },
             delete: function (entry: CourseRegistrationDto, options?: AxiosRequestConfig): RestResponse<void> {
-                return restClient.deleteById$DELETE$api_registrations_id(entry.id, options)
+                return restClient.deleteById$DELETE$api_registrations_admin_id(entry.id, options)
             }
         },
     })

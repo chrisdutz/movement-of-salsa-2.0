@@ -72,13 +72,15 @@ public class UserService implements FrontendModuleProvider {
         //   In this case we need to encode the PW and update it in the entity.
         // - If it's not changed, we need to fetch the original PW from the
         //   real bean and update the masked value with that.
-        if (!user.getPassword().equals(passwordMask)) {
-            // Encode the password.
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        } else {
-            // Copy over the old password.
-            Optional<User> original = userRepository.findById(user.getId());
-            original.ifPresent(value -> user.setPassword(value.getPassword()));
+        if (user.getPassword() != null) {
+            if (!user.getPassword().equals(passwordMask)) {
+                // Encode the password.
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            } else {
+                // Copy over the old password.
+                Optional<User> original = userRepository.findById(user.getId());
+                original.ifPresent(value -> user.setPassword(value.getPassword()));
+            }
         }
         return userRepository.save(user);
     }

@@ -8,7 +8,7 @@ import {
     CourseDto,
     CourseRegistrationDto,
     CourseType,
-    CourseTypeRate, GuestUserDto, RegisteredUserDto,
+    CourseTypeRate,
     RestApplicationClient, Sex, UserDto
 } from "../generated/tools-ui-frontend.ts";
 import {useSelector} from "react-redux";
@@ -61,25 +61,26 @@ export default function NewsMainModule() {
         setIsGuestStepValid((curRegistration.registrar?.sex != undefined) &&
             (curRegistration.registrar?.firstName?.length > 0) &&
             (curRegistration.registrar?.lastName?.length > 0) &&
-            (((curRegistration.registrar) as GuestUserDto)?.email?.length > 0))
+            (curRegistration.registrar?.email?.length > 0))
         setRegistration(curRegistration)
     }
 
     function updateTarifStepValidState(curRegistration:CourseRegistrationDto) {
-        setIsTarifStepValid((curRegistration.rateName != undefined) &&
-            !curRegistration.partner || (
-                (((curRegistration.partner) as GuestUserDto)?.lastName?.length > 0) &&
-                (((curRegistration.partner) as GuestUserDto)?.firstName?.length > 0)
-            ))
+        if(curRegistration.partner) {
+            const partnerValid = curRegistration.partner.firstName.length > 0 && curRegistration.partner.lastName.length > 0;
+            setIsTarifStepValid((curRegistration.rateName != undefined) && partnerValid)
+        } else {
+            setIsTarifStepValid(curRegistration.rateName != undefined)
+        }
         setRegistration(curRegistration)
     }
 
     function updateBillingStepValidState(curRegistration:CourseRegistrationDto) {
-        setIsBillingStepValid((((curRegistration.registrar) as GuestUserDto)?.street?.length > 0) &&
-            (((curRegistration.registrar) as GuestUserDto)?.zip?.length > 0) &&
-            (((curRegistration.registrar) as GuestUserDto)?.city?.length > 0) &&
-            (((curRegistration.registrar) as GuestUserDto)?.country?.length > 0) &&
-            (((curRegistration.registrar) as GuestUserDto)?.phone?.length > 0))
+        setIsBillingStepValid((curRegistration.registrar?.street?.length > 0) &&
+            (curRegistration.registrar?.zip?.length > 0) &&
+            (curRegistration.registrar?.city?.length > 0) &&
+            (curRegistration.registrar?.country?.length > 0) &&
+            (curRegistration.registrar?.phone?.length > 0))
         setRegistration(curRegistration)
     }
 
@@ -126,8 +127,8 @@ export default function NewsMainModule() {
                                               {value: "MALE", label: "Männlich"},
                                               {value: "FEMALE", label: "Weiblich"}
                                           ]}
-                                          valueTemplate={(registration?.registrar as GuestUserDto).sex == "MALE" ? "Männlich" : "Weiblich"}
-                                          value={(registration?.registrar as GuestUserDto).sex}
+                                          valueTemplate={registration?.registrar.sex == "MALE" ? "Männlich" : "Weiblich"}
+                                          value={registration?.registrar.sex}
                                           onChange={event => {
                                               if(registration && registration.registrar) {
                                                   updateGuestStepValidState({...registration, registrar: {...registration.registrar, sex: event.value as Sex}})
@@ -137,7 +138,7 @@ export default function NewsMainModule() {
                             <div className="field mb-3">
                                 <label htmlFor="fieldFirstName" className="font-bold">Vorname</label>
                                 <InputText id="fieldFirstName" required={true}
-                                           value={(registration?.registrar as GuestUserDto).firstName}
+                                           value={registration?.registrar.firstName}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
                                                    updateGuestStepValidState({...registration, registrar: {...registration.registrar, firstName: event.target.value}})
@@ -147,7 +148,7 @@ export default function NewsMainModule() {
                             <div className="field mb-3">
                                 <label htmlFor="fieldLastName" className="font-bold">Nachname</label>
                                 <InputText id="fieldLastName" required={true}
-                                           value={(registration?.registrar as GuestUserDto).lastName}
+                                           value={registration?.registrar.lastName}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
                                                    updateGuestStepValidState({...registration, registrar: {...registration.registrar, lastName: event.target.value}})
@@ -157,10 +158,10 @@ export default function NewsMainModule() {
                             <div className="field mb-3">
                                 <label htmlFor="fieldEmail" className="font-bold">Email Adresse</label>
                                 <InputText id="fieldEmail" type={"email"} required={true}
-                                           value={(registration?.registrar as GuestUserDto).email}
+                                           value={registration?.registrar.email}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
-                                                   updateGuestStepValidState({...registration, registrar: {...registration.registrar, email: event.target.value} as GuestUserDto})
+                                                   updateGuestStepValidState({...registration, registrar: {...registration.registrar, email: event.target.value}})
                                                }
                                            }}/>
                             </div>
@@ -182,8 +183,8 @@ export default function NewsMainModule() {
                         <div className="field mb-3">
                             <label htmlFor="fieldRate" className="font-bold">Tarif</label>
                             <Dropdown id="fieldRate" options={availableCourseRates} required={true}
-                                      itemTemplate={option => option?.title}
-                                      valueTemplate={option => option ? option.title : "Select"}
+                                      itemTemplate={option => option?.title + " (" + option?.price + "€)"}
+                                      valueTemplate={option => option ? option.title + " (" + option?.price + "€)" : "Select"}
                                       value={selectedCourseRate}
                                       onChange={event => {
                                           setSelectedCourseRate(event.value)
@@ -197,18 +198,27 @@ export default function NewsMainModule() {
                                                       ...registration,
                                                       rateName: event.value["title"],
                                                       courseRegistrationType: coupleRate ? "COUPLE" : "SINGLE",
-                                                      // TODO: Add the price
+                                                      price: event.value["price"],
                                                       partner: {
                                                           id: 0,
-                                                          sex: registration?.registrar.sex == 'MALE' ? "FEMALE" : "MALE"
-                                                      } as GuestUserDto
+                                                          firstName: "",
+                                                          lastName: "",
+                                                          sex: registration?.registrar.sex == 'MALE' ? "FEMALE" : "MALE",
+                                                          size: 0,
+                                                          email: "",
+                                                          street: "",
+                                                          zip: "",
+                                                          city: "",
+                                                          country: "",
+                                                          phone: ""
+                                                      }
                                                   })
                                               } else {
                                                   updateTarifStepValidState({
                                                       ...registration,
                                                       rateName: event.value["title"],
                                                       courseRegistrationType: coupleRate ? "COUPLE" : "SINGLE",
-                                                      // TODO: Add the price
+                                                      price: event.value["price"],
                                                       partner: undefined
                                                   })
                                               }
@@ -238,7 +248,7 @@ export default function NewsMainModule() {
                                                disabled={registration.partner?.id != 0}
                                                onChange={event => {
                                                    if(registration) {
-                                                       updateTarifStepValidState({...registration, partner: {...registration.partner, firstName: event.target.value} as RegisteredUserDto})
+                                                       updateTarifStepValidState({...registration, partner: {...(registration.partner as UserDto), firstName: event.target.value}})
                                                    }
                                                }}/>
                                 </div>
@@ -249,7 +259,7 @@ export default function NewsMainModule() {
                                                disabled={registration.partner?.id != 0}
                                                onChange={event => {
                                                    if(registration) {
-                                                       updateTarifStepValidState({...registration, partner: {...registration.partner, lastName: event.target.value} as RegisteredUserDto})
+                                                       updateTarifStepValidState({...registration, partner: {...(registration.partner as UserDto), lastName: event.target.value}})
                                                    }
                                                }}/>
                                 </div>
@@ -286,12 +296,12 @@ export default function NewsMainModule() {
                             <p>Für Partnerzuweisung (Optional):</p>
                             <div className="p-fluid">
                                 <div className="field mb-3">
-                                    <label htmlFor="fieldSize" className="font-bold">Größe</label>
+                                    <label htmlFor="fieldSize" className="font-bold">Größe (cm)</label>
                                     <InputNumber id="fieldSize" required={true}
                                                  value={registration.registrar.size}
                                                  onChange={event => {
                                                      if(registration && event.value) {
-                                                         updateBillingStepValidState({...registration, registrar: {...registration.partner, size: event.value} as RegisteredUserDto})
+                                                         updateBillingStepValidState({...registration, registrar: {...(registration.partner as UserDto), size: event.value}})
                                                      }
                                                  }}/>
                                 </div>
@@ -303,44 +313,46 @@ export default function NewsMainModule() {
                         <div className="field mb-3">
                             <label htmlFor="fieldStreet" className="font-bold">Straße</label>
                             <InputText id="fieldStreet" required={true}
-                                       value={(registration.registrar as RegisteredUserDto).street}
+                                       value={registration.registrar.street}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "street" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, street: event.target.value} as RegisteredUserDto})
+                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, street: event.target.value}})
                                            }
                                        }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldZip" className="font-bold">PLZ</label>
                             <InputText id="fieldZip" required={true}
-                                       value={(registration.registrar as RegisteredUserDto).zip}
+                                       value={registration.registrar.zip}
                                        onChange={event => {
+                                           console.log("Change", registration)
                                            if(registration && registration.registrar) {
+                                               console.log("Updating")
                                                // Both types have a "zip" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, zip: event.target.value} as RegisteredUserDto})
+                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, zip: event.target.value}})
                                            }
                                        }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldCity" className="font-bold">Stadt</label>
                             <InputText id="fieldCity" required={true}
-                                       value={(registration.registrar as RegisteredUserDto).city}
+                                       value={registration.registrar.city}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "city" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, city: event.target.value} as RegisteredUserDto})
+                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, city: event.target.value}})
                                            }
                                        }}/>
                         </div>
                         <div className="field mb-3">
                             <label htmlFor="fieldCountry" className="font-bold">Land</label>
                             <InputText id="fieldCountry" required={true}
-                                       value={(registration.registrar as RegisteredUserDto).country}
+                                       value={registration.registrar.country}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "country" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, country: event.target.value} as RegisteredUserDto})
+                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, country: event.target.value}})
                                            }
                                        }}/>
                         </div>
@@ -350,11 +362,11 @@ export default function NewsMainModule() {
                         <div className="field mb-3">
                             <label htmlFor="fieldPhoneNumber" className="font-bold">Handynummer</label>
                             <InputText id="fieldPhoneNumber" required={true}
-                                       value={(registration.registrar as RegisteredUserDto).phone}
+                                       value={registration.registrar.phone}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "phone" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, phone: event.target.value} as RegisteredUserDto})
+                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, phone: event.target.value}})
                                            }
                                        }}/>
                         </div>
@@ -400,7 +412,9 @@ export default function NewsMainModule() {
                     <Button label="Next" icon="pi pi-arrow-right" iconPos="right" disabled={true} />
                     <Button label="Complete" severity="secondary"
                             disabled={!acceptedTermsOfUse || !acceptedTerms}
-                            onClick={() => restClient.save$POST$api_registrations(registration)} />
+                            onClick={() => restClient.save$POST$api_registrations_user(registration).then(() => {
+                                setRegistration(undefined)
+                            })} />
                 </div>
             </StepperPanel>
         </Stepper>
@@ -510,7 +524,7 @@ export default function NewsMainModule() {
                                                             registration.courseId = course.id
                                                             registration.courseTypeCode = course.courseTypeCode
                                                             if(user) {
-                                                                const registeredUserRegistrar = {} as RegisteredUserDto
+                                                                const registeredUserRegistrar = {} as UserDto
                                                                 registeredUserRegistrar.id = user.id
                                                                 registeredUserRegistrar.firstName = user.firstName
                                                                 registeredUserRegistrar.lastName = user.lastName
@@ -526,7 +540,7 @@ export default function NewsMainModule() {
                                                                 registration.registrar = registeredUserRegistrar
 
                                                                 // Fetch any previous partner for this user
-                                                                restClient.findPartners().then(value1 => {
+                                                                restClient.findCurrentUserPartners().then(value1 => {
                                                                     const partners:UserDto[] = [...value1.data, {
                                                                         id: 0,
                                                                         firstName: "",
@@ -540,11 +554,11 @@ export default function NewsMainModule() {
                                                                         phone: "",
                                                                         street: "",
                                                                         zip: ""
-                                                                    } as GuestUserDto]
+                                                                    }]
                                                                     setPartners(partners)
                                                                 })
                                                             } else {
-                                                                registration.registrar = {} as GuestUserDto
+                                                                registration.registrar = {} as UserDto
                                                             }
 
                                                             // Fetch the available rates for this course

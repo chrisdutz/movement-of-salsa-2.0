@@ -37,11 +37,11 @@ export default function LessonsAdminModuleCouples({course, onClose}:LessonsAdmin
             id: 0,
             courseId: course.id,
             gent: {
-                id: 0, firstName: "", lastName: "", sex: "MALE", size: 0
+                id: 0, firstName: "", lastName: "", sex: "MALE", size: 0, email: "", street: "", zip: "", city: "", country: "", phone: ""
             },
             gentPaying: false,
             lady: {
-                id: 0, firstName: "", lastName: "", sex: "FEMALE", size: 0
+                id: 0, firstName: "", lastName: "", sex: "FEMALE", size: 0, email: "", street: "", zip: "", city: "", country: "", phone: ""
             },
             ladyPaying: false,
             confirmed: false,

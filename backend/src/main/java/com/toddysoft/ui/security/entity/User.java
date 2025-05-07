@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "sec_users")
@@ -35,10 +36,8 @@ public class User implements UserDetails {
     private Integer size;
     private String phone;
 
-    @Column(unique = true, length = 100, nullable = false)
+    @Column(unique = true, length = 100)
     private String email;
-
-    @Column(nullable = false)
     private String password;
 
     @CreationTimestamp
@@ -226,5 +225,18 @@ public class User implements UserDetails {
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(street, user.street) && Objects.equals(zip, user.zip) && Objects.equals(city, user.city) && Objects.equals(country, user.country) && sex == user.sex && Objects.equals(size, user.size) && Objects.equals(phone, user.phone) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt) && Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, street, zip, city, country, sex, size, phone, email, password, createdAt, updatedAt, roles);
+    }
+
 }
 

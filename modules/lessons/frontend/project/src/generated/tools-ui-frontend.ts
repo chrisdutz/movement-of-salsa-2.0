@@ -124,14 +124,6 @@ export class RestApplicationClient<O> {
     }
 
     /**
-     * HTTP GET /api/courses/partners
-     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findPartners
-     */
-    findPartners(options?: O): RestResponse<UserDto[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/courses/partners`, options: options });
-    }
-
-    /**
      * HTTP GET /api/courses/up-and-running
      * Java method: com.toddysoft.ui.modules.lessons.controller.CourseController.findUpAndRunningCourses
      */
@@ -164,43 +156,59 @@ export class RestApplicationClient<O> {
     }
 
     /**
-     * HTTP POST /api/registrations
-     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.save
+     * HTTP POST /api/registrations/admin
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationAdminController.save
      */
-    save$POST$api_registrations(arg0: CourseRegistrationDto, options?: O): RestResponse<CourseRegistrationDto> {
-        return this.httpClient.request({ method: "POST", url: uriEncoding`api/registrations`, data: arg0, options: options });
+    save$POST$api_registrations_admin(arg0: CourseRegistrationDto, options?: O): RestResponse<CourseRegistrationDto> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/registrations/admin`, data: arg0, options: options });
     }
 
     /**
-     * HTTP GET /api/registrations/partners/{user-id}
-     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.findFindPartnersForUser
+     * HTTP GET /api/registrations/admin/partners/{user-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationAdminController.findFindPartnersForUser
      */
     findFindPartnersForUser(userId: number, options?: O): RestResponse<UserDto[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/partners/${userId}`, options: options });
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/admin/partners/${userId}`, options: options });
     }
 
     /**
-     * HTTP GET /api/registrations/registrars
-     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.findUsers
+     * HTTP GET /api/registrations/admin/registrars
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationAdminController.findUsers
      */
     findUsers(options?: O): RestResponse<UserDto[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/registrars`, options: options });
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/admin/registrars`, options: options });
     }
 
     /**
-     * HTTP GET /api/registrations/{course-id}
-     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.findRegistrationsForCourse
+     * HTTP GET /api/registrations/admin/{course-id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationAdminController.findRegistrationsForCourse
      */
     findRegistrationsForCourse(courseId: number, options?: O): RestResponse<CourseRegistrationDto[]> {
-        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/${courseId}`, options: options });
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/admin/${courseId}`, options: options });
     }
 
     /**
-     * HTTP DELETE /api/registrations/{id}
-     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationController.deleteById
+     * HTTP DELETE /api/registrations/admin/{id}
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationAdminController.deleteById
      */
-    deleteById$DELETE$api_registrations_id(id: number, options?: O): RestResponse<void> {
-        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/registrations/${id}`, options: options });
+    deleteById$DELETE$api_registrations_admin_id(id: number, options?: O): RestResponse<void> {
+        return this.httpClient.request({ method: "DELETE", url: uriEncoding`api/registrations/admin/${id}`, options: options });
+    }
+
+    /**
+     * HTTP POST /api/registrations/user
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationUserController.save
+     */
+    save$POST$api_registrations_user(arg0: CourseRegistrationDto, options?: O): RestResponse<CourseRegistrationDto> {
+        return this.httpClient.request({ method: "POST", url: uriEncoding`api/registrations/user`, data: arg0, options: options });
+    }
+
+    /**
+     * HTTP GET /api/registrations/user/partners
+     * Java method: com.toddysoft.ui.modules.lessons.controller.CourseRegistrationUserController.findCurrentUserPartners
+     */
+    findCurrentUserPartners(options?: O): RestResponse<UserDto[]> {
+        return this.httpClient.request({ method: "GET", url: uriEncoding`api/registrations/user/partners`, options: options });
     }
 }
 
@@ -257,15 +265,6 @@ export interface CourseTypeRate {
     title: string;
 }
 
-export interface GuestUserDto extends UserDto {
-    city: string;
-    country: string;
-    email: string;
-    phone: string;
-    street: string;
-    zip: string;
-}
-
 export interface Image {
     height: number;
     imageData: string;
@@ -281,21 +280,18 @@ export interface Lesson {
     startTime: Date;
 }
 
-export interface RegisteredUserDto extends UserDto {
+export interface UserDto {
     city: string;
     country: string;
-    phone: string;
-    street: string;
-    userId: number;
-    zip: string;
-}
-
-export interface UserDto {
+    email: string;
     firstName: string;
     id: number;
     lastName: string;
+    phone: string;
     sex: Sex;
     size: number;
+    street: string;
+    zip: string;
 }
 
 export type CourseRegistrationType = "SINGLE" | "COUPLE";

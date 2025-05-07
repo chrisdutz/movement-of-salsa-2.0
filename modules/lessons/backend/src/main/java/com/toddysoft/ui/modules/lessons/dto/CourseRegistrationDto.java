@@ -1,5 +1,6 @@
 package com.toddysoft.ui.modules.lessons.dto;
 
+import com.toddysoft.ui.modules.lessons.entity.Course;
 import com.toddysoft.ui.modules.lessons.entity.CourseRegistration;
 import com.toddysoft.ui.modules.lessons.types.CourseRegistrationType;
 import com.toddysoft.ui.security.entity.User;
@@ -59,6 +60,25 @@ public class CourseRegistrationDto {
         this.discount = courseRegistration.getDiscount();
         this.discountRemarks = courseRegistration.getDiscountRemarks();
         this.remarks = courseRegistration.getRemarks();
+    }
+
+    public CourseRegistration toEntity() {
+        CourseRegistration courseRegistration = new CourseRegistration();
+        courseRegistration.setId(id);
+        Course course = new Course();
+        course.setId(courseId);
+        courseRegistration.setCourse(course);
+        courseRegistration.setCourseRegistrationType(courseRegistrationType);
+        courseRegistration.setRateName(rateName);
+        courseRegistration.setRegistrar(registrar.toEntity());
+        if((courseRegistration.getCourseRegistrationType() == CourseRegistrationType.COUPLE) && (partner.isPresent())){
+            courseRegistration.setPartner(partner.get().toEntity());
+        }
+        courseRegistration.setRemarks(remarks);
+        courseRegistration.setPrice(price);
+        courseRegistration.setDiscount(discount);
+        courseRegistration.setDiscountRemarks(discountRemarks);
+        return courseRegistration;
     }
 
     public long getId() {
