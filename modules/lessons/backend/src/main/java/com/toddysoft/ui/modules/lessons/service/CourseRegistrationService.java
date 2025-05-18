@@ -46,18 +46,58 @@ public class CourseRegistrationService
         Course course = courseService.readItem(courseRegistration.getCourse().getId());
         courseRegistration.setCourse(course);
 
+        // Replace the half initialized user with the full version
+        if(courseRegistration.getRegistrar().getId() != 0) {
+            Optional<User> user = userService.readById(courseRegistration.getRegistrar().getId());
+            // This should never really happen.
+            courseRegistration.setRegistrar(user.orElse(null));
+        }
+        // Create a new user with the "Guest" role.
+        else {
+            // First, check if a user with this email exists:
+            // If he does, load this object and just update the fields just entered by the guest.
+            Optional<User> user = userService.readByEmail(courseRegistration.getRegistrar().getEmail());
+            User registrar;
+            if(user.isPresent()) {
+                // Update the old user with the data from the new one.
+                registrar = user.get();
+                registrar.setFirstName(courseRegistration.getRegistrar().getFirstName());
+                registrar.setLastName(courseRegistration.getRegistrar().getLastName());
+                registrar.setSize(courseRegistration.getRegistrar().getSize());
+                registrar.setStreet(courseRegistration.getRegistrar().getStreet());
+                registrar.setZip(courseRegistration.getRegistrar().getZip());
+                registrar.setCity(courseRegistration.getRegistrar().getCity());
+                registrar.setCountry(courseRegistration.getRegistrar().getCountry());
+                registrar.setPhone(courseRegistration.getRegistrar().getPhone());
+                registrar.setUpdatedAt(new Date());
+            } else {
+                Optional<Role> guestRole = roleService.list().stream().filter(role -> "Guest".equalsIgnoreCase(role.getName())).findFirst();
+                registrar = courseRegistration.getRegistrar();
+                registrar.setCreatedAt(new Date());
+                registrar.setUpdatedAt(registrar.getCreatedAt());
+                registrar.setRoles(Collections.singletonList(guestRole.orElse(null)));
+            }
+            registrar = userService.save(registrar);
+            courseRegistration.setRegistrar(registrar);
+        }
+
         // If it's a couple registration, make sure the partner is persisted.
         if(courseRegistration.getCourseRegistrationType() == CourseRegistrationType.COUPLE) {
-            User gent = null;
-            User lady = null;
-            // Updated the partner with the full version.
+            // If an existing partner was selected from the drop-down box, update the partner with the full version.
             if(courseRegistration.getPartner().getId() != 0) {
                 Optional<User> partner = userService.readById(courseRegistration.getPartner().getId());
                 // This should never really happen.
                 courseRegistration.setPartner(partner.orElse(null));
             }
-            // Otherwise create a new user with the "Partner" role.
-            else {
+            // If a new partner was selected and if the registrar is a known user,
+            // check if he had a previous partner with the same name. Reuse that in that case.
+            else if(courseRegistration.getRegistrar().getId() != 0) {
+                List<User> partners = courseCoupleService.listPartners(courseRegistration.getRegistrar());
+                Optional<User> previousPartner = partners.stream().filter(partner -> partner.getFirstName().equals(courseRegistration.getPartner().getFirstName()) && partner.getLastName().equals(courseRegistration.getPartner().getLastName())).findFirst();
+                previousPartner.ifPresent(courseRegistration::setPartner);
+            }
+            // If we still haven't found a matching partner, create a new une by adding the "Partner" role.
+            if(courseRegistration.getPartner().getId() == 0) {
                 // Add the "Guest" role to the new user.
                 Optional<Role> partnerRole = roleService.list().stream().filter(role -> "Partner".equalsIgnoreCase(role.getName())).findFirst();
                 User partner = courseRegistration.getPartner();
@@ -65,7 +105,14 @@ public class CourseRegistrationService
                 partner = userService.save(partner);
                 courseRegistration.setPartner(partner);
             }
+        } else {
+            courseRegistration.setPartner(null);
+        }
 
+        // If it's couple rate, create and persist a Couple object for these two for that course.
+        if(courseRegistration.getCourseRegistrationType() == CourseRegistrationType.COUPLE) {
+            User gent;
+            User lady;
             // Create and save a new couple
             if(courseRegistration.getRegistrar().getSex() == Sex.MALE) {
                 gent = courseRegistration.getRegistrar();
@@ -81,26 +128,6 @@ public class CourseRegistrationService
             couple.setDescription(courseRegistration.getRemarks());
             couple.setConfirmed(false);
             courseCoupleService.createItem(couple);
-        } else {
-            courseRegistration.setPartner(null);
-        }
-
-        // Replace the half initialized user with the full version
-        if(courseRegistration.getRegistrar().getId() != 0) {
-            Optional<User> user = userService.readById(courseRegistration.getRegistrar().getId());
-            // This should never really happen.
-            courseRegistration.setRegistrar(user.orElse(null));
-        }
-        // Create a new user with the "Guest" role.
-        else {
-            Optional<Role> guestRole = roleService.list().stream().filter(role -> "Guest".equalsIgnoreCase(role.getName())).findFirst();
-            User registrar = courseRegistration.getRegistrar();
-            registrar.setRoles(Collections.singletonList(guestRole.orElse(null)));
-            // Reset the email as that is also our username
-            // (Otherwise after logging in as guest a user could never create an account)
-            registrar.setEmail(null);
-            registrar = userService.save(registrar);
-            courseRegistration.setRegistrar(registrar);
         }
 
         // Save the registration.

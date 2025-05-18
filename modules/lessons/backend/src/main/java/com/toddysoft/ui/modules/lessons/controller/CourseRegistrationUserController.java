@@ -61,8 +61,8 @@ public class CourseRegistrationUserController {
         // Get the current user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(!(authentication.getPrincipal() instanceof User)) {
-            // TODO: If the registration is coming from an unauthenticated user, create a validation request and
-            //       let the guest confirm the correctness of the email address.
+            // If the registration is coming from an unauthenticated user, create a validation request and
+            // let the guest confirm the correctness of the email address.
             try {
                 ValidationRequest validationRequest = validationService.createValidationRequest("course-registration", courseRegistration);
                 Map<String, Object> varMap = new HashMap<>();

@@ -41,12 +41,6 @@ public class RegistrationService {
 
     @Transactional
     public void register(RegisterUserDto input) throws DuplicateRegistrationException {
-        // Check if the email address used has been used before.
-        Optional<User> byEmail = userRepository.findByEmail(input.getEmail());
-        if(byEmail.isPresent()) {
-            throw new DuplicateRegistrationException(input.getEmail());
-        }
-
         ValidationRequest registrationValidationRequest = validationService.createValidationRequest(
                 "registration", input);
 
