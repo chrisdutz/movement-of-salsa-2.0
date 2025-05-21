@@ -10,19 +10,21 @@ import {Toast} from "primereact/toast";
 const restClient = new RestApplicationClient(axios);
 
 export default function Contact() {
+    const toast = useRef<Toast>(null)
+
     const [name, setName] = useState<string>("")
     const [email, setEmail] = useState<string>("")
     const [subject, setSubject] = useState<string>("")
     const [message, setMessage] = useState<string>("")
-
-    const toast = useRef<Toast>(null)
 
     function handleSubmit() {
         restClient.sendContactRequest({
             name: name, email: email, subject: subject, message: message
         }).then(() => {
             handleReset();
-            toast.current?.show({severity: 'success', summary: 'Successful', detail: 'Kontakt formular erfolgreich verschickt', life: 3000})
+            toast.current?.show({severity: 'success', summary: 'Successful', detail: 'Kontakt Formular erfolgreich verschickt', life: 3000})
+        }).catch(() => {
+            toast.current?.show({severity: 'error', summary: 'Error', detail: 'Fehler beim Verschicken des Formulars', life: 3000})
         })
     }
 
