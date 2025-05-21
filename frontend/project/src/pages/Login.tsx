@@ -21,6 +21,10 @@ const restClient = new RestApplicationClient(axios);
 export default function Login() {
     const toast = useRef<Toast>(null)
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Reset Password Form Related
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     const [resetPasswordDialog, setResetPasswordDialog] = useState<boolean>(false)
     const [resetPasswordEmail, setResetPasswordEmail] = useState<string>("")
     const [resetPasswordPassword, setResetPasswordPassword] = useState<string>("")
@@ -32,7 +36,7 @@ export default function Login() {
     });
     const [sendingPasswordResetEmail, setSendingPasswordResetEmail] = useState<boolean>(false)
 
-    function validateLostResetPasswordForm(field:string, value:any) {
+    function validateResetPasswordForm(field:string, value:any) {
         const newErrors = { ...resetPasswordErrors };
 
         if (field === "resetPasswordEmail") {
@@ -75,11 +79,8 @@ export default function Login() {
 
     function isResetPasswordFormValid() {
         return !resetPasswordErrors.email &&
-            !resetPasswordErrors.password &&
-            !resetPasswordErrors.passwordRepeat &&
-            resetPasswordEmail &&
-            resetPasswordPassword &&
-            resetPasswordPasswordRepeat;
+            resetPasswordErrors.password == "" &&
+            resetPasswordErrors.passwordRepeat == ""
     }
 
     function handleResetPassword() {
@@ -101,6 +102,10 @@ export default function Login() {
             setResetPasswordPasswordRepeat("")
         })
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Login Form Related
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const [username, setUsername] = useState<string>("")
     const [password, setPassword] = useState<string>("")
@@ -135,10 +140,8 @@ export default function Login() {
     }
 
     function isLoginFormValid() {
-        return !loginErrors.email &&
-            !loginErrors.password &&
-            username &&
-            password
+        return loginErrors.email == "" &&
+            loginErrors.password == ""
     }
 
     function handleLogin() {
@@ -177,8 +180,15 @@ export default function Login() {
                     setLoggingIn(false);
                 })
             })
+        }).catch(() => {
+            toast.current?.show({severity: 'error', summary: 'Error', detail: 'Login failed.', life: 3000})
+            setLoggingIn(false);
         })
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Registration Form Related
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     const [registerSex, setRegisterSex] = useState<Sex>()
     const [registerFirstName, setRegisterFirstName] = useState<string>("")
@@ -187,7 +197,7 @@ export default function Login() {
     const [registerPassword, setRegisterPassword] = useState<string>("")
     const [registerRepeatPassword, setRegisterRepeatPassword] = useState<string>("")
     const [registerErrors, setRegisterErrors] = useState({
-        sex: undefined,
+        sex: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -201,33 +211,33 @@ export default function Login() {
 
         if (field === "registerSex") {
             if (!value) {
-                newErrors.email = "Geschlecht darf nicht leer sein.";
+                newErrors.sex = "Geschlecht darf nicht leer sein.";
             } else {
-                newErrors.email = "";
+                newErrors.sex = "";
             }
         }
 
         if (field === "registerFirstName") {
             if (!value) {
-                newErrors.password = "Vorname darf nicht leer sein.";
+                newErrors.firstName = "Vorname darf nicht leer sein.";
             } else {
-                newErrors.password = "";
+                newErrors.firstName = "";
             }
         }
 
         if (field === "registerLastName") {
             if (!value) {
-                newErrors.password = "Nachname darf nicht leer sein.";
+                newErrors.lastName = "Nachname darf nicht leer sein.";
             } else {
-                newErrors.password = "";
+                newErrors.lastName = "";
             }
         }
 
         if (field === "registerEmail") {
             if (!value) {
-                newErrors.password = "Email darf nicht leer sein.";
+                newErrors.email = "Email darf nicht leer sein.";
             } else {
-                newErrors.password = "";
+                newErrors.email = "";
             }
         }
 
@@ -261,18 +271,12 @@ export default function Login() {
     }
 
     function isRegistrationFormValid() {
-        return !registerErrors.sex &&
-            !registerErrors.firstName &&
-            !registerErrors.lastName &&
-            !registerErrors.email &&
-            !registerErrors.password &&
-            !registerErrors.repeatPassword &&
-            registerSex &&
-            registerFirstName &&
-            registerLastName &&
-            registerEmail &&
-            registerPassword &&
-            registerRepeatPassword
+        return registerErrors.sex == "" &&
+            registerErrors.firstName == "" &&
+            registerErrors.lastName == "" &&
+            registerErrors.email == "" &&
+            registerErrors.password == "" &&
+            registerErrors.repeatPassword == ""
     }
 
     function handleRegister() {
@@ -281,17 +285,18 @@ export default function Login() {
         }
 
         setRegistering(true);
-
         restClient.register({
             sex: registerSex,
             firstName: registerFirstName,
             lastName: registerLastName,
             email: registerEmail,
             password: registerPassword
-        }).then(value => {
-            // TODO: Handle the result
-            console.log("Register Response", value)
+        }).then(() => {
             setRegistering(false);
+            toast.current?.show({severity: 'success', summary: 'Successful', detail: 'Please check your inbox to complete the registration process.', life: 3000})
+        }).catch(() => {
+            setRegistering(false);
+            toast.current?.show({severity: 'error', summary: 'Error', detail: 'Registration failed.', life: 3000})
         })
     }
 
@@ -328,10 +333,10 @@ export default function Login() {
                                onChange={event => {
                                    const value = event.target.value;
                                    setResetPasswordEmail(value)
-                                   validateLostResetPasswordForm("resetPasswordEmail", value)
+                                   validateResetPasswordForm("resetPasswordEmail", value)
                                }}
-                               className={`w-full ${resetPasswordErrors.email ? "p-invalid" : ""}`}/>
-                    {resetPasswordErrors.email && <small className="p-error">{resetPasswordErrors.email}</small>}
+                               className={`w-full ${resetPasswordErrors.email != "" ? "p-invalid" : ""}`}/>
+                    {resetPasswordErrors.email && (<small className="p-error">{resetPasswordErrors.email}</small>)}
                 </div>
                 <div className="field mb-3">
                     <Password placeholder="Passwort"
@@ -339,11 +344,11 @@ export default function Login() {
                               onChange={event => {
                                   const value = event.target.value;
                                   setResetPasswordPassword(value)
-                                  validateLostResetPasswordForm("resetPasswordPassword", value)
+                                  validateResetPasswordForm("resetPasswordPassword", value)
                               }}
-                              inputClassName={`w-full ${resetPasswordErrors.passwordRepeat ? "p-invalid" : ""}`}
+                              inputClassName={`w-full ${resetPasswordErrors.passwordRepeat != "" ? "p-invalid" : ""}`}
                               className="w-full"/>
-                    {resetPasswordErrors.password && <small className="p-error">{resetPasswordErrors.password}.</small>}
+                    {resetPasswordErrors.password && (<small className="p-error">{resetPasswordErrors.password}.</small>)}
                 </div>
                 <div className="field mb-3">
                     <Password placeholder="Widerholung"
@@ -351,11 +356,11 @@ export default function Login() {
                               onChange={event => {
                                   const value = event.target.value;
                                   setResetPasswordPasswordRepeat(value)
-                                  validateLostResetPasswordForm("resetPasswordPasswordRepeat", value)
+                                  validateResetPasswordForm("resetPasswordPasswordRepeat", value)
                               }}
-                              inputClassName={`w-full ${resetPasswordErrors.password ? "p-invalid" : ""}`}
+                              inputClassName={`w-full ${resetPasswordErrors.passwordRepeat != "" ? "p-invalid" : ""}`}
                               className="w-full"/>
-                    {resetPasswordErrors.passwordRepeat && <small className="p-error">{resetPasswordErrors.passwordRepeat}</small>}
+                    {resetPasswordErrors.passwordRepeat && (<small className="p-error">{resetPasswordErrors.passwordRepeat}</small>)}
                 </div>
                 <Button label="Abschicken"
                         onClick={handleResetPassword}
@@ -376,8 +381,8 @@ export default function Login() {
                                            setUsername(value)
                                            validateLoginForm("username", value)
                                        }}
-                                       className={`w-full ${loginErrors.email ? "p-invalid" : ""}`}/>
-                            {loginErrors.email && <small className="p-error">{loginErrors.email}</small>}
+                                       className={`w-full ${loginErrors.email != "" ? "p-invalid" : ""}`}/>
+                            {loginErrors.email && (<small className="p-error">{loginErrors.email}</small>)}
                         </div>
                         <div className="field mb-3">
                             <Password placeholder="Password"
@@ -385,11 +390,11 @@ export default function Login() {
                                       onChange={event => {
                                           const value = event.target.value;
                                           setPassword(value)
-                                          validateLostResetPasswordForm("password", value)
+                                          validateLoginForm("password", value)
                                       }}
-                                      inputClassName={`w-full ${loginErrors.password ? "p-invalid" : ""}`}
+                                      inputClassName={`w-full ${loginErrors.password != "" ? "p-invalid" : ""}`}
                                       className="w-full"/>
-                            {loginErrors.password && <small className="p-error">{loginErrors.password}</small>}
+                            {loginErrors.password && (<small className="p-error">{loginErrors.password}</small>)}
                         </div>
                         <Button label="Login"
                                 onClick={() => handleLogin()}
@@ -408,12 +413,12 @@ export default function Login() {
                                           setRegisterSex(value)
                                           validateRegistrationForm("registerSex", value)
                                       }}
-                                      className={`w-full ${registerErrors.sex ? "p-invalid" : ""}`}
+                                      className={`w-full ${registerErrors.sex != "" ? "p-invalid" : ""}`}
                                       options={[{value: "MALE", label: "Männlich"}, {
                                           value: "FEMALE",
                                           label: "Weiblich"
                                       }]}/>
-                            {registerErrors.sex && <small className="p-error">{registerErrors.sex}</small>}
+                            {registerErrors.sex && (<small className="p-error">{registerErrors.sex}</small>)}
                         </div>
                         <div className="field mb-3">
                             <InputText placeholder="Vorname"
@@ -423,8 +428,8 @@ export default function Login() {
                                            setRegisterFirstName(value)
                                            validateRegistrationForm("registerFirstName", value)
                                        }}
-                                       className={`w-full ${registerErrors.firstName ? "p-invalid" : ""}`}/>
-                            {registerErrors.firstName && <small className="p-error">{registerErrors.firstName}</small>}
+                                       className={`w-full ${registerErrors.firstName != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.firstName && (<small className="p-error">{registerErrors.firstName}</small>)}
                         </div>
                         <div className="field mb-3">
                             <InputText placeholder="Nachname"
@@ -434,8 +439,8 @@ export default function Login() {
                                            setRegisterLastName(value)
                                            validateRegistrationForm("registerLastName", value)
                                        }}
-                                       className={`w-full ${registerErrors.lastName ? "p-invalid" : ""}`}/>
-                            {registerErrors.lastName && <small className="p-error">{registerErrors.lastName}</small>}
+                                       className={`w-full ${registerErrors.lastName != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.lastName && (<small className="p-error">{registerErrors.lastName}</small>)}
                         </div>
                         <div className="field mb-3">
                             <InputText placeholder="Email"
@@ -445,8 +450,8 @@ export default function Login() {
                                            setRegisterEmail(value)
                                            validateRegistrationForm("registerEmail", value)
                                        }}
-                                       className={`w-full ${registerErrors.email ? "p-invalid" : ""}`}/>
-                            {registerErrors.email && <small className="p-error">{registerErrors.email}</small>}
+                                       className={`w-full ${registerErrors.email != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.email && (<small className="p-error">{registerErrors.email}</small>)}
                         </div>
                         <div className="field mb-3">
                             <Password placeholder="Passwort"
@@ -456,9 +461,9 @@ export default function Login() {
                                           setRegisterPassword(value)
                                           validateRegistrationForm("registerPassword", value)
                                       }}
-                                      inputClassName={`w-full ${registerErrors.password ? "p-invalid" : ""}`}
+                                      inputClassName={`w-full ${registerErrors.password != "" ? "p-invalid" : ""}`}
                                       className="w-full"/>
-                            {registerErrors.password && <small className="p-error">{registerErrors.password}</small>}
+                            {registerErrors.password && (<small className="p-error">{registerErrors.password}</small>)}
                         </div>
                         <div className="field mb-3">
                             <Password placeholder="Widerholung"
@@ -468,20 +473,13 @@ export default function Login() {
                                           setRegisterRepeatPassword(value)
                                           validateRegistrationForm("registerPasswordRepeat", value)
                                       }}
-                                      inputClassName={`w-full ${registerErrors.repeatPassword ? "p-invalid" : ""}`}
+                                      inputClassName={`w-full ${registerErrors.repeatPassword != "" ? "p-invalid" : ""}`}
                                       className="w-full"/>
-                            {registerErrors.repeatPassword && <small className="p-error">{registerErrors.repeatPassword}</small>}
+                            {registerErrors.repeatPassword && (<small className="p-error">{registerErrors.repeatPassword}</small>)}
                         </div>
                         <Button label="Registrieren"
                                 onClick={() => handleRegister()}
-                                disabled={
-                                    !registerSex ||
-                                    !registerFirstName ||
-                                    !registerLastName ||
-                                    !registerEmail ||
-                                    !registerPassword ||
-                                    registerPassword !== registerRepeatPassword
-                                }
+                                disabled={!isRegistrationFormValid()}
                                 loading={registering}
                                 className="w-full"/>
                     </Card>
