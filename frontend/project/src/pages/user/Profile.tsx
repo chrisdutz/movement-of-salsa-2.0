@@ -23,7 +23,7 @@ export default function Profile() {
     }
 
     const showConfirmAbortEditItemDialog = () => {
-        // Only show the dialog, if the editor is dirty.
+        // Only show the dialog if the editor is dirty.
         if (dirty) {
             confirmDialog({
                 message: 'Do you want to abort editing this record?',

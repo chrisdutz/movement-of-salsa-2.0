@@ -60,7 +60,7 @@ function App() {
         let moduleRoutes = state.moduleList.moduleList
             .map(module => ({
                     path: module.routerUrl,
-                    // Modules with empty moduleUrl are embedded modules, that are loaded via lookup in a static map.
+                    // Modules with empty moduleUrl are embedded modules that are loaded via lookup in a static map.
                     // Others need to be dynamically loaded.
                     element: module.moduleUrl == "" ? loadInternalComponent(module.moduleComponentName) : loadExternalComponent(module.moduleUrl, module.moduleComponentName)
                 } as RouteObject)

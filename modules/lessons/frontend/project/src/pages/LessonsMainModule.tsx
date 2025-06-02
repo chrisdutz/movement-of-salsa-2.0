@@ -12,7 +12,7 @@ import {
     RestApplicationClient, Sex, UserDto
 } from "../generated/tools-ui-frontend.ts";
 import {useSelector} from "react-redux";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Image} from "primereact/image";
 import {Chip} from "primereact/chip";
 import {Button} from "primereact/button";
@@ -57,15 +57,118 @@ export default function NewsMainModule() {
     const [isTarifStepValid, setIsTarifStepValid] = useState(false);
     const [isBillingStepValid, setIsBillingStepValid] = useState(false);
 
-    function updateGuestStepValidState(curRegistration:CourseRegistrationDto) {
+    const [registerErrors, setRegisterErrors] = useState({
+        sex: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+
+        rate: "",
+        partner: "",
+        partnerFirstName: "",
+        partnerLastName: "",
+        remarks: "",
+
+        size: "",
+        street: "",
+        zip: "",
+        city: "",
+        country: "",
+        phone: ""
+    });
+
+    function updateGuestStepValidState(updatedField:string, curRegistration:CourseRegistrationDto) {
+        const newErrors = { ...registerErrors };
+
+        switch (updatedField) {
+            case "sex": {
+                if(curRegistration.registrar?.sex == undefined) {
+                    newErrors.sex = "Geschlecht darf nicht leer sein.";
+                } else {
+                    newErrors.sex = ""
+                }
+                break
+            }
+            case "firstName": {
+                if(curRegistration.registrar?.firstName?.length == 0) {
+                    newErrors.firstName = "Vorname darf nicht leer sein.";
+                } else {
+                    newErrors.firstName = ""
+                }
+                break
+            }
+            case "lastName": {
+                if(curRegistration.registrar?.lastName?.length == 0) {
+                    newErrors.lastName = "Nachname darf nicht leer sein.";
+                } else {
+                    newErrors.lastName = ""
+                }
+                break
+            }
+            case "email": {
+                if(curRegistration.registrar?.email?.length == 0) {
+                    newErrors.email = "Email darf nicht leer sein.";
+                } else {
+                    newErrors.email = ""
+                }
+                break
+            }
+        }
+
         setIsGuestStepValid((curRegistration.registrar?.sex != undefined) &&
             (curRegistration.registrar?.firstName?.length > 0) &&
             (curRegistration.registrar?.lastName?.length > 0) &&
             (curRegistration.registrar?.email?.length > 0))
         setRegistration(curRegistration)
+        setRegisterErrors(newErrors)
     }
 
-    function updateTarifStepValidState(curRegistration:CourseRegistrationDto) {
+    function updateTarifStepValidState(updatedField:string, curRegistration:CourseRegistrationDto) {
+        const newErrors = { ...registerErrors };
+
+        switch (updatedField) {
+            case "rate": {
+                if(curRegistration.rateName?.length == 0) {
+                    newErrors.rate = "Es muss ein Tarif ausgewählt sein.";
+                } else {
+                    newErrors.rate = ""
+                }
+                break
+            }
+            case "partner": {
+                if(curRegistration.partner == undefined) {
+                    newErrors.partner = "Es muss ein Partner ausgewählt sein.";
+                } else {
+                    newErrors.partner = ""
+                }
+                break
+            }
+            case "partnerFirstName": {
+                if(curRegistration.partner?.firstName.length == 0) {
+                    newErrors.partnerFirstName = "Partner Vorname darf nicht leer sein.";
+                } else {
+                    newErrors.partnerFirstName = ""
+                }
+                break
+            }
+            case "partnerLastName": {
+                if(curRegistration.partner?.lastName.length == 0) {
+                    newErrors.partnerLastName = "Partner Nachname darf nicht leer sein.";
+                } else {
+                    newErrors.partnerLastName = ""
+                }
+                break
+            }
+            /*case "remarks": {
+                if(curRegistration.remarks.length == 0) {
+                    newErrors.remarks = "";
+                } else {
+                    newErrors.remarks = ""
+                }
+                break
+            }*/
+        }
+
         if(curRegistration.partner) {
             const partnerValid = curRegistration.partner.firstName.length > 0 && curRegistration.partner.lastName.length > 0;
             setIsTarifStepValid((curRegistration.rateName != undefined) && partnerValid)
@@ -73,15 +176,70 @@ export default function NewsMainModule() {
             setIsTarifStepValid(curRegistration.rateName != undefined)
         }
         setRegistration(curRegistration)
+        setRegisterErrors(newErrors)
     }
 
-    function updateBillingStepValidState(curRegistration:CourseRegistrationDto) {
+    function updateBillingStepValidState(updatedField:string, curRegistration:CourseRegistrationDto) {
+        const newErrors = { ...registerErrors };
+
+        switch (updatedField) {
+            case "size": {
+                if(curRegistration.registrar?.size <= 0) {
+                    newErrors.size = "Größe darf nicht leer sein.";
+                } else {
+                    newErrors.size = ""
+                }
+                break
+            }
+            case "street": {
+                if(curRegistration.registrar?.street?.length == 0) {
+                    newErrors.street = "Straße darf nicht leer sein.";
+                } else {
+                    newErrors.street = ""
+                }
+                break
+            }
+            case "zip": {
+                if(curRegistration.registrar?.zip?.length == 0) {
+                    newErrors.zip = "PLZ darf nicht leer sein.";
+                } else {
+                    newErrors.zip = ""
+                }
+                break
+            }
+            case "city": {
+                if(curRegistration.registrar?.city?.length == 0) {
+                    newErrors.city = "Ort darf nicht leer sein.";
+                } else {
+                    newErrors.city = ""
+                }
+                break
+            }
+            case "country": {
+                if(curRegistration.registrar?.country?.length == 0) {
+                    newErrors.country = "Land darf nicht leer sein.";
+                } else {
+                    newErrors.country = ""
+                }
+                break
+            }
+            case "phone": {
+                if(curRegistration.registrar?.phone?.length == 0) {
+                    newErrors.phone = "Telefonnummer darf nicht leer sein.";
+                } else {
+                    newErrors.phone = ""
+                }
+                break
+            }
+        }
+
         setIsBillingStepValid((curRegistration.registrar?.street?.length > 0) &&
             (curRegistration.registrar?.zip?.length > 0) &&
             (curRegistration.registrar?.city?.length > 0) &&
             (curRegistration.registrar?.country?.length > 0) &&
             (curRegistration.registrar?.phone?.length > 0))
         setRegistration(curRegistration)
+        setRegisterErrors(newErrors)
     }
 
     useEffect(() => {
@@ -121,7 +279,7 @@ export default function NewsMainModule() {
                         <p>Solltest du einen neuen Account anlegen wollen, so gehe einfach auf "Login" im Hauptmenü, führe hier eine "User Registrierung" durch und melde dich dann mit diesem User zu diesem Kurs an.</p>
                         <div className="p-fluid">
                             <div className="field mb-3">
-                                <label htmlFor="fieldSex" className="font-bold">Geschlecht</label>
+                                <label htmlFor="fieldSex" className="font-bold">Geschlecht <span style={{ color: 'red' }}>*</span></label>
                                 <Dropdown id="fieldSex" required={true}
                                           options={[
                                               {value: "MALE", label: "Männlich"},
@@ -131,39 +289,47 @@ export default function NewsMainModule() {
                                           value={registration?.registrar.sex}
                                           onChange={event => {
                                               if(registration && registration.registrar) {
-                                                  updateGuestStepValidState({...registration, registrar: {...registration.registrar, sex: event.value as Sex}})
+                                                  updateGuestStepValidState("sex", {...registration, registrar: {...registration.registrar, sex: event.value as Sex}})
                                               }
-                                          }}/>
+                                          }}
+                                          className={`w-full ${registerErrors.sex != "" ? "p-invalid" : ""}`}/>
+                                {registerErrors.sex && (<small className="p-error">{registerErrors.sex}</small>)}
                             </div>
                             <div className="field mb-3">
-                                <label htmlFor="fieldFirstName" className="font-bold">Vorname</label>
+                                <label htmlFor="fieldFirstName" className="font-bold">Vorname <span style={{ color: 'red' }}>*</span></label>
                                 <InputText id="fieldFirstName" required={true}
                                            value={registration?.registrar.firstName}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
-                                                   updateGuestStepValidState({...registration, registrar: {...registration.registrar, firstName: event.target.value}})
+                                                   updateGuestStepValidState("firstName", {...registration, registrar: {...registration.registrar, firstName: event.target.value}})
                                                }
-                                           }}/>
+                                           }}
+                                           className={`w-full ${registerErrors.firstName != "" ? "p-invalid" : ""}`}/>
+                                {registerErrors.firstName && (<small className="p-error">{registerErrors.firstName}</small>)}
                             </div>
                             <div className="field mb-3">
-                                <label htmlFor="fieldLastName" className="font-bold">Nachname</label>
+                                <label htmlFor="fieldLastName" className="font-bold">Nachname <span style={{ color: 'red' }}>*</span></label>
                                 <InputText id="fieldLastName" required={true}
                                            value={registration?.registrar.lastName}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
-                                                   updateGuestStepValidState({...registration, registrar: {...registration.registrar, lastName: event.target.value}})
+                                                   updateGuestStepValidState("lastName", {...registration, registrar: {...registration.registrar, lastName: event.target.value}})
                                                }
-                                           }}/>
+                                           }}
+                                           className={`w-full ${registerErrors.lastName != "" ? "p-invalid" : ""}`}/>
+                                {registerErrors.lastName && (<small className="p-error">{registerErrors.lastName}</small>)}
                             </div>
                             <div className="field mb-3">
-                                <label htmlFor="fieldEmail" className="font-bold">Email Adresse</label>
+                                <label htmlFor="fieldEmail" className="font-bold">Email Adresse <span style={{ color: 'red' }}>*</span></label>
                                 <InputText id="fieldEmail" type={"email"} required={true}
                                            value={registration?.registrar.email}
                                            onChange={event => {
                                                if(registration && registration.registrar) {
-                                                   updateGuestStepValidState({...registration, registrar: {...registration.registrar, email: event.target.value}})
+                                                   updateGuestStepValidState("email", {...registration, registrar: {...registration.registrar, email: event.target.value}})
                                                }
-                                           }}/>
+                                           }}
+                                           className={`w-full ${registerErrors.email != "" ? "p-invalid" : ""}`}/>
+                                {registerErrors.email && (<small className="p-error">{registerErrors.email}</small>)}
                             </div>
                         </div>
                     </Card>
@@ -181,7 +347,7 @@ export default function NewsMainModule() {
                 <Card className="flex flex-column" style={{ backgroundColor: 'lightblue' }}>
                     <div className="p-fluid">
                         <div className="field mb-3">
-                            <label htmlFor="fieldRate" className="font-bold">Tarif</label>
+                            <label htmlFor="fieldRate" className="font-bold">Tarif <span style={{ color: 'red' }}>*</span></label>
                             <Dropdown id="fieldRate" options={availableCourseRates} required={true}
                                       itemTemplate={option => option?.title + " (" + option?.price + "€)"}
                                       valueTemplate={option => option ? option.title + " (" + option?.price + "€)" : "Select"}
@@ -194,7 +360,7 @@ export default function NewsMainModule() {
                                           // If we're not logged in, provide an empty partner.
                                           if(registration) {
                                               if (!user && coupleRate) {
-                                                  updateTarifStepValidState({
+                                                  updateTarifStepValidState("rate", {
                                                       ...registration,
                                                       rateName: event.value["title"],
                                                       courseRegistrationType: coupleRate ? "COUPLE" : "SINGLE",
@@ -214,7 +380,7 @@ export default function NewsMainModule() {
                                                       }
                                                   })
                                               } else {
-                                                  updateTarifStepValidState({
+                                                  updateTarifStepValidState("rate", {
                                                       ...registration,
                                                       rateName: event.value["title"],
                                                       courseRegistrationType: coupleRate ? "COUPLE" : "SINGLE",
@@ -223,45 +389,53 @@ export default function NewsMainModule() {
                                                   })
                                               }
                                           }
-                                      }}/>
+                                      }}
+                                      className={`w-full ${registerErrors.rate != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.rate && (<small className="p-error">{registerErrors.rate}</small>)}
                         </div>
                         {selectedRateIsPartnerRate &&
                             <>
                                 {user &&
                                     <div className="field mb-3">
-                                        <label htmlFor="fieldPartner" className="font-bold">Partner</label>
+                                        <label htmlFor="fieldPartner" className="font-bold">Partner <span style={{ color: 'red' }}>*</span></label>
                                         <Dropdown id="fieldPartner" options={partners} value={registration.partner}
                                                   itemTemplate={(option) => (option) ? option.lastName + ((option.firstName && option.firstName.length > 0) ? ", " + option.firstName : "") : "Empty"}
                                                   valueTemplate={(option) => (option) ? option.lastName + ((option.firstName && option.firstName.length > 0) ? ", " + option.firstName : "") : "Empty"}
                                                   required={true}
                                                   onChange={event => {
                                                       if(registration) {
-                                                          updateTarifStepValidState({...registration, partner: event.value})
+                                                          updateTarifStepValidState("partner", {...registration, partner: event.value})
                                                       }
-                                                  }}/>
+                                                  }}
+                                                  className={`w-full ${registerErrors.partner != "" ? "p-invalid" : ""}`}/>
+                                        {registerErrors.partner && (<small className="p-error">{registerErrors.partner}</small>)}
                                     </div>
                                 }
                                 <div className="field mb-3">
-                                    <label htmlFor="fieldParnerFirstName" className="font-bold">Partner Vorname</label>
+                                    <label htmlFor="fieldParnerFirstName" className="font-bold">Partner Vorname <span style={{ color: 'red' }}>*</span></label>
                                     <InputText id="fieldParnerFirstName" required={true}
                                                value={registration.partner?.firstName}
                                                disabled={registration.partner?.id != 0}
                                                onChange={event => {
                                                    if(registration) {
-                                                       updateTarifStepValidState({...registration, partner: {...(registration.partner as UserDto), firstName: event.target.value}})
+                                                       updateTarifStepValidState("partnerFirstName", {...registration, partner: {...(registration.partner as UserDto), firstName: event.target.value}})
                                                    }
-                                               }}/>
+                                               }}
+                                               className={`w-full ${registerErrors.partnerFirstName != "" ? "p-invalid" : ""}`}/>
+                                    {registerErrors.partnerFirstName && (<small className="p-error">{registerErrors.partnerFirstName}</small>)}
                                 </div>
                                 <div className="field mb-3">
-                                    <label htmlFor="fieldParnerLastName" className="font-bold">Partner Nachname</label>
+                                    <label htmlFor="fieldParnerLastName" className="font-bold">Partner Nachname <span style={{ color: 'red' }}>*</span></label>
                                     <InputText id="fieldParnerLastName" required={true}
                                                value={registration.partner?.lastName}
                                                disabled={registration.partner?.id != 0}
                                                onChange={event => {
                                                    if(registration) {
-                                                       updateTarifStepValidState({...registration, partner: {...(registration.partner as UserDto), lastName: event.target.value}})
+                                                       updateTarifStepValidState("partnerLastName", {...registration, partner: {...(registration.partner as UserDto), lastName: event.target.value}})
                                                    }
-                                               }}/>
+                                               }}
+                                               className={`w-full ${registerErrors.partnerLastName != "" ? "p-invalid" : ""}`}/>
+                                    {registerErrors.partnerLastName && (<small className="p-error">{registerErrors.partnerLastName}</small>)}
                                 </div>
                             </>
                         }
@@ -271,9 +445,11 @@ export default function NewsMainModule() {
                                        value={registration.remarks}
                                        onChange={event => {
                                            if(registration) {
-                                               updateTarifStepValidState({...registration, remarks: event.target.value})
+                                               updateTarifStepValidState("remarks", {...registration, remarks: event.target.value})
                                            }
-                                       }}/>
+                                       }}
+                                       className={`w-full ${registerErrors.remarks != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.remarks && (<small className="p-error">{registerErrors.remarks}</small>)}
                         </div>
                     </div>
                 </Card>
@@ -296,14 +472,16 @@ export default function NewsMainModule() {
                             <p>Für Partnerzuweisung (Optional):</p>
                             <div className="p-fluid">
                                 <div className="field mb-3">
-                                    <label htmlFor="fieldSize" className="font-bold">Größe (cm)</label>
+                                    <label htmlFor="fieldSize" className="font-bold">Größe (cm) <span style={{ color: 'red' }}>*</span></label>
                                     <InputNumber id="fieldSize" required={true}
                                                  value={registration.registrar.size}
                                                  onChange={event => {
                                                      if(registration && event.value) {
-                                                         updateBillingStepValidState({...registration, registrar: {...(registration.partner as UserDto), size: event.value}})
+                                                         updateBillingStepValidState("size", {...registration, registrar: {...(registration.partner as UserDto), size: event.value}})
                                                      }
-                                                 }}/>
+                                                 }}
+                                                 className={`w-full ${registerErrors.size != "" ? "p-invalid" : ""}`}/>
+                                    {registerErrors.size && (<small className="p-error">{registerErrors.size}</small>)}
                                 </div>
                             </div>
                         </>
@@ -311,64 +489,72 @@ export default function NewsMainModule() {
                     <p>Für Rechnungsstellung benötigt:</p>
                     <div className="p-fluid">
                         <div className="field mb-3">
-                            <label htmlFor="fieldStreet" className="font-bold">Straße</label>
+                            <label htmlFor="fieldStreet" className="font-bold">Straße <span style={{ color: 'red' }}>*</span></label>
                             <InputText id="fieldStreet" required={true}
                                        value={registration.registrar.street}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "street" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, street: event.target.value}})
+                                               updateBillingStepValidState("street", {...registration, registrar: {...registration.registrar, street: event.target.value}})
                                            }
-                                       }}/>
+                                       }}
+                                       className={`w-full ${registerErrors.street != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.street && (<small className="p-error">{registerErrors.street}</small>)}
                         </div>
                         <div className="field mb-3">
-                            <label htmlFor="fieldZip" className="font-bold">PLZ</label>
+                            <label htmlFor="fieldZip" className="font-bold">PLZ <span style={{ color: 'red' }}>*</span></label>
                             <InputText id="fieldZip" required={true}
                                        value={registration.registrar.zip}
                                        onChange={event => {
-                                           console.log("Change", registration)
                                            if(registration && registration.registrar) {
-                                               console.log("Updating")
                                                // Both types have a "zip" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, zip: event.target.value}})
+                                               updateBillingStepValidState("zip", {...registration, registrar: {...registration.registrar, zip: event.target.value}})
                                            }
-                                       }}/>
+                                       }}
+                                       className={`w-full ${registerErrors.zip != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.zip && (<small className="p-error">{registerErrors.zip}</small>)}
                         </div>
                         <div className="field mb-3">
-                            <label htmlFor="fieldCity" className="font-bold">Stadt</label>
+                            <label htmlFor="fieldCity" className="font-bold">Stadt <span style={{ color: 'red' }}>*</span></label>
                             <InputText id="fieldCity" required={true}
                                        value={registration.registrar.city}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "city" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, city: event.target.value}})
+                                               updateBillingStepValidState("city", {...registration, registrar: {...registration.registrar, city: event.target.value}})
                                            }
-                                       }}/>
+                                       }}
+                                       className={`w-full ${registerErrors.city != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.city && (<small className="p-error">{registerErrors.city}</small>)}
                         </div>
                         <div className="field mb-3">
-                            <label htmlFor="fieldCountry" className="font-bold">Land</label>
+                            <label htmlFor="fieldCountry" className="font-bold">Land <span style={{ color: 'red' }}>*</span></label>
                             <InputText id="fieldCountry" required={true}
                                        value={registration.registrar.country}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "country" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, country: event.target.value}})
+                                               updateBillingStepValidState("country", {...registration, registrar: {...registration.registrar, country: event.target.value}})
                                            }
-                                       }}/>
+                                       }}
+                                       className={`w-full ${registerErrors.country != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.country && (<small className="p-error">{registerErrors.country}</small>)}
                         </div>
                     </div>
                     <p>Damit wir dich im Notfall erreichen können:</p>
                     <div className="p-fluid">
                         <div className="field mb-3">
-                            <label htmlFor="fieldPhoneNumber" className="font-bold">Handynummer</label>
+                            <label htmlFor="fieldPhoneNumber" className="font-bold">Handynummer <span style={{ color: 'red' }}>*</span></label>
                             <InputText id="fieldPhoneNumber" required={true}
                                        value={registration.registrar.phone}
                                        onChange={event => {
                                            if(registration && registration.registrar) {
                                                // Both types have a "phone" property
-                                               updateBillingStepValidState({...registration, registrar: {...registration.registrar, phone: event.target.value}})
+                                               updateBillingStepValidState("phone", {...registration, registrar: {...registration.registrar, phone: event.target.value}})
                                            }
-                                       }}/>
+                                       }}
+                                       className={`w-full ${registerErrors.phone != "" ? "p-invalid" : ""}`}/>
+                            {registerErrors.phone && (<small className="p-error">{registerErrors.phone}</small>)}
                         </div>
                     </div>
                 </Card>
@@ -394,7 +580,7 @@ export default function NewsMainModule() {
                                       onChange={event => {
                                           setAcceptedTermsOfUse(!!event.checked)
                                       }}/>
-                            <label htmlFor="fieldAcceptTermsOfUse" className="ml-2">Ich habe die (Link: AGBs) gelesen und akzeptiere diese.</label>
+                            <label htmlFor="fieldAcceptTermsOfUse" className="ml-2">Ich habe die (Link: AGBs) gelesen und akzeptiere diese.<span style={{ color: 'red' }}>*</span></label>
                         </div>
                         <div className="field mb-3">
                             <Checkbox id="fieldConfirmTerms" required={true}
@@ -402,7 +588,7 @@ export default function NewsMainModule() {
                                       onChange={event => {
                                           setAcceptedTerms(!!event.checked)
                                       }}/>
-                            <label htmlFor="fieldConfirmTerms" className="ml-2">Ich wurde über alle Kosten aufgeklärt und stimme der Zahlung aus diesem Vertrag zu.</label>
+                            <label htmlFor="fieldConfirmTerms" className="ml-2">Ich wurde über alle Kosten aufgeklärt und stimme der Zahlung aus diesem Vertrag zu.<span style={{ color: 'red' }}>*</span></label>
                         </div>
                     </div>
                 </Card>
@@ -566,8 +752,8 @@ export default function NewsMainModule() {
                                                                 setAvailableCourseRates(value1.data)
                                                             })
 
-                                                            updateTarifStepValidState(registration)
-                                                            updateBillingStepValidState(registration)
+                                                            updateTarifStepValidState("", registration)
+                                                            updateBillingStepValidState("", registration)
                                                             setAcceptedTermsOfUse(false)
                                                             setAcceptedTerms(false)
                                                         }}/>
